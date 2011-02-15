@@ -1,0 +1,44 @@
+\section{Realios mašinos projektas}
+
+\subsection{Techninės įrangos komponentai}
+
+\begin{description}
+  \item[Procesorius] 
+  \item[Vartotojo atmintis] atmintis skirta virtualių mašinų atmintims bei 
+    puslapių lentelėms laikyti. Jos dydis 256 blokai po 16 žodžių, kur
+    žodžio ilgis yra 8 baitai. Atmintis numeruojama nuo 0. 
+
+    Pirmieji 16 blokų yra rezervuoti puslapiavimo mechanizmui. Registru
+    \verb|PLR| nurodoma, kuriame bloke yra saugoma lentelė, o registru
+    \verb|PLBR| nurodoma, kuriuo baitu bloke prasideda puslapių lentelė.
+    Atminties baite, kurio pozicija yra $PLR \cdot 16 + PLBR$ ir po jo 
+    esančiame baite yra saugoma, kiek blokų užima kodo segmentas 
+    (pažymėkime $C (1 \leq C)$). Kitoje baitų poroje nurodyta kiek blokų 
+    užima duomenų segmentas (pažymėkime $D (0 \leq D)$). Toliau yra 
+    $C$ baitų porų, kuriose nurodyta kokie blokai atitinka kodo puslapius.
+    Analogiškai, po jų yra $D$ baitų porų, kurie nurodo kokie blokai 
+    atitinka, kuriuos duomenų puslapius.
+
+    Kiti 240 blokų yra skirti virtualių mašinų duomenims.
+  \item[Supervizorinė atmintis] jos dydis 16 blokų.
+  \item[Išorinė atmintis] kietasis diskas.
+  \item[Duomenų perdavimo kanalai] yra 4. 
+    \begin{description}
+      \item[1 kanalu] perduodami duomenys iš skaitymo įrenginio į 
+        supervizorinę atmintį.
+      \item[2 kanalu] perduodami duomenys iš supervizorinės atminties
+        į rašymo įrenginį.
+      \item[3 kanalu] perduodami duomenys iš kietojo disko į supervizorinę
+        atmintį.
+      \item[4 kanalu] perduodami duomenys iš supervizorinės atminties į 
+        kietąjį diską.
+      \item[5 kanalu] perduodami duomenys iš supervizorinės atminties į 
+        vartotojo atmintį.
+    \end{description}
+  \item[Įvedimo ir išvedimo įrenginiai] klaviatūra ir ekranas.
+\end{description}
+
+Komandų argumentai nurodyti 16-ainiais skaičiais.
+
+Programuotojas turi nurodyti kokio dydžio duomenų segmentą 
+išskirti programai.
