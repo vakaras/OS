@@ -14,3 +14,23 @@ virtuali mašina pateikia supaprastintą atminties adresavimą. Visa tai
 leidžia pasiekti realią mašiną ir virtualios mašinos mašininiu kodu 
 parašytą programą sėkmingai įvykdyti realioje mašinoje. 
 
+\subsection{Virtualios mašinos komponentų aprašymas}
+
+\begin{description}
+  \item[Atmintis] virtualiai mašinai yra paskiriama jos inicijavimo metu,
+    o jos dydis nurodytas programos metainformacijoje.
+    Ji yra padalinta į dvi dalis – vykdomąjį kodą ir duomenis. Virtuali
+    mašina gali keisti tik duomenų dalyje esančią informaciją, o vykdyti
+    tik kodo dalyje esančias komandas. Virtuali mašina dirba su 
+    8 baitų ilgio žodžiais. Tiek kodo tiek duomenų dalių adresai 
+    skaičiuojami nuo 0.
+  \item[Procesorius] turi registrus:
+    \begin{description}
+      \item[IC] nuorodų
+      \item[R1] duomenų
+      \item[R2] duomenų
+      \item[SF] loginis
+    \end{description}
+  \item[Komandų sistema] 
+
+\end{description}
