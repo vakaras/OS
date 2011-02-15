@@ -3,7 +3,25 @@
 \subsection{Techninės įrangos komponentai}
 
 \begin{description}
-  \item[Procesorius] 
+  \item[Procesorius] Registrų aprašymas:
+    \begin{description}
+      \item[IC] 3 baitų registras. Skirtas nurodyti vykdomos virtualios
+        mašinos komandos adresą atmintyje.
+      \item[R1] 8 baitų bendro naudojimo registras.
+      \item[R2] 8 baitų bendro naudojimo registras.
+      \item[PLR] 2 baitų registras. Skirtas nurodyti puslapių lentelės 
+        bloko adresą.
+      \item[PLBR] 2 baitų registras. Skirtas nurodyti puslapių lentelės
+        pirmojo baito vietą \verb|PLR| bloke.
+      \item[MODE] 1 baito registras, kurio reikšmė nusako procesoriaus
+        darbo rėžimą (vartotojas, supervizorius).
+      \item[SF] 2 baitų registras, skirtas saugoti aritmetinių operacijų 
+        loginių (tiesa „1“ arba klaidinga „0“) reikšmių sekai.
+      \item[PI] 1 baito registras programiniams pertraukimams fiksuoti.
+      \item[SI] 1 baito registras supervizoriniams pertraukimams fiksuoti.
+      \item[TI] 1 baito registras taimerio pertraukimams fiksuoti.
+      \item[Laikrodis] procesoriaus laiko matavimo įrenginys.
+    \end{description}
   \item[Vartotojo atmintis] atmintis skirta virtualių mašinų atmintims bei 
     puslapių lentelėms laikyti. Jos dydis 256 blokai po 16 žodžių, kur
     žodžio ilgis yra 8 baitai. Atmintis numeruojama nuo 0. 
@@ -42,3 +60,18 @@ Komandų argumentai nurodyti 16-ainiais skaičiais.
 
 Programuotojas turi nurodyti kokio dydžio duomenų segmentą 
 išskirti programai.
+
+\section{Virtualios mašinos aprašas}
+
+\subsection{Virtualios mašinos samprata}
+
+Virtuali mašina - tai tarsi realios mašinos kopija. Virtualioje mašinoje
+surenkame mums reikalingus komponentus, tokius kaip procesorius,
+atmintis, įvedimo/išvedimo įrenginiai, suteikiame jiems paprastesnę
+vartotojo sąsają. Tuo pačiu palengvinamas programavimo procesas,
+nes sudėtingas ar vartotojui nepatogias sąsajas virtualioje mašinoje yra 
+aprašomos supaprastintai. Virtuali mašina realizuoja realios mašinos
+komandas paprastesniu, lengviau suprantamu būdu. Taip pat virtuali mašina
+pateikia supaprastintą atminties valdymą. Visa tai leidžia pasiekti realią
+ir virtualios mašinos mašininiu kodu parašytą programą sėkmingai įvykdyti
+realioje mašinoje. 
