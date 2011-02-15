@@ -11,7 +11,10 @@
 \end{figure}
 
 \begin{description}
-  \item[Procesorius] Registrų aprašymas:
+  \item[Procesorius] gali dirbti dviem rėžimais: naudotojo ir 
+    supervizoriaus. Naudotojo rėžime vykdomos virtualios mašinos komandos,
+    o supervizoriaus rėžime – operacinės sistemos. Procesorius turi šiuos
+    registrus:
     \begin{description}
       \item[IC] 3 baitų registras. Skirtas nurodyti vykdomos virtualios
         mašinos komandos adresą atmintyje.
@@ -22,17 +25,74 @@
       \item[PLBR] 2 baitų registras. Skirtas nurodyti puslapių lentelės
         pirmojo baito vietą \verb|PLR| bloke.
       \item[MODE] 1 baito registras, kurio reikšmė nusako procesoriaus
-        darbo rėžimą (vartotojas, supervizorius).
+        darbo rėžimą („N“ – naudotojas, „S“ – supervizorius).
       \item[SF] 2 baitų registras, skirtas saugoti aritmetinių operacijų 
-        loginių (tiesa „1“ arba klaidinga „0“) reikšmių sekai.
+        loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. Lentelėje
+        pateikta informacija apie logines reikšmes, bei jas suformuojanti
+        \verb|C++| funkcija, kai yra sudedami du skaičiai \verb|sk1| ir
+        \verb|sk2|:
+
+        \begin{tabularx}{0.85\textwidth}{|c|c|c|X|}
+          \hline
+          Bitas & Trumpinys & Reikšmė & Paaiškinimas %& C++ funkcija 
+          \\
+          \hline
+          0 & CF & pernešimo požymis & įgija „1“ tada, kai sudėties arba
+          atimties rezultatas netelpa į žodį 
+          %& \verb|((bool) ((sk1+sk2) & (1<<8)))| 
+          \\
+         %\hline
+         %2 & PF & lyginumo požymis & & 
+         %\verb|!((bitset<8>(sk1+sk2).count())&1)| \\
+         %\hline
+         %4 & AF & papildomo pernešimo požymis & 
+         %  \verb|((bool) (((sk1&0xff)| 
+         %  \verb|+ (sk2&0xff))&(1<<4)))| \\
+          \hline
+          6 & ZF & nulio požymis & parodo ar paskutinės operacijos 
+          rezultatas yra nulinis %& \verb|(!(sk1+sk2))| 
+          \\
+          \hline
+          7 & SF & ženklo požymis & parodo, koks yra paskutinės operacijos 
+          rezultato ženklas („1“ – jei neigiamas) 
+          %& \verb|((bool) ((sk1+sk2) & (1<<7)))| 
+          \\
+         %\hline
+         %8 & TF & „spąstų“ požymis & jei „1“, tai po kiekvienos komandos
+         %įvyksta pertraukimas & \\
+         %9 & IF & & \\
+         %10 & DF & & \\
+          \hline
+          11 & OF & perpildymo požymis & įgija „1“ tada, kai rezultatas
+          netelpa skaičių su ženklu diapazone 
+          %& \verb|(((sk1&(1<<7))==(sk2&(1<<7)))&&|
+          %  \verb|((sk1&(1<<7))==((sk1+sk2)&(1<<7))))| 
+          \\
+          \hline
+        \end{tabularx}
       \item[PI] 1 baito registras programiniams pertraukimams fiksuoti.
+        (Pavyzdžiui, buvo aptiktas neegzistuojantis operacijos kodas, ar
+        adresas „išeina“ už numatytų ribų.)
       \item[SI] 1 baito registras supervizoriniams pertraukimams fiksuoti.
-      \item[TI] 1 baito registras taimerio pertraukimams fiksuoti.
+        (Supervizorinis pertraukimas įvyksta tada, kai virtuali mašina
+        pati negali atlikti veiksmo (pavyzdžiui, darbas su įvedimu ir
+        išvedimu) ir ji kreipiasi į operacinės sistemos servisą.)
+      \item[TI] 1 baito registras laikrodžio pertraukimams fiksuoti.
+      \item[IOI] 1 baito įvedimo / išvedimo pertraukimo registras – 
+        praneša, kad veiksmas baigėsi. 
+        % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
+      \item[CHST] 1 baito kanalo pertraukimo registras. Kadangi vienu metu 
+        gali įvykti keli pertraukimai, tai $i$-ojo kanalo pertraukimas
+        fiksuojamas prie registro reikšmės pridedant $2^{i-1}$.
+        % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
+        % Taip pat ar prielaida, jog stdin ir stdout yra failai, mums
+        % nieko nekeičia?
       \item[Laikrodis] procesoriaus laiko matavimo įrenginys.
     \end{description}
-  \item[Vartotojo atmintis] atmintis skirta virtualių mašinų atmintims bei 
-    puslapių lentelėms laikyti. Jos dydis 256 blokai po 16 žodžių, kur
-    žodžio ilgis yra 8 baitai. Atmintis numeruojama nuo 0. 
+  \item[Vartotojo atmintis] yra atmintis skirta virtualių mašinų atmintims 
+    bei puslapių lentelėms laikyti. Jos dydis 256 blokai po 16 žodžių, kur
+    žodžio ilgis yra 8 baitai. Atmintis numeruojama nuo 0. Visi VM 
+    puslapiai yra užkraunami prieš pradedant VM darbą.
 
     Pirmieji 16 blokų yra rezervuoti puslapiavimo mechanizmui. Registru
     \verb|PLR| nurodoma, kuriame bloke yra saugoma lentelė, o registru
@@ -47,8 +107,11 @@
 
     Kiti 240 blokų yra skirti virtualių mašinų duomenims.
   \item[Supervizorinė atmintis] jos dydis 16 blokų.
-  \item[Išorinė atmintis] kietasis diskas.
-  \item[Duomenų perdavimo kanalai] yra 4. 
+  \item[Išorinė atmintis] tai tiesioginio įėjimo ir išėjimo išorinis
+    įrenginys su 1 bloko dydžio ilgio įrašais. Duomenų apsikeitimas su 
+    išoriniu įrenginiu galimas galimas tik fiksuoto dydžio (1 bloko)
+    įrašais.
+  \item[Duomenų perdavimo kanalai] yra 5. 
     \begin{description}
       \item[1 kanalu] perduodami duomenys iš įvedimo įrenginio į 
         supervizorinę atmintį.
@@ -61,11 +124,7 @@
       \item[5 kanalu] perduodami duomenys iš supervizorinės atminties į 
         vartotojo atmintį.
     \end{description}
-  \item[Įvedimo ir išvedimo įrenginiai] klaviatūra ir ekranas.
+  \item[Įvedimo ir išvedimo įrenginiai.] RM turi vieną nuoseklų įvedimo
+    įrenginį ir vieną nuoseklų išvedimo įrenginį. Tiek duomenų nuskaitymas,
+    tiek jų įrašymas vyksta fiksuoto 1 bloko dydžio įrašais.
 \end{description}
-
-Komandų argumentai nurodyti 16-ainiais skaičiais.
-
-Programuotojas turi nurodyti kokio dydžio duomenų segmentą 
-išskirti programai.
-
