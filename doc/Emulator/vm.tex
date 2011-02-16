@@ -26,19 +26,130 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
     skaičiuojami nuo 0.
   \item[Procesorius] turi registrus:
     \begin{description}
-      \item[IC] nuorodų
-      \item[R1] duomenų
-      \item[R2] duomenų
-      \item[SF] loginis
+      \item[IC] Nuorodos. 3 baitų dydžio, skirtas nurodyti vykdomos komandos
+        adresą virtualioje atmintyje.
+      \item[R1] Duomenų. 8 baitų bendro naudojimo registras.
+      \item[R2] Duomenų. 8 baitų bendro naudojimo registras.
+      \item[SF] Loginis. 2 baitų registras, skirtas saugoti aritmetinių operacijų 
+        loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. Lentelėje
+        pateikta informacija apie logines reikšmes, bei jas suformuojanti
+        \verb|C++| funkcija, kai yra sudedami du skaičiai \verb|sk1| ir
+        \verb|sk2|:
+
+        
+        \begin{tabularx}{0.85\textwidth}{|c|c|c|X|}
+        \hline
+           Bitas & Trumpinys & Reikšmė & Paaiškinimas %& C++ funkcija 
+           \\
+           \hline
+           0 & CF & pernešimo požymis & įgija „1“ tada, kai sudėties arba
+           atimties rezultatas netelpa į žodį 
+           %& \verb|\left( bool) \left( sk1+sk2) & (1<<8)))| 
+           \\
+           %\hline
+           %2 & PF & lyginumo požymis & & 
+           %\verb|!\left( bitset<8>(sk1+sk2).count(&1)| \\
+           %\hline
+           %4 & AF & papildomo pernešimo požymis & 
+           %  \verb|\left( bool) \left( (sk1&0xff)| 
+           %  \verb|+ (sk2&0xff))&(1<<4)))| \\
+           \hline
+          6 & ZF & nulio požymis & parodo ar paskutinės operacijos 
+          rezultatas yra nulinis %& \verb|(!(sk1+sk2))| 
+          \\
+          \hline
+          7 & SF & ženklo požymis & parodo, koks yra paskutinės operacijos 
+          rezultato ženklas („1“ – jei neigiamas) 
+          %& \verb|\left( bool) \left( sk1+sk2) & (1<<7)))| 
+          \\
+          %\hline
+          %8 & TF & „spąstų“ požymis & jei „1“, tai po kiekvienos komandos
+          %įvyksta pertraukimas & \\
+          %9 & IF & & \\
+          %10 & DF & & \\
+          \hline
+          11 & OF & perpildymo požymis & įgija „1“ tada, kai rezultatas
+          netelpa skaičių su ženklu diapazone 
+          %& \verb|\left( (sk1&(1<<7))&=& (sk2&(1<<7)))&&|
+          %  \verb|\left( sk1&(1<<7))&=& \left( sk1+sk2)&(1<<7))))| 
+          \\
+          \hline
+        \end{tabularx}
     \end{description}
   \item[Komandų sistema] 
+    \begin{description}
+        \item[LR1 xyz] Atminties ląstelės, kurios adresas (x*10+y)*10+z,
+          turinio kopijavimas į registrą R1 (R1:=[(x*10+y)*10+z]).
+        \item[LR2 xyz] Atminties ląstelės, kurios adresas (x*10+y)*10+z, 
+          turinio kopijavimas į registrą R2 (R2:=[(x*10+y)*10+z]).
+        \item[SR1 xyz] Registro R1 turinio kopijavimas į atminties ląstelę, 
+          kurios adresas (x*10+y)*10+z ([(x*10+y)*10+z]:=R1).
+        \item[SR2 xyz] Registro R2 turinio kopijavimas į atminties ląstelę,
+          kurios adresas (x*10+y)*10+z ([(x*10+y)*10+z]:=R2).
+        \item[ADD] Prie registro R1 reikšmės pridedama registro R2 reikšmė.
+          Formuoja SF požymius. (R1:=R1+R2).
+        \item[ADD xyz] Sudedamos registrų R1 ir R2 reikšmės bei rezultatas 
+          išsaugojamas atminties ląstelėje, kurios adresas (x*10+y)*10+z.
+          Formuoja SF požymius. ([(x*10+y)*10+z]:=R1+R2).
+        \item[SUB] Iš registro R1 reikšmės atimama registro R1 reikšmė. 
+          Formuoja SF požymius.
+          (R1:=R1-R2).
+        \item[SUB xyz] Iš registro R1 atimama registro R2 reikšmė ir 
+          rezultatas įrašomas į atminties ląstelę, kurios adresas 
+          (x*10+y)*10+z. Formuoja SF požymius. ([(x*10+y)*10+z]:=R1-R2).
+        \item[DIV] Registro R1 reikšmė padalinama iš registro R2 reikšmės ir
+          dalmuo įrašomas į registrą R1, o liekana - į registrą R2. Formuoja
+          SF požymius.
+          %FIXME: reikia trečio akumuliatoriaus registro arba steko, kad 
+          %realizuoti dalybą!
+        \item[CMP] Palygina registrus R1 ir R2. Formuoja SF požymius
+          (R1>R2, tai ZF=0 ir SF=0; R1=R2, tai ZF=1; R1<R2, tai ZF=0 
+          ir SF=1).
+        \item[JMP] Nesąlyginis valdymo perdavimas kodo segmento žodžiui
+          adresu (10*x+y)*10+z (IC:=(10*x+y)*10+z).
+        \item[JE xyz] Jei ZF=0, tai valdymas perduodamas kodo segmento 
+          žodžiui adresu (10*x+y)*10+z.
+        \item[JG xyz] Jei ZF=0 ir SF=0, tai valdymas perduodamas kodo
+          segmento žodžiui adresu (10*x+y)*10+z.
+        \item[JB xyz] Jei SF=1, tai valdymas perduodamas kodo segmento
+          žodžiui adresu (10*x+y)*10+z.
+        \item[PD xyz] Išsiunčia 2 žodžius (pradedant adresu (10*x+y)*10+z)
+          į išvesties įrenginį.
+        \item[GD xyz] Į 2 žodžius (pradedant adresu (10*x+y)*10+z) 
+          įrašoma informacija gauta iš įvesties įrenginio.
+        \item[FO xyz] Atidaromas failas \verb|(FIXME)|%FIXME:
+        \item[FGD xyz] Skaityti iš failo žodį ir jo reikšmė įrašyti į
+          atminties ląstelę adresu (10*x+y)*10+z.
+        \item[FPD xyz] Skaityti iš failo vieną žodį ir įrašyti jo 
+          reikšmę į ląstelę, esančią adresu (10*x+y)*10+z.
+        \item[FC xyz] Uždaromas failas \verb|(FIXME)|%FIXME:
+        \item[FD xyz] Pašalinti failą \verb|(FIXME)|%FIXME:
+        \item[HALT] Užbaigti programos darbą.`
+    \end{description}
+  \end{description} 
+   %TODO:
+   %2.3) Virtualios mašinos bendravimo su įvedimo/išvedimo įrenginiais
+   %mechanizmo aprašymas.
+\subsection{Virtualios mašinos bendravimo su įvedimo/išvedimo įrenginiais}
 
-    Visi skaičiai yra su ženklu!
+   %TODO:
+   %2.4) Virtualios mašinos interpretuojamojo ar kompiliuojamo vykdomojo
+   %failo išeities teksto formatas. Pavyzdžiui, kaip išskiriamas duomenų
+   %segmentas, kodo segmentas, kaip aprašomi duomenys ir t.t.)
+\subsection{Virtualios mašinos interpretuojamojo ar kompiliuojamo vykdomojo 
+failo išeities teksto formatas}
 
-Komandų argumentai nurodyti 16-ainiais skaičiais.
+   %TODO:
+   %2.5) Modeliuojamos virtualios mašinos loginių komponentų sąryšio su
+   %realios mašinos techninės įrangos komponentais aprašymas.
+\subsection{Modeliuojamos virtualios mašinos loginių komponentų sąryšio su 
+realios mašinos techninės įrangos komponentais aprašymas}
+   
+%Visi skaičiai yra su ženklu!
 
-Programuotojas turi nurodyti kokio dydžio duomenų segmentą 
-išskirti programai.
+%Komandų argumentai nurodyti 16-ainiais skaičiais.
+
+%Programuotojas turi nurodyti kokio dydžio duomenų segmentą 
+%išskirti programai.
 
 
-\end{description}
