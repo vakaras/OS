@@ -13,24 +13,25 @@
 \begin{description}
   \item[Procesorius] gali dirbti dviem rėžimais: naudotojo ir 
     supervizoriaus. Naudotojo rėžime vykdomos virtualios mašinos komandos,
-    o supervizoriaus rėžime – operacinės sistemos. Procesorius turi šiuos
-    registrus:
+    o supervizoriaus rėžime – operacinės sistemos. Laiko tarpas, per
+    kurį procesorius atlieka vieną komandą laikomas vienu laiko vienetu.
+    Procesorius turi šiuos registrus:
     \begin{description}
-      \item[IC] 3 baitų registras. Skirtas nurodyti vykdomos virtualios
-        mašinos komandos adresą atmintyje.
+      \item[IC] 3 baitų nuorodos registras. Skirtas nurodyti vykdomos 
+        virtualios mašinos komandos adresą atmintyje.
       \item[R1] 8 baitų bendro naudojimo registras.
       \item[R2] 8 baitų bendro naudojimo registras.
-      \item[PLR] 2 baitų registras. Skirtas nurodyti puslapių lentelės 
-        bloko adresą.
-      \item[PLBR] 2 baitų registras. Skirtas nurodyti puslapių lentelės
-        pirmojo baito vietą \verb|PLR| bloke.
-      \item[MODE] 1 baito registras, kurio reikšmė nusako procesoriaus
-        darbo rėžimą („N“ – naudotojas, „S“ – supervizorius).
-      \item[SF] 2 baitų registras, skirtas saugoti aritmetinių operacijų 
-        loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. Lentelėje
-        pateikta informacija apie logines reikšmes, bei jas suformuojanti
-        \verb|C++| funkcija, kai yra sudedami du skaičiai \verb|sk1| ir
-        \verb|sk2|:
+      \item[PLR] 2 baitų nuorodų registras. Skirtas nurodyti puslapių 
+        lentelės bloko adresą.
+      \item[PLBR] 2 baitų nuorodų registras. Skirtas nurodyti puslapių 
+        lentelės pirmojo baito vietą \verb|PLR| bloke.
+      \item[MODE] 1 baito loginis registras, kurio reikšmė nusako 
+        procesoriaus darbo rėžimą („N“ – naudotojas, „S“ – supervizorius).
+      \item[SF] 2 baitų loginis registras, skirtas saugoti aritmetinių 
+        operacijų loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. 
+        Lentelėje pateikta informacija apie logines reikšmes, bei jas 
+        suformuojanti \verb|C++| funkcija, kai yra sudedami du skaičiai 
+        \verb|sk1| ir \verb|sk2|:
 
         \begin{tabularx}{0.85\textwidth}{|c|c|c|X|}
           \hline
@@ -87,8 +88,13 @@
         % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
         % Taip pat ar prielaida, jog stdin ir stdout yra failai, mums
         % nieko nekeičia?
-      \item[Laikrodis] procesoriaus laiko matavimo įrenginys.
     \end{description}
+
+    Taip pat procesoriuje yra laikrodis – laiko matavimo įrenginys, kuris
+    vienodais laiko intervalais generuoja pertraukimus. 
+
+    Procesorius dirba su simboliniais duomenimis bei sveikaisiais 
+    skaičiais su ženklu, užrašytais simboliniu formatu.
   \item[Vartotojo atmintis] yra atmintis skirta virtualių mašinų atmintims 
     bei puslapių lentelėms laikyti. Jos dydis 256 blokai po 16 žodžių, kur
     žodžio ilgis yra 8 baitai. Atmintis numeruojama nuo 0. Visi VM 
@@ -108,9 +114,8 @@
     Kiti 240 blokų yra skirti virtualių mašinų duomenims.
   \item[Supervizorinė atmintis] jos dydis 16 blokų.
   \item[Išorinė atmintis] tai tiesioginio įėjimo ir išėjimo išorinis
-    įrenginys su 1 bloko dydžio ilgio įrašais. Duomenų apsikeitimas su 
-    išoriniu įrenginiu galimas galimas tik fiksuoto dydžio (1 bloko)
-    įrašais.
+    įrenginys su 1 bloko dydžio ilgio įrašais. Su įrenginiu „bendraujama“
+    apsikeičiant įrašais. (Vienas apsikeitimas trunka tris laiko vienetus.)
   \item[Duomenų perdavimo kanalai] yra 5. 
     \begin{description}
       \item[1 kanalu] perduodami duomenys iš įvedimo įrenginio į 
@@ -126,5 +131,6 @@
     \end{description}
   \item[Įvedimo ir išvedimo įrenginiai.] RM turi vieną nuoseklų įvedimo
     įrenginį ir vieną nuoseklų išvedimo įrenginį. Tiek duomenų nuskaitymas,
-    tiek jų įrašymas vyksta fiksuoto 1 bloko dydžio įrašais.
+    tiek jų įrašymas vyksta fiksuoto 1 bloko dydžio įrašais. (Duomenų
+    apsikeitimas su šiais įrenginiais trunka tris laiko vienetus.)
 \end{description}
