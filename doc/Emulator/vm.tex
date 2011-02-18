@@ -55,8 +55,8 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
           \hline
         \end{tabularx}
     \end{description}
-  \item[Komandų sistema] 
-    \begin{description}
+  \item[Komandų sistema] \hfill
+    \begin{description} 
         \item[$LR1 xyz$] Atminties ląstelės, kurios adresas 
           $(x \cdot 10 + y) \cdot 10 + z)$, turinio kopijavimas į 
           registrą $R1 (R1 := [(x \cdot 10 + y) \cdot 10 + z])$.
@@ -119,26 +119,61 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
     \end{description}
   \end{description} 
   
+\subsection{Virtualios mašinos bendravimo su įvedimo/išvedimo įrenginiais
+mechanizmo aprašymas}
+
+Virtualiai mašinai įvedimo ir išvedimo įrenginiai atrodo lygiai taip pat,
+kaip paprasti failai, esantys išorinėje atmintyje. Kiekvienas atidarytas
+failas turi savo numerį $id (0 \leq id < 4)$, kuris yra nurodomas 
+instrukcijose. Paleidžiant virtualią mašiną yra automatiškai atidaromi
+du specialieji failai: vienas skaitymui (su $id = 0$), kuris iš tiesų yra
+įvedimo įrenginys ir vienas rašymui (su $id = 1$), kuris iš tiesų yra 
+išvedimo įrenginys. Ne specialiųjų failų $id$ virtuali mašina sužino
+atidarydama failą su komanda $FO\,\text{<failo pavadinimas> <rėžimas>}$,
+kuri atidaryto failo $id$ įrašo į registrą $R1$.
+
   %XXX Jei procesas veikia supervizoriaus rėžimu, tai jis yra VM ar nėra?
   % Tai yra ar egzistuoja tokia VM, kuri gali tiesiogiai bendrauti su
   % įvedimo ir išvedimo įrenginiais?
-   %TODO:
-   %2.3) Virtualios mašinos bendravimo su įvedimo/išvedimo įrenginiais
-   %mechanizmo aprašymas.
-\subsection{Virtualios mašinos bendravimo su įvedimo/išvedimo įrenginiais}
+
 
    %TODO:
    %2.4) Virtualios mašinos interpretuojamojo ar kompiliuojamo vykdomojo
    %failo išeities teksto formatas. Pavyzdžiui, kaip išskiriamas duomenų
    %segmentas, kodo segmentas, kaip aprašomi duomenys ir t.t.)
-\subsection{Virtualios mašinos interpretuojamojo ar kompiliuojamo vykdomojo 
-failo išeities teksto formatas}
+\subsection{Virtualios mašinos interpretuojamojo vykdomojo failo išeities 
+teksto formatas}
+
+Kiekvienas vykdomasis failas turi prasidėti eilute
+\verb|#!/usr/bin/pyemu|.
+
+Toliau turi būti eilutė su raktiniu žodžiu \verb|CODE|, kuris nurodo
+kodo bloko pradžią. Toliau turi būti pateikiamas programos komandos – 
+kiekviena atskiroje eilutėje. Prieš komandą gali būti nurodyta žymė
+(sintaksė: \verb|<žymė>: <komanda>|), kurią paskui galima naudoti vykdymo
+perdavimo komandose vietoj betarpiško argumento (sintaksė: 
+\verb|<komanda> «<žymė>»|). Kodo blokas užbaigiamas su raktiniu žodžiu
+\verb|ENDCODE|
+
+Toliau turi būti eilutė su raktiniu žodžiu \verb|DATA| ir po tarpo 
+sveikuoju skaičiumi – duomenų segmento dydis blokais.
+Toliau esančiose eilutėse pateikiamas duomenų segmento turinys. Naujos
+eilutės simboliai yra ignoruojami. Jei eilutė prasideda 
+\verb|\[(?P<adresas>\]:)| tai toliau esantys simboliai rašomi į duomenų
+segmentą nuo nurodyto adreso. Duomenų segmentas užbaigiamas su 
+raktiniu žodžiu \verb|ENDDATA|.
 
    %TODO:
    %2.5) Modeliuojamos virtualios mašinos loginių komponentų sąryšio su
    %realios mašinos techninės įrangos komponentais aprašymas.
 \subsection{Modeliuojamos virtualios mašinos loginių komponentų sąryšio su 
 realios mašinos techninės įrangos komponentais aprašymas}
+
+Virtuali mašina savo komandų vykdymui naudoja realios mašinos procesorių.
+Vienintelis skirtumas yra tai, kad jai neleidžiama pasiekti, kai kurių
+jai nereikalingų registrų. Taip pat virtuali mašina mato tik jai skirtą
+visos vartotojo atminties dalį bei gali pasiekti tik tuos failus, kurie
+yra jai paskirti.
    
 %Visi skaičiai yra su ženklu!
 

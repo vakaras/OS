@@ -9,6 +9,7 @@
   \caption{Realios mašinos architektūra.}
   \label{fig:rm}
 \end{figure}
+% TODO Patikrinti ar schema atitinka reikalavimus.
 
 \begin{description}
   \item[Procesorius] gali dirbti dviem rėžimais: naudotojo ir 
@@ -17,17 +18,17 @@
     kurį procesorius atlieka vieną komandą laikomas vienu laiko vienetu.
     Procesorius turi šiuos registrus:
     \begin{description}
-      \item[IC] 3 baitų nuorodos registras. Skirtas nurodyti vykdomos 
+      \item[$IC$] 3 baitų nuorodos registras. Skirtas nurodyti vykdomos 
         virtualios mašinos komandos adresą atmintyje.
-      \item[R1] 8 baitų bendro naudojimo registras.
-      \item[R2] 8 baitų bendro naudojimo registras.
-      \item[PLR] 2 baitų nuorodų registras. Skirtas nurodyti puslapių 
+      \item[$R1$] 8 baitų bendro naudojimo registras.
+      \item[$R2$] 8 baitų bendro naudojimo registras.
+      \item[$PLR$] 2 baitų nuorodų registras. Skirtas nurodyti puslapių 
         lentelės bloko adresą.
-      \item[PLBR] 2 baitų nuorodų registras. Skirtas nurodyti puslapių 
+      \item[$PLBR$] 2 baitų nuorodų registras. Skirtas nurodyti puslapių 
         lentelės pirmojo baito vietą \verb|PLR| bloke.
-      \item[MODE] 1 baito loginis registras, kurio reikšmė nusako 
+      \item[$MODE$] 1 baito loginis registras, kurio reikšmė nusako 
         procesoriaus darbo rėžimą („N“ – naudotojas, „S“ – supervizorius).
-      \item[SF] 2 baitų loginis registras, skirtas saugoti aritmetinių 
+      \item[$SF$] 2 baitų loginis registras, skirtas saugoti aritmetinių 
         operacijų loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. 
         Lentelėje pateikta informacija apie logines reikšmes, bei jas 
         suformuojanti \verb|C++| funkcija, kai yra sudedami du skaičiai 
@@ -71,20 +72,22 @@
           \\
           \hline
         \end{tabularx}
-      \item[PI] 1 baito registras programiniams pertraukimams fiksuoti.
+      \item[$PI$] 1 baito registras programiniams pertraukimams fiksuoti.
         (Pavyzdžiui, buvo aptiktas neegzistuojantis operacijos kodas, ar
         adresas „išeina“ už numatytų ribų.)
-      \item[SI] 1 baito registras supervizoriniams pertraukimams fiksuoti.
+      \item[$SI$] 1 baito registras supervizoriniams pertraukimams fiksuoti.
         (Supervizorinis pertraukimas įvyksta tada, kai virtuali mašina
         pati negali atlikti veiksmo (pavyzdžiui, darbas su įvedimu ir
         išvedimu) ir ji kreipiasi į operacinės sistemos servisą.)
-      \item[TI] 1 baito registras laikrodžio pertraukimams fiksuoti.
-      \item[IOI] 1 baito įvedimo / išvedimo pertraukimo registras – 
-        praneša, kad veiksmas baigėsi. 
-        % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
-      \item[CHST] 1 baito kanalo pertraukimo registras. Kadangi vienu metu 
-        gali įvykti keli pertraukimai, tai $i$-ojo kanalo pertraukimas
+      \item[$TI$] 1 baito registras laikrodžio pertraukimams fiksuoti.
+      \item[$IOI$] 1 baito įvedimo / išvedimo pertraukimo registras – 
+        praneša, kad veiksmas baigėsi. Kadangi vienu 
+        metu gali įvykti keli pertraukimai, tai $i$-ojo kanalo pertraukimas
         fiksuojamas prie registro reikšmės pridedant $2^{i-1}$.
+        % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
+      \item[$CHST$] 1 baito kanalų užimtumo registras. Nurodoma, jog
+        $i$-asis kanalas užimtas prie registro reikšmės pridedant 
+        $2^{i-1}$.
         % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
         % Taip pat ar prielaida, jog stdin ir stdout yra failai, mums
         % nieko nekeičia?
@@ -109,13 +112,26 @@
     užima duomenų segmentas (pažymėkime $D (0 \leq D)$). Toliau yra 
     $C$ baitų porų, kuriose nurodyta kokie blokai atitinka kodo puslapius.
     Analogiškai, po jų yra $D$ baitų porų, kurie nurodo kokie blokai 
-    atitinka, kuriuos duomenų puslapius.
+    atitinka, kuriuos duomenų puslapius. Toliau yra 36 baitai skirti
+    informacijai apie atidarytus failus saugoti. Vienu metu gali
+    būti atidaryti ne daugiau nei 4 failai. $i$-oji 7 baitų eilė yra skirtas
+    informacijai apie atidarytą failą kurio $id$ yra $i$ saugoti. Jei
+    pirmojo eilės baito reikšmė yra $0$, tai reiškia, kad failas nėra
+    atidarytas. Jei jo reikšmė yra $i$, tai reiškia, jog failas yra
+    įvedimo įrenginio abstrakcija, o jei $o$, tai kad išvedimo įrenginio.
+    Jei $r$, tai failas yra atidarytas skaitymui ir like 6 baitai yra
+    atidaryto failo pavadinimas. Analogiškai $w$ žymi failą atidarytą
+    rašymui.
 
     Kiti 240 blokų yra skirti virtualių mašinų duomenims.
   \item[Supervizorinė atmintis] jos dydis 16 blokų.
   \item[Išorinė atmintis] tai tiesioginio įėjimo ir išėjimo išorinis
-    įrenginys su 1 bloko dydžio ilgio įrašais. Su įrenginiu „bendraujama“
-    apsikeičiant įrašais. (Vienas apsikeitimas trunka tris laiko vienetus.)
+    įrenginys, kuriame duomenys sugrupuoti į failus (failo pavadinimas
+    yra mašinos žodis). Reali mašina gali failą sukurti, atidaryti
+    skaitymui, atidaryti rašymui (atidarius failą rašymui, visa 
+    jame buvusi informacija yra ištrinama) ir ištrinti. Iš failo skaitoma
+    ir į jį rašoma 1 bloko dydžio ilgio įrašais. (Vienas apsikeitimas 
+    trunka tris laiko vienetus.)
   \item[Duomenų perdavimo kanalai] yra 5. 
     \begin{description}
       \item[1 kanalu] perduodami duomenys iš įvedimo įrenginio į 
