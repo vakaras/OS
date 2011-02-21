@@ -31,11 +31,8 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
       \item[R1] Duomenų. 8 baitų bendro naudojimo registras.
       \item[R2] Duomenų. 8 baitų bendro naudojimo registras.
       \item[SF] Loginis. 2 baitų registras, skirtas saugoti aritmetinių 
-        operacijų 
-        loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. Lentelėje
-        pateikta informacija apie logines reikšmes, bei jas suformuojanti
-        \verb|C++| funkcija, kai yra sudedami du skaičiai \verb|sk1| ir
-        \verb|sk2|:
+        operacijų loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. 
+        Lentelėje pateikta informacija apie logines reikšmes:
 
         \begin{tabularx}{0.85\textwidth}{|c|c|c|X|} 
           \hline
@@ -57,65 +54,62 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
     \end{description}
   \item[Komandų sistema] \hfill
     \begin{description} 
-        \item[$LR1 xyz$] Atminties ląstelės, kurios adresas 
-          $(x \cdot 10 + y) \cdot 10 + z)$, turinio kopijavimas į 
-          registrą $R1 (R1 := [(x \cdot 10 + y) \cdot 10 + z])$.
-        \item[$LR2 xyz$] Atminties ląstelės, kurios adresas 
-          $(x \cdot 10 + y) \cdot 10 + z$, turinio kopijavimas į 
-          registrą $R2 (R2:=[(x \cdot 10+y) \cdot 10+z])$.
-        \item[$SR1 xyz$] Registro $R1$ turinio kopijavimas į atminties 
-          ląstelę, kurios adresas 
-          $(x \cdot 10+y) \cdot 10+z ([(x \cdot 10+y) \cdot 10+z]:=R1)$.
-        \item[$SR2 xyz$] Registro $R2$ turinio kopijavimas į atminties 
-          ląstelę, kurios adresas 
-          $(x \cdot 10+y) \cdot 10+z ([(x \cdot 10+y) \cdot 10+z]:=R2)$.
+        \item[$LR1 \: x$] Atminties ląstelės, kurios adresas 
+          $x (x $ – triženklis šešioliktainis skaičius), 
+          turinio kopijavimas į registrą $R1 (R1:=[x])$.
+        \item[$LR2 \: x$] Atminties ląstelės, kurios adresas 
+          $x$, turinio kopijavimas į registrą $R2 (R2:=[x])$.
+        \item[$SR1 \: x$] Registro $R1$ turinio kopijavimas į atminties 
+          ląstelę, kurios adresas $x ([x]:=R1)$.
+        \item[$SR2 \: x$] Registro $R2$ turinio kopijavimas į atminties 
+          ląstelę, kurios adresas $x ([x]:=R2)$.
         \item[$ADD$] Prie registro $R1$ reikšmės pridedama registro $R2$ 
           reikšmė. Formuoja $SF$ požymius. $(R1:=R1+R2)$.
-        \item[$ADD xyz$] Sudedamos registrų $R1$ ir $R2$ reikšmės bei 
+        \item[$ADD \: x$] Sudedamos registrų $R1$ ir $R2$ reikšmės bei 
           rezultatas išsaugojamas atminties ląstelėje, kurios adresas 
-          $(x \cdot 10+y) \cdot 10+z$. Formuoja $SF$ požymius. 
-          $([(x \cdot 10+y) \cdot 10+z]:=R1+R2)$.
+          $x$. Formuoja $SF$ požymius. $([x]:=R1+R2)$.
         \item[$SUB$] Iš registro $R1$ reikšmės atimama registro $R1$ 
           reikšmė. Formuoja $SF$ požymius. $(R1:=R1-R2)$.
-        \item[$SUB xyz$] Iš registro $R1$ atimama registro $R2$ reikšmė ir 
+        \item[$SUB \: x$] Iš registro $R1$ atimama registro $R2$ reikšmė ir 
           rezultatas įrašomas į atminties ląstelę, kurios adresas 
-          $(x \cdot 10+y) \cdot 10+z$. Formuoja $SF$ požymius. 
-          $([(x \cdot 10+y) \cdot 10+z]:=R1-R2)$.
+          $x$. Formuoja $SF$ požymius. 
+          $([x]:=R1-R2)$.
         \item[$DIV$] Registro $R1$ reikšmė padalinama iš registro $R2$ 
           reikšmės ir dalmuo įrašomas į registrą $R1$, o liekana - į 
           registrą $R2$. Formuoja $SF$ požymius.
-          %FIXME: reikia trečio akumuliatoriaus registro arba steko, kad 
-          %realizuoti dalybą!
-          % Taigi mūsų procesorius „moka“ dalinti…
         \item[$CMP$] Palygina registrus $R1$ ir $R2$. Formuoja $SF$ požymius
           ($R1>R2$, tai $ZF=0$ ir $SF=0; R1=R2$, tai $ZF=1; R1<R2$, 
           tai $ZF=0$ ir $SF=1$).
-        \item[$JMP$] Nesąlyginis valdymo perdavimas kodo segmento žodžiui
-          adresu 
-          $(10 \cdot x+y) \cdot 10+z (IC:=(10 \cdot x+y) \cdot 10+z)$.
-          % Kaip suprasti šitą sakinį? Valdymas žodžiui?
-        \item[$JE xyz$] Jei $ZF=0$, tai valdymas perduodamas kodo segmento 
-          žodžiui adresu $(10 \cdot x+y) \cdot 10+z$.
-        \item[$JG xyz$] Jei $ZF=0$ ir $SF=0$, tai valdymas perduodamas kodo
-          segmento žodžiui adresu $(10 \cdot x+y) \cdot 10+z$.
-        \item[$JB xyz$] Jei $SF=1$, tai valdymas perduodamas kodo segmento
-          žodžiui adresu $(10 \cdot x+y) \cdot 10+z$.
-        \item[$PD xyz$] Išsiunčia 2 žodžius (pradedant adresu 
-          $(10 \cdot x+y) \cdot 10+z)$ į išvesties įrenginį.
-          % FIXME Bendraujama įrašais. Žr. RM dokumentaciją.
-        \item[$GD xyz$] Į 2 žodžius (pradedant adresu 
-          $(10 \cdot x+y) \cdot 10+z)$ įrašoma informacija gauta iš 
-          įvesties įrenginio.
-          % FIXME Bendraujama įrašais. Žr. RM dokumentaciją.
-        \item[$FO xyz$] Atidaromas failas \verb|(FIXME)|%FIXME:
-        \item[$FGD xyz$] Skaityti iš failo žodį ir jo reikšmė įrašyti į
-          atminties ląstelę adresu $(10 \cdot x+y) \cdot 10+z$.
-          % FIXME Bendraujama įrašais. Žr. RM dokumentaciją.
-        \item[$FPD xyz$] Skaityti iš failo vieną žodį ir įrašyti jo 
-          reikšmę į ląstelę, esančią adresu $(10 \cdot x+y) \cdot 10+z$.
-        \item[$FC xyz$] Uždaromas failas \verb|(FIXME)|%FIXME:
-        \item[$FD xyz$] Pašalinti failą \verb|(FIXME)|%FIXME:
-        \item[$HALT$] Užbaigti programos darbą.`
+        \item[$JMP \: x$] Nesąlyginis valdymo perdavimas kodo segmento 
+          komandai adresu  $x (IC:=x)$.
+        \item[$JE \: x$] Jei $ZF=1$, tai valdymas perduodamas kodo segmento 
+          komandai adresu $x$.
+        \item[$JA \: x$] Jei $ZF=0$ ir $SF=0$, tai valdymas perduodamas kodo
+          segmento komandai adresu $x$.
+        \item[$JNB \: x$] Jei $SF=0$, tai valdymas perduodamas 
+          kodo segmento komandai adresu $x$.
+        \item[$JB \: x$] Jei $SF=1$, tai valdymas perduodamas kodo segmento
+          komandai adresu $x$.
+        \item[$JNA \: x$] Jei $ZF = 1 \lor SF=1$, tai valdymas perduodamas 
+          kodo segmento komandai adresu $x$.
+        \item[$PD \: x \: y$] Išsiunčia bloką (pradedant adresu 
+          $y$) į failo abstrakciją, kurios $id = x$.
+        \item[$PD \: y$] Išsiunčia bloką (pradedant adresu 
+          $y$) į failo abstrakciją, kurios $id$ yra nurodytas $R1$.
+        \item[$GD \: x \: y$] Nuskaito bloką iš failo abstrakcijos, kurios
+          $id = x$ į atmintį pradedant žodžiu, kurio adresas yra $y$.
+        \item[$GD \: y$] Nuskaito bloką iš failo abstrakcijos, kurios
+          $id$ yra nurodytas $R1$, į atmintį pradedant žodžiu, kurio 
+          adresas yra $y$.
+        \item[$FO \: x \: y$] Atidaro failą, kurio pavadinimas yra saugomas
+          žodyje, kurio adresas yra $y$, rėžimu 
+          $x (x \in \left\{ r, w \right\})$. Atidaryto failo $id$ 
+          išsaugo į $R1$.
+        \item[$FC x$] Uždaromas failas, kurio $id$ yra $x$.
+        \item[$FC$] Uždaromas failas, kurio $id$ yra $R1$.
+        \item[$FD x$] Pašalinti failą, kurio pavadinimas saugomas atmintyje
+          adresu $x$.
+        \item[$HALT$] Užbaigti programos darbą.
     \end{description}
   \end{description} 
   
@@ -129,18 +123,14 @@ instrukcijose. Paleidžiant virtualią mašiną yra automatiškai atidaromi
 du specialieji failai: vienas skaitymui (su $id = 0$), kuris iš tiesų yra
 įvedimo įrenginys ir vienas rašymui (su $id = 1$), kuris iš tiesų yra 
 išvedimo įrenginys. Ne specialiųjų failų $id$ virtuali mašina sužino
-atidarydama failą su komanda $FO\,\text{<failo pavadinimas> <rėžimas>}$,
+atidarydama failą su komanda 
+$FO\,\text{ <rėžimas> <failo pavadinimo adresas>}$,
 kuri atidaryto failo $id$ įrašo į registrą $R1$.
 
   %XXX Jei procesas veikia supervizoriaus rėžimu, tai jis yra VM ar nėra?
   % Tai yra ar egzistuoja tokia VM, kuri gali tiesiogiai bendrauti su
   % įvedimo ir išvedimo įrenginiais?
 
-
-   %TODO:
-   %2.4) Virtualios mašinos interpretuojamojo ar kompiliuojamo vykdomojo
-   %failo išeities teksto formatas. Pavyzdžiui, kaip išskiriamas duomenų
-   %segmentas, kodo segmentas, kaip aprašomi duomenys ir t.t.)
 \subsection{Virtualios mašinos interpretuojamojo vykdomojo failo išeities 
 teksto formatas}
 
@@ -159,13 +149,10 @@ Toliau turi būti eilutė su raktiniu žodžiu \verb|DATA| ir po tarpo
 sveikuoju skaičiumi – duomenų segmento dydis blokais.
 Toliau esančiose eilutėse pateikiamas duomenų segmento turinys. Naujos
 eilutės simboliai yra ignoruojami. Jei eilutė prasideda 
-\verb|\[(?P<adresas>\]:)| tai toliau esantys simboliai rašomi į duomenų
+\verb|[(?P<adresas>)]:| tai toliau esantys simboliai rašomi į duomenų
 segmentą nuo nurodyto adreso. Duomenų segmentas užbaigiamas su 
 raktiniu žodžiu \verb|ENDDATA|.
 
-   %TODO:
-   %2.5) Modeliuojamos virtualios mašinos loginių komponentų sąryšio su
-   %realios mašinos techninės įrangos komponentais aprašymas.
 \subsection{Modeliuojamos virtualios mašinos loginių komponentų sąryšio su 
 realios mašinos techninės įrangos komponentais aprašymas}
 

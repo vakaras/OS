@@ -30,9 +30,7 @@
         procesoriaus darbo rėžimą („N“ – naudotojas, „S“ – supervizorius).
       \item[$SF$] 2 baitų loginis registras, skirtas saugoti aritmetinių 
         operacijų loginių (teisinga „1“ arba klaidinga „0“) reikšmių sekai. 
-        Lentelėje pateikta informacija apie logines reikšmes, bei jas 
-        suformuojanti \verb|C++| funkcija, kai yra sudedami du skaičiai 
-        \verb|sk1| ir \verb|sk2|:
+        Lentelėje pateikta informacija apie logines reikšmes:
 
         \begin{tabularx}{0.85\textwidth}{|c|c|c|X|}
           \hline
@@ -84,13 +82,9 @@
         praneša, kad veiksmas baigėsi. Kadangi vienu 
         metu gali įvykti keli pertraukimai, tai $i$-ojo kanalo pertraukimas
         fiksuojamas prie registro reikšmės pridedant $2^{i-1}$.
-        % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
       \item[$CHST$] 1 baito kanalų užimtumo registras. Nurodoma, jog
         $i$-asis kanalas užimtas prie registro reikšmės pridedant 
         $2^{i-1}$.
-        % FIXME Ar jis mums reikalingas? Radau Mitašiūno konspektuose.
-        % Taip pat ar prielaida, jog stdin ir stdout yra failai, mums
-        % nieko nekeičia?
     \end{description}
 
     Taip pat procesoriuje yra laikrodis – laiko matavimo įrenginys, kuris
@@ -114,16 +108,18 @@
     Analogiškai, po jų yra $D$ baitų porų, kurie nurodo kokie blokai 
     atitinka, kuriuos duomenų puslapius. Toliau yra 36 baitai skirti
     informacijai apie atidarytus failus saugoti. Vienu metu gali
-    būti atidaryti ne daugiau nei 4 failai. $i$-oji 7 baitų eilė yra skirtas
+    būti atidaryti ne daugiau nei 4 failai. $i$-oji 9 baitų eilė yra skirtas
     informacijai apie atidarytą failą kurio $id$ yra $i$ saugoti. Jei
     pirmojo eilės baito reikšmė yra $0$, tai reiškia, kad failas nėra
     atidarytas. Jei jo reikšmė yra $i$, tai reiškia, jog failas yra
     įvedimo įrenginio abstrakcija, o jei $o$, tai kad išvedimo įrenginio.
-    Jei $r$, tai failas yra atidarytas skaitymui ir like 6 baitai yra
+    Jei $r$, tai failas yra atidarytas skaitymui ir like 8 baitai yra
     atidaryto failo pavadinimas. Analogiškai $w$ žymi failą atidarytą
     rašymui.
 
-    Kiti 240 blokų yra skirti virtualių mašinų duomenims.
+    Kiti 240 blokų yra skirti virtualių mašinų duomenims. 
+    Inicijuojant virtualią mašina, kiekvienam jos reikalaujamam atminties
+    puslapiui ieškomas blokas nuo viršaus.
   \item[Supervizorinė atmintis] jos dydis 16 blokų.
   \item[Išorinė atmintis] tai tiesioginio įėjimo ir išėjimo išorinis
     įrenginys, kuriame duomenys sugrupuoti į failus (failo pavadinimas
