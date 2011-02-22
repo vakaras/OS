@@ -25,15 +25,15 @@
      borderopacity="1.0"
      inkscape:pageopacity="0.0"
      inkscape:pageshadow="2"
-     inkscape:zoom="2.8"
-     inkscape:cx="478.68755"
-     inkscape:cy="697.87883"
+     inkscape:zoom="0.98994949"
+     inkscape:cx="430.98046"
+     inkscape:cy="1050.242"
      inkscape:document-units="px"
      inkscape:current-layer="layer1"
      inkscape:window-width="1366"
-     inkscape:window-height="744"
+     inkscape:window-height="721"
      inkscape:window-x="0"
-     inkscape:window-y="24"
+     inkscape:window-y="0"
      showgrid="false"
      showguides="true"
      inkscape:guide-bbox="true"
@@ -169,7 +169,7 @@
        height="184.85791"
        x="118.18785"
        y="128.0726"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -177,7 +177,7 @@
        id="flowRoot3761"
        style="font-size:18px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(-4.0406102,-32.324881)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3763"><rect
@@ -187,7 +187,7 @@
            x="141.42136"
            y="175.54977"
            style="font-size:18px" /></flowRegion><flowPara
-         id="flowPara3767">Procesorius</flowPara></flowRoot>    <flowRoot
+         id="flowPara3767">ALP</flowPara></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3769"
        style="fill:black;stroke:none;stroke-opacity:1;stroke-width:1px;stroke-linejoin:miter;stroke-linecap:butt;fill-opacity:1;font-family:Sans;font-style:normal;font-weight:normal;font-size:40px;line-height:125%;letter-spacing:0px;word-spacing:0px"><flowRegion
@@ -197,14 +197,14 @@
            height="202.0305"
            x="-229.30463"
            y="37.158875" /></flowRegion><flowPara
-         id="flowPara3775"></flowPara></flowRoot>    <rect
+         id="flowPara3775" /></flowRoot>    <rect
        style="fill:#ffffff;stroke:#000000;stroke-width:0.74890542"
        id="rect3777"
        width="49.070812"
        height="22.6026"
        x="146.2825"
        y="177.38046"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -212,7 +212,7 @@
        id="flowRoot3779"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(15.152288,9.0913729)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3781"><rect
@@ -228,7 +228,7 @@
        height="22.6026"
        x="146.18037"
        y="210.7155"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -238,7 +238,7 @@
        height="22.6026"
        x="147.19054"
        y="273.32465"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -248,7 +248,7 @@
        height="22.6026"
        x="239.40614"
        y="179.40076"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -258,7 +258,7 @@
        height="22.6026"
        x="147.07379"
        y="239.08098"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -266,7 +266,7 @@
        id="flowRoot3830"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(6,4)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3832"><rect
@@ -280,7 +280,7 @@
        id="flowRoot3838"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(4,0)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3840"><rect
@@ -299,12 +299,12 @@
            height="16.162441"
            x="148.49243"
            y="276.56503" /></flowRegion><flowPara
-         id="flowPara3852"></flowPara></flowRoot>    <flowRoot
+         id="flowPara3852" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3854"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(4,0)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3856"><rect
@@ -320,7 +320,7 @@
        height="22.6026"
        x="239.40614"
        y="206.74268"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -330,7 +330,7 @@
        height="22.6026"
        x="239.40614"
        y="233.79999"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -353,12 +353,12 @@
            height="14.142136"
            x="398.00009"
            y="188.68176" /></flowRegion><flowPara
-         id="flowPara3912"></flowPara></flowRoot>    <flowRoot
+         id="flowPara3912" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot3914"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(4,0)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3916"><rect
@@ -372,7 +372,7 @@
        id="flowRoot3922"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(6,2)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3924"><rect
@@ -386,7 +386,7 @@
        id="flowRoot3930"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(4,2)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3932"><rect
@@ -402,7 +402,7 @@
        height="23.233509"
        x="343.45187"
        y="180.60054"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -412,7 +412,7 @@
        height="23.233509"
        x="343.45187"
        y="208.0574"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -422,14 +422,14 @@
        height="23.233509"
        x="343.91632"
        y="235.81628"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
        xml:space="preserve"
        id="flowRoot3967"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3969"><rect
@@ -442,7 +442,7 @@
        xml:space="preserve"
        id="flowRoot3975"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3977"><rect
@@ -455,7 +455,7 @@
        xml:space="preserve"
        id="flowRoot3983"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion3985"><rect
@@ -471,7 +471,7 @@
        height="25.253813"
        x="239.40614"
        y="268.40259"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -484,12 +484,12 @@
            height="20.203051"
            x="421.23361"
            y="181.61069" /></flowRegion><flowPara
-         id="flowPara3999"></flowPara></flowRoot>    <flowRoot
+         id="flowPara3999" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4001"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(-165.80717,89.802042)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4003"><rect
@@ -505,7 +505,7 @@
        height="195.46451"
        x="518.20825"
        y="124.53707"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -513,7 +513,7 @@
        id="flowRoot4030"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(16.16767,17.172593)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4032"><rect
@@ -530,7 +530,7 @@
        id="flowRoot4062"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(14.647212,-0.7993873)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4064"><rect
@@ -544,7 +544,7 @@
        d="m 518.20826,169.48886 191.4239,0 0,-23.23351 -191.4239,0"
        id="path4078"
        inkscape:connector-curvature="0"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
@@ -552,7 +552,7 @@
        d="m 540.43161,124.53707 0,44.95179 23.23351,0 0,-44.95179 24.74874,0 0,44.95179 25.25381,0 0,-44.95179 25.25382,0 0,44.95179 23.73858,0 0,-44.95179 23.23351,0 0,44.95179"
        id="path4080"
        inkscape:connector-curvature="0"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -565,12 +565,12 @@
            height="18.687822"
            x="468.20572"
            y="303.33408" /></flowRegion><flowPara
-         id="flowPara4088"></flowPara></flowRoot>    <flowRoot
+         id="flowPara4088" /></flowRoot>    <flowRoot
        xml:space="preserve"
        id="flowRoot4090"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(-10.606602,8.5862966)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4092"><rect
@@ -584,7 +584,7 @@
        d="m 518.11306,319.62722 191.4239,0 0,-23.23351 -191.4239,0"
        id="path4078-1"
        inkscape:connector-curvature="0"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
@@ -592,7 +592,7 @@
        d="m 540.33641,274.67543 0,44.95179 23.23351,0 0,-44.95179 24.74874,0 0,44.95179 25.25381,0 0,-44.95179 25.25382,0 0,44.95179 23.73858,0 0,-44.95179 23.23351,0 0,44.95179"
        id="path4080-0"
        inkscape:connector-curvature="0"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <path
@@ -600,7 +600,7 @@
        d="m 709.63216,275.0498 -191.4239,0"
        id="path4130"
        inkscape:connector-curvature="0"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <rect
@@ -610,7 +610,7 @@
        height="68.571426"
        x="134.81789"
        y="510.93359"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -618,7 +618,7 @@
        id="flowRoot4134"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(25.88931,124.47708)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4136"><rect
@@ -637,14 +637,14 @@
            height="23.928572"
            x="278.92856"
            y="402.71933" /></flowRegion><flowPara
-         id="flowPara4148"></flowPara></flowRoot>    <rect
+         id="flowPara4148" /></flowRoot>    <rect
        style="fill:#ffffff;stroke:#000000"
        id="rect4132-7"
        width="129.40614"
        height="68.571426"
        x="275.65408"
        y="510.93362"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -652,7 +652,7 @@
        id="flowRoot4168"
        style="font-size:12px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(21.071429,119.82083)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4170"><rect
@@ -668,7 +668,7 @@
        height="58.663143"
        x="529.2887"
        y="431.98474"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -676,7 +676,7 @@
        id="flowRoot4180"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(3.0805009,74.622563)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4182"><rect
@@ -693,7 +693,7 @@
        height="57.22982"
        x="518.92255"
        y="599.36218"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -701,7 +701,7 @@
        id="flowRoot4190"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(25.423344,154.85714)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4192"><rect
@@ -718,7 +718,7 @@
        height="28.571428"
        x="160.12042"
        y="373.07648"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -726,7 +726,7 @@
        id="flowRoot4200"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(272.26328,19.999992)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4202"><rect
@@ -743,7 +743,7 @@
        height="28.571428"
        x="290.71429"
        y="440.79074"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -751,7 +751,7 @@
        id="flowRoot4200-0"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(402.85715,87.714284)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4202-7"><rect
@@ -768,7 +768,7 @@
        height="28.571428"
        x="493.86014"
        y="532.505"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -776,7 +776,7 @@
        id="flowRoot4200-1"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(606.00307,179.42857)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4202-2"><rect
@@ -793,7 +793,7 @@
        height="28.571428"
        x="545.14288"
        y="361.36218"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -801,7 +801,7 @@
        id="flowRoot4200-5"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(657.28572,8.285712)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4202-20"><rect
@@ -818,7 +818,7 @@
        height="28.571428"
        x="602.85712"
        y="530.07648"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
     <flowRoot
@@ -826,7 +826,7 @@
        id="flowRoot4200-1-3"
        style="font-size:12px;font-style:normal;font-weight:normal;text-align:center;line-height:125%;letter-spacing:0px;word-spacing:0px;text-anchor:middle;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
        transform="translate(715.00006,177.00001)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90"><flowRegion
          id="flowRegion4202-2-3"><rect
@@ -849,7 +849,7 @@
     <g
        id="g4341"
        transform="matrix(3.9657409e-4,-0.99999992,0.99999992,3.9657409e-4,-167.9529,555.07306)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -866,7 +866,7 @@
     <g
        id="g4341-8"
        transform="matrix(3.9657409e-4,-0.99999992,0.99999992,3.9657409e-4,-36.699342,622.44156)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -883,7 +883,7 @@
     <g
        id="g4341-9"
        transform="matrix(3.9657409e-4,-0.99999992,0.99999992,3.9657409e-4,178.30066,712.01299)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -900,7 +900,7 @@
     <g
        id="g4341-4"
        transform="matrix(-0.00910237,0.99995857,-0.99995857,-0.00910237,996.40541,450.64173)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -917,7 +917,7 @@
     <g
        id="g4341-9-2"
        transform="matrix(3.9657409e-4,-0.99999992,0.99999992,3.9657409e-4,179.01494,643.15584)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -934,7 +934,7 @@
     <g
        id="g4341-4-6"
        transform="matrix(-0.00910237,0.99995857,-0.99995857,-0.00910237,985.67133,381.96455)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -951,7 +951,7 @@
     <g
        id="g4341-9-2-0"
        transform="matrix(3.9657409e-4,-0.99999992,0.99999992,3.9657409e-4,211.1578,472.87012)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -968,7 +968,7 @@
     <g
        id="g4341-9-2-6"
        transform="matrix(3.9657409e-4,-0.99999992,0.99999992,3.9657409e-4,209.72923,542.87013)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -985,7 +985,7 @@
     <g
        id="g4341-93"
        transform="matrix(-0.00188598,1.3037004,-0.99999822,-0.00245876,735.26292,320.66915)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <g
@@ -1007,7 +1007,7 @@
        id="g4341-8-8"
        transform="matrix(0.99991339,0.01316103,-0.01316103,0.99991339,379.92516,87.580214)"
        inkscape:transform-center-x="32.857143"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -1024,7 +1024,7 @@
     <g
        id="g4622"
        transform="matrix(0.68819582,-0.72552498,0.72552498,0.68819582,-124.09062,434.72957)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <g
@@ -1050,7 +1050,7 @@
     <g
        id="g4341-8-0"
        transform="matrix(-0.99977124,0.02138865,-0.02138865,-0.99977124,586.36906,575.38545)"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90">
       <path
@@ -1069,8 +1069,57 @@
        id="path4316-1-8-4-8"
        d="m 493.66638,194.77029 21.78011,14.58378 -22.17906,14.69922 0.0778,-5.71375 z"
        style="fill:none;stroke:#000000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
-       inkscape:export-filename="/home/vakaras/Studijos/Semestrais/4 semestras/Operacinės sistemos/Praktika/doc/Emulator/rm.png"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
        inkscape:export-xdpi="90"
        inkscape:export-ydpi="90" />
-  </g>
+    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect3940-3-7"
+       width="55.558384"
+       height="23.233509"
+       x="343.29224"
+       y="268.95972"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3219"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3221"><rect
+           id="rect3223"
+           width="50"
+           height="16.785715"
+           x="347.14285"
+           y="272.71933" /></flowRegion><flowPara
+         id="flowPara3225"
+         style="font-size:12px">IOI 1B</flowPara></flowRoot>    <rect
+       style="fill:#ffffff;stroke:#000000"
+       id="rect3940-3-5"
+       width="55.558384"
+       height="23.233509"
+       x="342.57794"
+       y="150.74544"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3234"
+       style="font-size:10px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+       transform="translate(7.6428571,0.35714286)"
+       inkscape:export-filename="/home/egils/Studijos/Ketvirtas semestras/Operacines/OS/doc/Emulator/rm.png"
+       inkscape:export-xdpi="90"
+       inkscape:export-ydpi="90"><flowRegion
+         id="flowRegion3236"><rect
+           id="rect3238"
+           width="52.500004"
+           height="15.357142"
+           x="337.14285"
+           y="154.50504" /></flowRegion><flowPara
+         id="flowPara3240"
+         style="font-size:12px">CHST 1B</flowPara></flowRoot>  </g>
 </svg>
