@@ -12,4 +12,11 @@ setup(name='pyemu',
       license='GPL',
       description='pyemu.',
       long_description=open('README.rst').read(),
+      scripts = [
+          ],
+      entry_points = {
+          'console_scripts': [
+              'pyemu = pyemu:main',
+              ],
+          }
       )

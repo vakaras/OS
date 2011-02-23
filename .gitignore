@@ -2,6 +2,7 @@
 *.aux
 *.log
 *.out
+*.pyc
 .installed.cfg
 .mr.developer.cfg
 *.egg-info
