@@ -2,3 +2,9 @@
 *.aux
 *.log
 *.out
+.installed.cfg
+.mr.developer.cfg
+*.egg-info
+code/Emulator/bin
+develop-eggs
+code/Emulator/parts
