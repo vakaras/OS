@@ -8,6 +8,7 @@ u""" Testai.
 
 import unittest
 from pyemu.registers import to_unicode, to_bytes
+from pyemu.registers import Cell, Register, IntegerRegister, HexRegister
 
 
 class Utils(unittest.TestCase):
@@ -23,8 +24,193 @@ class Utils(unittest.TestCase):
         assert to_unicode(u) == u'lietuviškas'
         assert to_bytes(s) == 'tekstas'
         assert to_unicode(to_bytes(u)) == u'lietuviškas'
+        assert to_bytes(5) == '5'
 
 
+class Registers(unittest.TestCase):
+    u""" Testai atminties ląstelėms ir registrams.
+    """
 
+    def test_cell(self):
 
+        cell2B = Cell(2)
+        assert cell2B.value == '00'
+        assert str(cell2B) == '00'
 
+        cell2B.value = 0
+        assert cell2B.value == ' 0'
+        cell2B.value = 13
+        assert cell2B.value == '13'
+        cell2B.value = 'ab'
+        assert cell2B.value == 'ab'
+        cell2B.value = 'b'
+        assert cell2B.value == ' b'
+        cell2B.value = u'š'
+        assert cell2B.value == '\xc5\xa1'
+        try:
+            cell2B.value = 123
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+    def test_register(self):
+
+        class A(object):
+            reg2B = Register(2)
+
+        a = A()
+        assert a.reg2B == '00'
+        assert str(a.reg2B) == '00'
+
+        a.reg2B = 0
+        assert a.reg2B == ' 0'
+        a.reg2B = 13
+        assert a.reg2B == '13'
+        a.reg2B = 'ab'
+        assert a.reg2B == 'ab'
+        a.reg2B = 'b'
+        assert a.reg2B == ' b'
+        a.reg2B = u'š'
+        assert a.reg2B == '\xc5\xa1'
+        try:
+            a.reg2B = 123
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        assert type(a.reg2B) == str
+
+    def test_integer_register(self):
+
+        ir4B = IntegerRegister(4)
+        assert ir4B.value == '  +0'
+
+        ir4B.value = 1
+        assert ir4B.value == '  +1'
+        ir4B.value = -1
+        assert ir4B.value == '  -1'
+        ir4B.value = '1'
+        assert ir4B.value == '  +1'
+        ir4B.value = '-1'
+        assert ir4B.value == '  -1'
+        try:
+            ir4B.value = 'a'
+        except ValueError, e:
+            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            ir4B.value = 1234
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        ir4B.value = 1
+        assert int(ir4B) == 1
+        assert ir4B + 2 == 3
+        assert ir4B - 2 == -1
+
+        ir2B = IntegerRegister(2)
+        ir2B.value = -1
+        assert ir4B + ir2B == 0
+        assert ir4B - ir2B == 2
+
+        class A(object):
+            reg4B = IntegerRegister(4)
+            reg2B = IntegerRegister(2)
+
+        a = A()
+        a.reg4B = -1
+        assert a.reg4B == -1
+        try:
+            a.reg4B = 'a'
+        except ValueError, e:
+            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            a.reg4B = 1234
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        a.reg4B = 1
+        assert type(a.reg2B) == int
+        assert a.reg4B == 1
+        assert a.reg4B + 2 == 3
+        assert a.reg4B - 2 == -1
+
+        a.reg2B = -1
+        assert a.reg4B + a.reg2B == 0
+        assert a.reg4B - a.reg2B == 2
+
+    def test_hex_register(self):
+
+        hr4B = HexRegister(4)
+        assert hr4B.value == '   0x0'
+
+        hr4B.value = 1
+        assert hr4B.value == '   0x1'
+        hr4B.value = '1'
+        assert hr4B.value == '   0x1'
+        try:
+            hr4B.value = -1
+        except ValueError, e:
+            assert unicode(e) == u'Turi būti sveikas teigiamas skaičius.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            hr4B.value = 'a'
+        except ValueError, e:
+            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            hr4B.value = 0x12345
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        hr4B.value = 1
+        assert int(hr4B) == 1
+        assert hr4B + 2 == 3
+        assert hr4B - 2 == -1
+
+        ir2B = IntegerRegister(2)
+        ir2B.value = -1
+        assert hr4B + ir2B == 0
+        assert hr4B - ir2B == 2
+
+        class A(object):
+            reg4B = HexRegister(4)
+            reg2B = IntegerRegister(2)
+
+        a = A()
+        a.reg4B = 1
+        assert a.reg4B == 1
+        try:
+            a.reg4B = 'a'
+        except ValueError, e:
+            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            a.reg4B = 0x12345
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        a.reg4B = 1
+        assert type(a.reg2B) == int
+        assert a.reg4B == 1
+        assert a.reg4B + 2 == 3
+        assert a.reg4B - 2 == -1
+
+        a.reg2B = -1
+        assert a.reg4B + a.reg2B == 0
+        assert a.reg4B - a.reg2B == 2
