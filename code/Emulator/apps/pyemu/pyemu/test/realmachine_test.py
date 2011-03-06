@@ -146,3 +146,27 @@ class RealMemoryTest(unittest.TestCase):
         assert vmdata[0, 4] == '01234567'
         vmdata[0, 5] = 'abababab'
         assert r_mem[17, 5] == 'abababab'
+
+    def test_creating_virtual_memory(self):
+
+        r_mem = RealMemory()
+
+        code = [
+                'namo:LR1 00a',
+                'LR2 00a\n',
+                'CMP    ',
+                'JE «namo»  \n',
+                ]
+        data = [
+                '[a]:labas\n\n\n\n',
+                ]
+        vmcode, vmdata = r_mem.create_virtual_memory(code, 1, data, 1)
+        assert vmcode[0] == 'LR1 00a '
+        assert r_mem.get_data((16, 0), 8 * 16) == (
+                'LR1 00a '
+                'LR2 00a '
+                'CMP     '
+                'JE 000  ' + '00000000' * 12)
+        assert vmdata[10] == 'labas   '
+        assert r_mem.get_data((17, 0), 8 * 16) == (
+                '00000000' * 10 + 'labas   ' + '00000000' * 5)

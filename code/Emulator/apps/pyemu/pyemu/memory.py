@@ -272,7 +272,7 @@ class RealMemory(object):
         pager = Pager(self, C=code_size, D=data_size)
 
         # Įkeliamas kodo segmentas.
-        vmcode = VirtualMemoryCode(memory, pager)
+        vmcode = VirtualMemoryCode(self, pager)
         labels = {}
         clean_code = []
         for i, line in enumerate(code):
@@ -287,15 +287,15 @@ class RealMemory(object):
             if u'«' in command:
                 label = command.split(u'«', 1)[1].split(u'»', 1)[0]
                 command = command.replace(
-                        u'«{{0}}»'.format(label),
-                        labels[label]).encode('utf-8')
+                        u'«{0}»'.format(label),
+                        int_to_hex(labels[label], 3)).encode('utf-8')
             else:
-                command.encode('utf-8')
+                command = command.encode('utf-8')
             command += ' ' * (WORD_SIZE - len(command))
             vmcode[i] = command
 
         # Įkeliamas duomenų segmentas. 
-        vmdata = VirtualMemoryData(memory, pager)
+        vmdata = VirtualMemoryData(self, pager)
         clean_data = {}
         address = 0
         for i, line in enumerate(data):
