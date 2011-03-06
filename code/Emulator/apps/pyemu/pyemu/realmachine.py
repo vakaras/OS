@@ -38,18 +38,22 @@ class RealMachine(object):
                 for line in fp:
 
                     if not code_segment and not data_segment and \
-                            line == 'CODE':
+                            line == 'CODE\n':
                         code_segment = True
+                        continue
                     elif code_segment and not data_segment and \
-                            line == 'ENDCODE':
+                            line == 'ENDCODE\n':
                         code_segment = False
+                        continue
                     elif not code_segment and not data_segment and \
                             line.startswith('DATA '):
                         data_segment = True
                         data_size = int(line[4:])
+                        continue
                     elif not code_segment and data_segment and \
-                            line == 'ENDDATA':
+                            line == 'ENDDATA\n':
                         data_segment = False
+                        continue
 
                     if code_segment:
                         code.append(line)
@@ -66,5 +70,6 @@ class RealMachine(object):
                     self.virtual_memory_code, self.virtual_memory_data)
             # TODO: Atidaryti išorinius failus.
         else:
+            # Šitas if iš esmės skirtas tam, jei kartais butų visgi 
+            # nuspręsta pasinaudoti „#!/usr/bin/pyemu“ funkcionalumu.
             raise Exception('Not implemented!')
-

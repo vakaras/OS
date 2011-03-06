@@ -6,6 +6,7 @@ u""" Testai.
 """
 
 
+import os
 import unittest
 
 from pyemu.realmachine import RealMachine
@@ -18,14 +19,16 @@ class RealMachineTest(unittest.TestCase):
     """
 
 
-    #def test_init_processor(self):
+    def test_init_processor(self):
 
-        #r_mem = RealMemory()
-        #processor = Processor(r_mem)
+        r_mem = RealMemory()
+        processor = Processor(r_mem)
 
-    #def test_init_real_machine(self):
+    def test_init_real_machine(self):
 
-        #rm = RealMachine()
+        rm = RealMachine()
+        tests_dir = os.path.abspath(os.path.dirname(__file__))
+        rm.load_virtual_machine(os.path.join(tests_dir, 'test_program_1'))
 
 
 class RealMemoryTest(unittest.TestCase):
@@ -155,7 +158,7 @@ class RealMemoryTest(unittest.TestCase):
                 'namo:LR1 00a',
                 'LR2 00a\n',
                 'CMP    ',
-                'JE «namo»  \n',
+                u'JE «namo»  \n'.encode('utf-8'),
                 ]
         data = [
                 '[a]:labas\n\n\n\n',
