@@ -201,3 +201,72 @@ class HexRegister(Register):
         return int(self)
 
     value = property(Register.get_value, set_value)
+
+
+class ChoiceRegister(Register):
+    u""" Registras skirtas loginėms reikšmėms saugoti.
+    """
+
+    def __init__(self, choices):
+        u""" ``choices`` – galimos registre įgyti reikšmės. Registro dydis
+        baitais yra lygus ilgiausio galimo pasirinkimo ilgiui.
+        """
+
+        self.choices = [to_bytes(choice) for choice in choices]
+        size = len(max(self.choices, key=len))
+        super(ChoiceRegister, self).__init__(size)
+        self.formated_choices = [
+                self._format.format(choice) for choice in self.choices]
+        self.value = self.choices[0]
+
+    def set_value(self, value):
+        u""" Prieš priskiriant patikrina ar norima priskirti reikšmė yra
+        vienas iš pasirinkimų.
+        """
+
+        value_as_string = self._format.format(to_bytes(value))
+        if value_as_string in self.formated_choices:
+            self._value = value_as_string
+        else:
+            raise ValueError(u'Nežinomas pasirinkimas.')
+        return self
+
+    value = property(Register.get_value, set_value)
+
+
+class StatusFlagRegister(Register):
+    u""" Dviejų baitų loginis registras.
+    """
+
+    def __init__(self):
+        u""" Inicializuoja registrą.
+        """
+
+        self.__dict__['_bytes'] = {
+                'CF': False,
+                'ZF': False,
+                'SF': False,
+                'OF': False,
+                }
+
+    def __getattr__(self, flag):
+        u""" Gražina nurodyto požymio (``flag``) reikšmę.
+        """
+
+        try:
+            return (self._bytes[flag] and 1) or 0
+        except KeyError:
+            raise AttributeError(u'Nežinomas požymis.'.encode('utf-8'))
+
+    def __setattr__(self, flag, value):
+        u""" Nurodytam požymiui (``flag``) priskiria ``value`` reikšmę
+        konvertuotą į loginę.
+        """
+
+        if self._bytes.has_key(flag):
+            self._bytes[flag] = True if value else False
+        else:
+            raise AttributeError(u'Nežinomas požymis.'.encode('utf-8'))
+
+    value = None                        # Šis registras nėra tipinis – jam
+                                        # negalima priskirti reikšmės.
