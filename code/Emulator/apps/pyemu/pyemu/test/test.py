@@ -8,6 +8,7 @@ u""" Testai.
 
 import unittest
 from pyemu.registers import to_unicode, to_bytes
+from pyemu.registers import int_to_hex, hex_to_int
 from pyemu.registers import Cell, Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
 
@@ -25,6 +26,18 @@ class Utils(unittest.TestCase):
         assert to_bytes(s) == 'tekstas'
         assert to_unicode(to_bytes(u)) == u'lietuviškas'
         assert to_bytes(5) == '5'
+
+    def test_hex_int(self):
+
+        assert int_to_hex(5) == '5'
+        assert int_to_hex(10) == 'a'
+        assert int_to_hex(5, 2) == '05'
+        assert int_to_hex(32, 2) == '20'
+
+        assert hex_to_int('5') == 5
+        assert hex_to_int('a') == 10
+        assert hex_to_int('05') == 5
+        assert hex_to_int('20') == 32
 
 
 class Registers(unittest.TestCase):

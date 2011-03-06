@@ -9,28 +9,140 @@ u""" Testai.
 import unittest
 
 from pyemu.realmachine import RealMachine
-from pyemu.memory import RealMemory
+from pyemu.memory import RealMemory, Pager
+from pyemu.memory import VirtualMemoryCode, VirtualMemoryData
 from pyemu.processor import Processor
 
 class RealMachineTest(unittest.TestCase):
     u""" Testai pagalbinėms funkcijoms.
     """
 
+
+    #def test_init_processor(self):
+
+        #r_mem = RealMemory()
+        #processor = Processor(r_mem)
+
+    #def test_init_real_machine(self):
+
+        #rm = RealMachine()
+
+
+class RealMemoryTest(unittest.TestCase):
+    u""" Testai atminties funkcijoms.
+    """
+
     def test_init_memory(self):
 
         r_mem = RealMemory()
+
+    def test_helper_functions(self):
+
+        r_mem = RealMemory()
+
+        assert r_mem.get_address_tuple((0, 0)) == (0, 0)
+        assert r_mem.get_address_tuple(0) == (0, 0)
+        assert r_mem.get_address_tuple(203) == (12, 11)
+        assert r_mem.get_address_tuple((12, 11)) == (12, 11)
+
+        assert r_mem.get_address_int((0, 0)) == 0
+        assert r_mem.get_address_int(0) == 0
+        assert r_mem.get_address_int(203) == 203
+        assert r_mem.get_address_int((12, 11)) == 203
+
+    def test_cell_access(self):
+
+        r_mem = RealMemory()
+
         assert r_mem[356] == '00000000'
         r_mem[12, 11] = u'ačiū'
         assert r_mem[203] == '  a\xc4\x8di\xc5\xab'
                                         # 12 * 16 + 11 == 203
 
-    def test_init_processor(self):
+        word = '01234567'
+        r_mem.put_data((0, 0), word * 16)
+        r_mem.put_data((1, 0), word * 5 + 'aaa')
+        r_mem.put_data((1, 15), word)
+        try:
+            r_mem.put_data((1, 16), word)
+        except ValueError, e:
+            assert unicode(e) == u'Duomenys netelpa į bloką.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert r_mem.get_data((0, 0), 8 * 16) == word * 16
+        assert r_mem.get_data((1, 0), 8 * 6) == word * 5 + 'aaa     '
+        assert r_mem.get_data((1, 0), 8 * 5 + 3) == word * 5 + 'aaa'
+
+        assert r_mem.get_byte((1, 2), 5) == '5'
+        assert r_mem.get_byte((1, 2), 8 * 3 + 2) == 'a'
+        r_mem.set_byte((1, 2), 8 * 3 + 2, 'b')
+        assert r_mem[1, 5] == 'aab     '
+
+    def test_pager(self):
 
         r_mem = RealMemory()
-        processor = Processor(r_mem)
 
-    def test_init_real_machine(self):
+        try:
+            pager = Pager(r_mem, C=0, D=1)
+        except ValueError, e:
+            assert unicode(e) == \
+                    u'Kodo segmento dydis turi būti didesnis už 1.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            pager = Pager(r_mem, C=1, D=-1)
+        except ValueError, e:
+            assert unicode(e) == \
+                    u'Duomenų segmento dydis turi būti teigiamas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
-        rm = RealMachine()
+        pager = Pager(r_mem, C=1, D=1)
 
+        assert r_mem.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "00000000"
+                "00000000"
+                "00000000"
+                "00000000"
+                "0000"
+                )
 
+        pager = Pager(r_mem, address=0)
+
+        assert pager.get_byte(0) == '0'
+        assert pager.get_byte(1) == '1'
+        assert pager.get_code_cell_address((0, 4)) == (16, 4)
+        assert pager.get_data_cell_address((0, 5)) == (17, 5)
+        try:
+            pager.get_code_cell_address((1, 4))
+        except ValueError, e:
+            assert unicode(e) == \
+                    u'Virtualus adresas nepriklauso kodo segmentui.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            pager.get_data_cell_address((1, 4))
+        except ValueError, e:
+            assert unicode(e) == \
+                    u'Virtualus adresas nepriklauso duomenų segmentui.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+    def test_virtual_memory(self):
+
+        r_mem = RealMemory()
+        pager = Pager(r_mem, C=1, D=1)
+
+        vmcode = VirtualMemoryCode(r_mem, pager)
+        r_mem[16, 4] = '01234567'
+        assert vmcode[0, 4] == '01234567'
+        vmcode[0, 5] = 'abababab'
+        assert r_mem[16, 5] == 'abababab'
+
+        vmdata = VirtualMemoryData(r_mem, pager)
+        r_mem[17, 4] = '01234567'
+        assert vmdata[0, 4] == '01234567'
+        vmdata[0, 5] = 'abababab'
+        assert r_mem[17, 5] == 'abababab'

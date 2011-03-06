@@ -8,6 +8,8 @@ realizacijai.
 
 import re
 
+from math import ceil, floor
+
 from pyemu.registers import WORD_SIZE
 from pyemu.registers import int_to_hex, hex_to_int
 from pyemu.registers import Cell
@@ -48,7 +50,7 @@ class Pager(object):
         self.PLBR = None
         self.memory = memory
 
-        if address:
+        if address is not None:
             self.read(address)
         else:
             self.create(C, D)
@@ -73,7 +75,7 @@ class Pager(object):
         else:
             data.append(ih(D))
         for i in range(PAGER_SIZE, PAGER_SIZE + C):
-            code.append(ih(i))
+            data.append(ih(i))
         for i in range(PAGER_SIZE + C, PAGER_SIZE + C + D):
             data.append(ih(i))
         data.append('0'*36)
@@ -132,7 +134,6 @@ class Pager(object):
                 self.get_byte(4 + 2 * (C + virtual_block)) +
                 self.get_byte(4 + 2 * (C + virtual_block) + 1))
         return block, cell
-
 
 
 class RealMemory(object):
@@ -213,15 +214,16 @@ class RealMemory(object):
         # Apvalina iki žodžių.
         size = float(len(data))
         fill = int(
-                (ceil(size / BLOCK_SIZE) -
-                    floor(size / BLOCK_SIZE)) * BLOCK_SIZE)
+                (ceil(size / WORD_SIZE) -
+                    floor(size / WORD_SIZE)) * WORD_SIZE)
         data = data + ' ' * fill
         words = [
                 data[i:i+WORD_SIZE] for i in range(0, len(data), WORD_SIZE)]
         for i, word in enumerate(words):
-            self[block, cell + i] = word
-                                        # TODO: Patikrinti kada meta 
-                                        # KeyError
+            try:
+                self[block, cell + i] = word
+            except IndexError:
+                raise ValueError(u'Duomenys netelpa į bloką.')
 
     def get_data(self, address, size):
         u""" Grąžina duomenis nuo nurodyto adreso.
@@ -231,7 +233,7 @@ class RealMemory(object):
 
         address = self.get_address_int(address)
 
-        words = size % WORD_SIZE        # Kiek sveikų žodžių reikia 
+        words = size / WORD_SIZE        # Kiek sveikų žodžių reikia 
                                         # grąžinti.
         data = []
         for i in range(address, address + words):
@@ -261,7 +263,7 @@ class RealMemory(object):
         offset %= WORD_SIZE
 
         word = self[address]
-        return word[0:offset] + value + word[offset+1:]
+        self[address] = word[0:offset] + value + word[offset+1:]
 
     def create_virtual_memory(self, code, code_size, data, data_size):
         u""" Išskiria virtualią atmintį ir į ją įkelia kodą bei duomenis.

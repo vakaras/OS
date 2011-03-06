@@ -42,7 +42,7 @@ def int_to_hex(number, size=None):
     if not size:
         return string
     else:
-        return '{{0:>{0}}}'.format(size).format(string)
+        return '{{0:0>{0}}}'.format(size).format(string)
 
 
 def hex_to_int(number):
