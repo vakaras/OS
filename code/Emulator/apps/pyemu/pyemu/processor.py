@@ -45,12 +45,13 @@ class Processor(object):
         self.virtual_memory_code = virtual_memory_code
         self.virtual_memory_data = virtual_memory_data
 
-    def set_virtual_memory(self, virtual_memory):
+    def set_virtual_memory(self, virtual_memory_code, virtual_memory_data):
         u""" Nurodo naudoti ``virtual_memory``, kaip virtualios atminties
         objektą.
         """
 
-        self.virtual_memory = virtual_memory
+        self.virtual_memory_code = virtual_memory_code
+        self.virtual_memory_data = virtual_memory_data
 
     def step(self):
         """ Įvykdo vieną komandą.

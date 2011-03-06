@@ -30,6 +30,29 @@ def to_bytes(string):
         return str(string)
 
 
+def int_to_hex(number, size=None):
+    u""" Konvertuoja sveikąjį teigiamą skaičių ``number`` į simbolių eilutę
+    išreiškiančią šešioliktainį sveiką teigiamą skaičių.
+
+    Jei ``size`` yra ne None, tai pasirūpina, kad simbolių eilutė būtų
+    ne trumpesnė nei ``size``.
+    """
+
+    string = hex(abs(number))[2:]
+    if not size:
+        return string
+    else:
+        return '{{0:>{0}}}'.format(size).format(string)
+
+
+def hex_to_int(number):
+    u""" Konvertuoja simbolių eilutę išreiškiančią šešioliktainį sveiką
+    teigiamą skaičių į ``int``.
+    """
+
+    return int('0x' + number, 16)
+
+
 class Cell(object):
     u""" Atminties ląstelė. Turi dydį išreikštą simboliais.
     """

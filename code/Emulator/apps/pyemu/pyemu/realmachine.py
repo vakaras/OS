@@ -19,7 +19,8 @@ class RealMachine(object):
 
         self.real_memory = RealMemory()
         self.processor = Processor(self.real_memory)
-        self.virtual_memory = None
+        self.virtual_memory_data = None
+        self.virtual_memory_code = None
 
     def load_virtual_machine(self, file):
         u""" Pakrauna virtualią mašiną.
@@ -55,9 +56,15 @@ class RealMachine(object):
                     if data_segment:
                         data.append(line)
                 code_size = int(ceil(float(len(code)) / BLOCK_SIZE))
-            self.virtual_memory = self.real_memory.create_virtual_memory(
-                    code, code_size, data, data_size)
-            raise Exception('Not implemented!')
+
+            self.virtual_memory_code, self.virtual_memory_data = \
+                    self.real_memory.create_virtual_memory(
+                            code, code_size, data, data_size)
+            self.processor.PLR = self.virtual_memory_code.pager.PLR
+            self.processor.PLBR = self.virtual_memory_code.pager.PLBR
+            self.processor.set_virtual_memory(
+                    self.virtual_memory_code, self.virtual_memory_data)
+            # TODO: Atidaryti išorinius failus.
         else:
             raise Exception('Not implemented!')
 
