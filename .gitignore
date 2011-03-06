@@ -10,3 +10,4 @@ code/Emulator/bin
 develop-eggs
 code/Emulator/parts
 code/Emulator/.coverage
+code/Emulator/var

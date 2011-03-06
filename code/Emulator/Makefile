@@ -1,7 +1,8 @@
 TESTS=pyemu
 
 test:
-	bin/test ${TESTS} --with-coverage
+	bin/test ${TESTS} \
+		--with-coverage --cover-erase --cover-html --cover-html-dir=var/html
 
 buildout:
 	bin/buildout -v
