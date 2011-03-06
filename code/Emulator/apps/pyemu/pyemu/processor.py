@@ -42,7 +42,8 @@ class Processor(object):
         """
 
         self.real_memory = real_memory
-        self.virtual_memory = virtual_memory
+        self.virtual_memory_code = virtual_memory_code
+        self.virtual_memory_data = virtual_memory_data
 
     def set_virtual_memory(self, virtual_memory):
         u""" Nurodo naudoti ``virtual_memory``, kaip virtualios atminties
@@ -58,7 +59,7 @@ class Processor(object):
         """
         raise Exception('Not implemented!')
 
-    def continue(self):
+    def execute(self):
         """ Vykdo tol kol vykdosi.
         """
 
