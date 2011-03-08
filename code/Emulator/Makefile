@@ -11,4 +11,5 @@ buildout:
 bootstrap:
 	python bootstrap.py
 
-
+gui:
+	bin/pyemu gui apps/pyemu/pyemu/test/test_program_1
