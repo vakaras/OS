@@ -140,10 +140,17 @@ class RealMemory(object):
     u""" Realios mašinos atmintis.
     """
 
-    def __init__(self):
+    def __init__(self, handler=None):
         u""" Inicializuoja tuščią atmintį.
+
+        + ``handler`` – funkcija, kuri yra iškviečiama, kai yra paliečiame
+          ląstelės reikšmė. Sintaksė: (<blokas>, <ląstelės adresas bloke>).
         """
 
+        if not handler:
+            self.handler = lambda x, y: None
+        else:
+            self.handler = handler
         self._cells = []
         for i in range(BLOCKS):
             block = []
@@ -185,6 +192,7 @@ class RealMemory(object):
         """
 
         block, cell = self.get_address_tuple(address)
+        self.handler(block, cell)
         return self._cells[block][cell]
 
     def __getitem__(self, address):
