@@ -5,6 +5,7 @@ import sys
 
 from pyemu.realmachine import RealMachine
 
+import wx
 
 def main(argv=None):
     """
@@ -12,6 +13,12 @@ def main(argv=None):
 
     if not argv:
         argv = sys.argv[:]
+
+
+    app = wx.App()
+    frame = wx.Frame(None, -1, 'Bla')
+    frame.Show()
+    app.MainLoop()
 
     if len(argv) != 2:
         print u'Naudojimas: pyemu <failas>'
