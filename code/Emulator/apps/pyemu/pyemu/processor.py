@@ -2,8 +2,57 @@
 # -*- coding: utf-8 -*-
 
 
+import inspect
+
 from pyemu.registers import Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
+from pyemu.registers import hex_to_int
+
+
+class Commands(object):
+    u""" Objektas representuojantis komandų sistemą.
+    """
+
+    def __init__(self):
+        u""" Susiindeksuoja visas savo komandas.
+        """
+
+        self.commands = dict([
+                (name, function) \
+                for name, function in \
+                inspect.getmembers(self, inspect.isfunction) \
+                ])
+
+    def __getitem__(self, command):
+        u""" Gražina komandų sistemos komandą.
+        """
+
+        return self.commands[command]
+
+    @staticmethod
+    def LR1(proc, x):
+        proc.R1 = proc.virtual_memory_data[hex_to_int(x)]
+
+    @staticmethod
+    def LR2(proc, x):
+        proc.R2 = proc.virtual_memory_data[hex_to_int(x)]
+
+    @staticmethod
+    def CMP(proc):
+        if proc.R1 > proc.R2:
+            proc.SF.ZF = 0
+            proc.SF.SF = 0
+        elif proc.R1 == proc.R2:
+            proc.SF.ZF = 1
+        else:
+            proc.SF.ZF = 0
+            proc.SF.SF = 1
+
+    @staticmethod
+    def JE(proc, x):
+        if proc.SF.ZF == 1:
+            proc.IC = x
+
 
 class Processor(object):
     u""" Realios mašinos procesorius.
@@ -44,6 +93,7 @@ class Processor(object):
         self.real_memory = real_memory
         self.virtual_memory_code = virtual_memory_code
         self.virtual_memory_data = virtual_memory_data
+        self.commands = Commands()
 
     def set_virtual_memory(self, virtual_memory_code, virtual_memory_data):
         u""" Nurodo naudoti ``virtual_memory``, kaip virtualios atminties
@@ -54,11 +104,37 @@ class Processor(object):
         self.virtual_memory_data = virtual_memory_data
 
     def step(self):
-        """ Įvykdo vieną komandą.
+        u""" Įvykdo vieną komandą.
 
         Grąžina ``True`` jei pavyko ir ``False`` kitu atveju.
         """
-        raise Exception('Not implemented!')
+
+        print u'Žingsnis:', self.IC, self.virtual_memory_code[self.IC]
+        value = self.virtual_memory_code[self.IC]
+        self.IC = self.IC + 1
+        self.do(**self.parse_command(value))
+        return True
+
+    def parse_command(self, value):
+        u""" Iš atminties ląstelės reikšmės ``value`` atpažįsta komandos
+        pavadinimą ir argumentus.
+
+        Grąžina žodymą ``{'command': <atpažinta komanda>,
+        'args': <komandos argumentų sąrašas>}``.
+        """
+
+        parts = value.split()
+        command = parts[0]
+        args = parts[1:]
+
+        return {'command': command, 'args': args}
+
+    def do(self, command, args):
+        u""" Įvykdo komandą ``command`` su argumentais ``args``.
+        """
+
+        print 'command: {0} args: {1}'.format(command, args)
+        self.commands[command](self, *args)
 
     def execute(self):
         """ Vykdo tol kol vykdosi.

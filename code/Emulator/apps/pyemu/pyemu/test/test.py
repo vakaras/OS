@@ -276,3 +276,16 @@ class Registers(unittest.TestCase):
             assert str(e).decode('utf-8') == u'Nežinomas požymis.'
         else:
             self.fail(u'turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        class A(object):
+            sf = StatusFlagRegister()
+
+        a = A()
+        a.sf.CF = 1
+        a.sf.ZF = 1
+        a.sf.SF = 1
+        a.sf.OF = 1
+        assert a.sf.CF == 1
+        assert a.sf.ZF == 1
+        assert a.sf.SF == 1
+        assert a.sf.OF == 1

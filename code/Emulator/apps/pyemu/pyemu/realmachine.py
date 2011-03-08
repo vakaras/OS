@@ -68,6 +68,7 @@ class RealMachine(object):
             self.processor.PLBR = self.virtual_memory_code.pager.PLBR
             self.processor.set_virtual_memory(
                     self.virtual_memory_code, self.virtual_memory_data)
+            self.processor.IC = 0
             # TODO: Atidaryti išorinius failus.
         else:
             # Šitas if iš esmės skirtas tam, jei kartais butų visgi 
