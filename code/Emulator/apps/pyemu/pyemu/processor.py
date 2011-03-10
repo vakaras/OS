@@ -38,6 +38,46 @@ class Commands(object):
         proc.R2 = proc.virtual_memory_data[hex_to_int(x)]
 
     @staticmethod
+    def SR1(proc, x):
+        proc.virtual_memory_data[hex_to_int(x)] = self.R1
+
+    @staticmethod
+    def SR2(proc, x):
+        proc.virtual_memory_data[hex_to_int(x)] = proc.R2
+
+    @staticmethod
+    def ADD(proc):
+        r1 = IntegerRegister(proc.R1.size).value = proc.R1
+        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        proc.R1 = int(r1) + int(r2)
+        # FIXME: Kaip turi suformuoti SF požymius?
+
+    @staticmethod
+    def ADDM(proc, x):
+        r1 = IntegerRegister(proc.R1.size).value = proc.R1
+        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        proc.virtual_memory_data[hex_to_int(x)] = int(r1) + int(r2)
+        # FIXME: Kaip turi suformuoti SF požymius?
+
+    @staticmethod
+    def SUB(proc):
+        r1 = IntegerRegister(proc.R1.size).value = proc.R1
+        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        proc.R1 = int(r1) - int(r2)
+        # FIXME: Kaip turi suformuoti SF požymius?
+
+    @staticmethod
+    def SUBM(proc, x):
+        r1 = IntegerRegister(proc.R1.size).value = proc.R1
+        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        proc.virtual_memory_data[hex_to_int(x)] = int(r1) - int(r2)
+        # FIXME: Kaip turi suformuoti SF požymius?
+
+    #@staticmethod
+    #def <++>(proc<++>):
+        #<++>
+
+    @staticmethod
     def CMP(proc):
         if proc.R1 > proc.R2:
             proc.SF.ZF = 0
