@@ -53,6 +53,23 @@ def hex_to_int(number):
     return int('0x' + number, 16)
 
 
+class Wrapper(object):
+    u""" Klasė, kuri yra požymis ar tam tikra klasė yra apgaubiančioji.
+    """
+
+def set_descriptor(x, name, desc):
+    u""" Funkcija, kuri leidžia objektui priskirti deskriptorių.
+
+    (Normaliai deskriptorius gali turėti tik klasės.)
+    """
+    t = type(x)
+    if not issubclass(t, Wrapper):
+        class AWrap(Wrapper, t): 
+            pass
+        x.__class__ = AWrap
+    setattr(x.__class__, name, desc)
+
+
 class Cell(object):
     u""" Atminties ląstelė. Turi dydį išreikštą simboliais.
     """

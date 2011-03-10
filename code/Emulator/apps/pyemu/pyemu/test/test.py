@@ -9,6 +9,7 @@ u""" Testai.
 import unittest
 from pyemu.registers import to_unicode, to_bytes
 from pyemu.registers import int_to_hex, hex_to_int
+from pyemu.registers import set_descriptor
 from pyemu.registers import Cell, Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
 
@@ -93,6 +94,33 @@ class Registers(unittest.TestCase):
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         assert type(a.reg2B) == str
+
+        class B(object):
+            def __init__(self):
+                set_descriptor(self, 'reg2B', Register(2))
+
+        b = B()
+        assert b.reg2B == '00'
+        assert str(b.reg2B) == '00'
+
+        b.reg2B = 0
+        assert b.reg2B == ' 0'
+        b.reg2B = 13
+        assert b.reg2B == '13'
+        b.reg2B = 'ab'
+        assert b.reg2B == 'ab'
+        b.reg2B = 'b'
+        assert b.reg2B == ' b'
+        b.reg2B = u'š'
+        assert b.reg2B == '\xc5\xa1'
+        try:
+            b.reg2B = 123
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        assert type(b.reg2B) == str
+
 
     def test_integer_register(self):
 

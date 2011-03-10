@@ -6,7 +6,7 @@ import inspect
 
 from pyemu.registers import Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
-from pyemu.registers import hex_to_int
+from pyemu.registers import hex_to_int, set_descriptor
 
 
 class Commands(object):
@@ -98,27 +98,6 @@ class Processor(object):
     u""" Realios mašinos procesorius.
     """
 
-    IC = HexRegister(3)                 # Nurodo vykdomos komandos adresą
-                                        # atmintyje.
-    R1 = Register()                     # Žodžio ilgio bendro naudojimo 
-                                        # registras.
-    R2 = Register()                     # Žodžio ilgio bendro naudojimo 
-                                        # registras.
-    PLR = HexRegister(2)                # Puslapių lentelės bloko adresas.
-    PLBR = HexRegister(2)               # Puslapių lentelės pirmojo baito
-                                        # adresas bloke.
-    MODE = ChoiceRegister(['N', 'S'])   # Nurodo procesoriaus darbo rėžimą:
-                                        # „N“ – naudotojo, 
-                                        # „S“ – supervizoriaus.
-    SF = StatusFlagRegister()           # Aritmetinių operacijų loginės
-                                        # reikšmės.
-
-    PI = ChoiceRegister([0, 1])         # Programiniai pertraukimai.
-    SI = ChoiceRegister([0, 1])         # Supervizoriniai pertraukimai.
-    TI = ChoiceRegister([0, 1])         # Laikrodžio pertraukimai.
-    IOI = HexRegister(1)                # Įvedimo / išvedimo pertraukimai.
-    CHST = HexRegister(1)               # Kanalų užimtumo registras.
-
     def __init__(self, real_memory,
             virtual_memory_code=None, virtual_memory_data=None):
         u""" Inicializuoja procesorių.
@@ -134,6 +113,39 @@ class Processor(object):
         self.virtual_memory_code = virtual_memory_code
         self.virtual_memory_data = virtual_memory_data
         self.commands = Commands()
+
+        registers = {
+                'R1': Register(),       # Žodžio ilgio bendro naudojimo 
+                                        # registras.
+                'R2': Register(),       # Žodžio ilgio bendro naudojimo 
+                                        # registras.
+                'SF': StatusFlagRegister(),
+                                        # Aritmetinių operacijų loginės
+                                        # reikšmės.
+                'IC' : HexRegister(3),  # Nurodo vykdomos komandos adresą
+                                        # atmintyje.
+                'PLR' : HexRegister(2), # Puslapių lentelės bloko adresas.
+                'PLBR' : HexRegister(2),# Puslapių lentelės pirmojo baito
+                                        # adresas bloke.
+                'MODE' : ChoiceRegister(['N', 'S']),
+                                        # Nurodo procesoriaus darbo rėžimą:
+                                        # „N“ – naudotojo, 
+                                        # „S“ – supervizoriaus.
+
+                'PI' : ChoiceRegister([0, 1]),
+                                        # Programiniai pertraukimai.
+                'SI' : ChoiceRegister([0, 1]),
+                                        # Supervizoriniai pertraukimai.
+                'TI' : ChoiceRegister([0, 1]),
+                                        # Laikrodžio pertraukimai.
+                'IOI' : HexRegister(1),
+                                        # Įvedimo / išvedimo pertraukimai.
+                'CHST' : HexRegister(1),
+                                        # Kanalų užimtumo registras.
+                }
+        for name, register in registers.items():
+            set_descriptor(self, name, register)
+
 
     def set_virtual_memory(self, virtual_memory_code, virtual_memory_data):
         u""" Nurodo naudoti ``virtual_memory``, kaip virtualios atminties
