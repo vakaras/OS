@@ -70,8 +70,8 @@ class FileSystem(persistent.Persistent):
 
         """
 
-        self.files[names] = File()
-        return self.files[names]
+        self.files[name] = File()
+        return self.files[name]
 
     def open(self, name):
         u""" Atidaro egzistuojantį failą skaitymui.
@@ -80,7 +80,16 @@ class FileSystem(persistent.Persistent):
 
         """
 
-        return self.files[names]
+        return self.files[name]
+
+    def delete(self, name):
+        u""" Ištrina failą.
+
+        + ``name`` – failo pavadinimas.
+
+        """
+
+        del self.files[name]
 
 
 if not root.has_key('fs'):
