@@ -65,15 +65,14 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
           ląstelę, kurios adresas $x ([x]:=R2)$.
         \item[$ADD$] Prie registro $R1$ reikšmės pridedama registro $R2$ 
           reikšmė. Formuoja $SF$ požymius. $(R1:=R1+R2)$.
-        \item[$ADD \: x$] Sudedamos registrų $R1$ ir $R2$ reikšmės bei 
+        \item[$ADDM \: x$] Sudedamos registrų $R1$ ir $R2$ reikšmės bei 
           rezultatas išsaugojamas atminties ląstelėje, kurios adresas 
           $x$. Formuoja $SF$ požymius. $([x]:=R1+R2)$.
         \item[$SUB$] Iš registro $R1$ reikšmės atimama registro $R1$ 
           reikšmė. Formuoja $SF$ požymius. $(R1:=R1-R2)$.
-        \item[$SUB \: x$] Iš registro $R1$ atimama registro $R2$ reikšmė ir 
-          rezultatas įrašomas į atminties ląstelę, kurios adresas 
-          $x$. Formuoja $SF$ požymius. 
-          $([x]:=R1-R2)$.
+        \item[$SUBM \: x$] Iš registro $R1$ atimama registro $R2$ 
+          reikšmė ir rezultatas įrašomas į atminties ląstelę, kurios 
+          adresas $x$. Formuoja $SF$ požymius. $([x]:=R1-R2)$.
         \item[$DIV$] Registro $R1$ reikšmė padalinama iš registro $R2$ 
           reikšmės ir dalmuo įrašomas į registrą $R1$, o liekana - į 
           registrą $R2$. Formuoja $SF$ požymius.
@@ -98,11 +97,11 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
           segmento komandai adresu $x$.
         \item[$PD \: x \: y$] Išsiunčia bloką (pradedant adresu 
           $y$) į failo abstrakciją, kurios $id = x$.
-        \item[$PD \: y$] Išsiunčia bloką (pradedant adresu 
+        \item[$PDR \: y$] Išsiunčia bloką (pradedant adresu 
           $y$) į failo abstrakciją, kurios $id$ yra nurodytas $R1$.
         \item[$GD \: x \: y$] Nuskaito bloką iš failo abstrakcijos, kurios
           $id = x$ į atmintį pradedant žodžiu, kurio adresas yra $y$.
-        \item[$GD \: y$] Nuskaito bloką iš failo abstrakcijos, kurios
+        \item[$GDR \: y$] Nuskaito bloką iš failo abstrakcijos, kurios
           $id$ yra nurodytas $R1$, į atmintį pradedant žodžiu, kurio 
           adresas yra $y$.
         \item[$FO \: x \: y$] Atidaro failą, kurio pavadinimas yra saugomas
@@ -110,7 +109,7 @@ parašytą programą sėkmingai įvykdyti realioje mašinoje.
           $x (x \in \left\{ r, w \right\})$. Atidaryto failo $id$ 
           išsaugo į $R1$.
         \item[$FC x$] Uždaromas failas, kurio $id$ yra $x$.
-        \item[$FC$] Uždaromas failas, kurio $id$ yra $R1$.
+        \item[$FCR$] Uždaromas failas, kurio $id$ yra $R1$.
         \item[$FD x$] Pašalinti failą, kurio pavadinimas saugomas atmintyje
           adresu $x$.
         \item[$HALT$] Užbaigti programos darbą.
