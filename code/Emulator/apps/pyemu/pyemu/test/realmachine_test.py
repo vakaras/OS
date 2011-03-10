@@ -157,6 +157,17 @@ class RealMemoryTest(unittest.TestCase):
         r_mem.set_byte((1, 2), 8 * 3 + 2, 'b')
         assert r_mem[1, 5] == 'aab     '
 
+    def test_cell_change_handler(self):
+
+        a = []
+        def handler(block, cell):
+            a.append((block, cell))
+        r_mem = RealMemory(handler=handler)
+        assert len(a) == 0
+        r_mem[(18, 11)] = 2
+        assert len(a) == 1
+        assert a[0] == (18, 11)
+
     def test_pager(self):
 
         r_mem = RealMemory()

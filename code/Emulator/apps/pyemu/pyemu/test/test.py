@@ -68,6 +68,15 @@ class Registers(unittest.TestCase):
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
+        a = []
+        def handler():
+            a.append('called')
+        cell2B = Cell(2, handler=handler)
+        assert len(a) == 0
+        cell2B.value = 2
+        assert len(a) == 1
+        assert a[0] == 'called'
+
     def test_register(self):
 
         class A(object):
