@@ -13,6 +13,7 @@ from math import ceil, floor
 from pyemu.registers import WORD_SIZE
 from pyemu.registers import int_to_hex, hex_to_int
 from pyemu.registers import Cell
+from pyemu.filesystem import file_system
 
 
 BLOCKS = 256
@@ -33,7 +34,8 @@ class Pager(object):
     u""" Pagalbinis objektas tvarkymuisi su puslapiavimo mechanizmu.
     """
 
-    def __init__(self, memory, address=None, C=None, D=None):
+    def __init__(self, memory, address=None, C=None, D=None,
+            stdin_handler=None, stdout_handler=None):
         u""" Jei ``address`` nėra None, tai puslapiavimo mechanizmą nuskaito
         iš atminties. Kitu atveju jį sukuria pagal gautuosius ``C`` ir
         ``D``.
@@ -43,12 +45,26 @@ class Pager(object):
           atmintyje adresas.
         + ``C`` – kodo segmento dydis blokais.
         + ``D`` – duomenų segmento dydis blokais.
+        + ``stdin_handler`` – funkcija, kuri yra iškviečiama, kai norima
+          nuskaityti bloką iš standartinės įvesties.
+        + ``stdout_handler`` – funkcija, kuriai yra perduodama standartinė
+          išvestis.
 
         """
 
         self.PLR = None
         self.PLBR = None
         self.memory = memory
+
+        if not stdin_handler:
+            self.stdin_handler = lambda : ' ' * WORD_SIZE * BLOCK_SIZE
+        else:
+            self.stdin_handler = stdin_handler
+
+        if not stdout_handler:
+            self.stdout_handler = lambda x: None
+        else:
+            self.stdout_handler = stdout_handler
 
         if address is not None:
             self.read(address)
