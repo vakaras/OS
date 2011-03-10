@@ -93,6 +93,126 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.R2 == '     230'
         assert self.proc.IC == 1
 
+    def test_command_SR1(self):
+        self.code[0] = ' SR1 5'
+        self.proc.R1 = 2
+        assert self.proc.R1 == '       2'
+        assert self.proc.step()
+        assert self.data[5] == '       2'
+
+    def test_command_SR2(self):
+        self.code[0] = ' SR2 5'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        assert self.proc.step()
+        assert self.data[5] == '       2'
+
+    def test_command_ADD(self):
+        self.code[0] = 'ADD'
+        self.proc.R1 = 1
+        assert self.proc.R1 == '       1'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        assert self.proc.step()
+        assert self.proc.R1 == '       3'
+
+    def test_command_ADD_1(self):
+        self.code[0] = 'ADD'
+        self.proc.R1 = -1
+        assert self.proc.R1 == '      -1'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        assert self.proc.step()
+        assert self.proc.R1 == '       1'
+
+    def test_command_ADD_2(self):
+        self.code[0] = 'ADD'
+        self.proc.R1 = '99999999'
+        assert self.proc.R1 == '99999999'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        try:
+            assert self.proc.step()
+        except ValueError, e:
+            assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        assert self.proc.R1 == '99999999'
+
+    def test_command_ADDM(self):
+        self.code[0] = 'ADDM 5'
+        self.proc.R1 = 1
+        assert self.proc.R1 == '       1'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        assert self.proc.step()
+        assert self.data[5] == '       3'
+
+    def test_command_SUB(self):
+        self.code[0] = 'SUB'
+        self.proc.R1 = 1
+        assert self.proc.R1 == '       1'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        assert self.proc.step()
+        assert self.proc.R1 == '      -1'
+
+    def test_command_SUBM(self):
+        self.code[0] = 'SUBM 5'
+        self.proc.R1 = 1
+        assert self.proc.R1 == '       1'
+        self.proc.R2 = 2
+        assert self.proc.R2 == '       2'
+        assert self.proc.step()
+        assert self.data[5] == '      -1'
+
+    def test_command_DIV(self):
+        self.code[0] = 'DIV'
+        self.proc.R1 = 423423
+        assert self.proc.R1 == '  423423'
+        self.proc.R2 = 342
+        assert self.proc.R2 == '     342'
+        assert self.proc.step()
+        assert self.proc.R1 == '    1238'
+        assert self.proc.R2 == '      27'
+
+    def test_command_MUL(self):
+        self.code[0] = 'MUL'
+        self.proc.R1 = 4233
+        assert self.proc.R1 == '    4233'
+        self.proc.R2 = 342
+        assert self.proc.R2 == '     342'
+        assert self.proc.step()
+        assert self.proc.R1 == ' 1447686'
+
+    def test_command_CMP(self):
+        self.code[0] = 'CMP'
+        self.proc.R1 = -1
+        self.proc.R2 = 1
+        assert self.proc.step()
+        assert self.proc.SF.ZF == 0
+        assert self.proc.SF.SF == 0
+
+    def test_command_CMP_1(self):
+        self.code[0] = 'CMP'
+        self.proc.R1 = 1
+        self.proc.R2 = 1
+        assert self.proc.step()
+        assert self.proc.SF.ZF == 1
+
+    def test_command_CMP_2(self):
+        self.code[0] = 'CMP'
+        self.proc.R1 = 1
+        self.proc.R2 = -1
+        assert self.proc.step()
+        assert self.proc.SF.ZF == 0
+        assert self.proc.SF.SF == 1
+
+    def test_command_JMP(self):
+        self.code[0] = 'JMP 5'
+        assert self.proc.step()
+        assert self.proc.IC == 5
+
     def tearDown(self):
         u""" Ištrina mašiną.
         """

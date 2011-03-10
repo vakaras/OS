@@ -39,7 +39,7 @@ class Commands(object):
 
     @staticmethod
     def SR1(proc, x):
-        proc.virtual_memory_data[hex_to_int(x)] = self.R1
+        proc.virtual_memory_data[hex_to_int(x)] = proc.R1
 
     @staticmethod
     def SR2(proc, x):
@@ -47,35 +47,47 @@ class Commands(object):
 
     @staticmethod
     def ADD(proc):
-        r1 = IntegerRegister(proc.R1.size).value = proc.R1
-        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
         proc.R1 = int(r1) + int(r2)
         # FIXME: Kaip turi suformuoti SF požymius?
+        # TODO: Išimtys turi sukelti pertraukimus.
 
     @staticmethod
     def ADDM(proc, x):
-        r1 = IntegerRegister(proc.R1.size).value = proc.R1
-        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
         proc.virtual_memory_data[hex_to_int(x)] = int(r1) + int(r2)
         # FIXME: Kaip turi suformuoti SF požymius?
 
     @staticmethod
     def SUB(proc):
-        r1 = IntegerRegister(proc.R1.size).value = proc.R1
-        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
         proc.R1 = int(r1) - int(r2)
         # FIXME: Kaip turi suformuoti SF požymius?
 
     @staticmethod
     def SUBM(proc, x):
-        r1 = IntegerRegister(proc.R1.size).value = proc.R1
-        r2 = IntegerRegister(proc.R2.size).value = proc.R2
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
         proc.virtual_memory_data[hex_to_int(x)] = int(r1) - int(r2)
         # FIXME: Kaip turi suformuoti SF požymius?
 
-    #@staticmethod
-    #def <++>(proc<++>):
-        #<++>
+    @staticmethod
+    def DIV(proc):
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
+        proc.R1 = int(r1) / int(r2)
+        proc.R2 = int(r1) % int(r2)
+        # FIXME: Kaip turi suformuoti SF požymius?
+
+    @staticmethod
+    def MUL(proc):
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
+        proc.R1 = int(r1) * int(r2)
+        # FIXME: Kaip turi suformuoti SF požymius?
 
     @staticmethod
     def CMP(proc):
@@ -89,9 +101,56 @@ class Commands(object):
             proc.SF.SF = 1
 
     @staticmethod
+    def JMP(proc, x):
+        proc.IC = x
+
+    @staticmethod
     def JE(proc, x):
         if proc.SF.ZF == 1:
             proc.IC = x
+
+    @staticmethod
+    def JA(proc, x):
+        if proc.SF.ZF == 0 and proc.SF.SF == 0:
+            proc.IC = x
+
+    @staticmethod
+    def JNB(proc, x):
+        if proc.SF.SF == 0:
+            proc.IC = x
+
+    @staticmethod
+    def JB(proc, x):
+        if proc.SF.SF == 1:
+            proc.IC = x
+
+    @staticmethod
+    def JNA(proc, x):
+        if proc.SF.ZF == 1 or proc.SF.SF == 1:
+            proc.IC = x
+
+    @staticmethod
+    def JC(proc, x):
+        if proc.SF.CF == 1:
+            proc.IC = x
+
+    @staticmethod
+    def JO(proc, x):
+        if proc.SF.OF == 1:
+            proc.IC = x
+
+    #@staticmethod
+    #def <++>(proc<++>):
+        #<++>
+
+    #@staticmethod
+    #def <++>(proc<++>):
+        #<++>
+
+    #@staticmethod
+    #def <++>(proc<++>):
+        #<++>
+
 
 
 class Processor(object):
@@ -114,7 +173,7 @@ class Processor(object):
         self.virtual_memory_data = virtual_memory_data
         self.commands = Commands()
 
-        registers = {
+        self.registers = {
                 'R1': Register(),       # Žodžio ilgio bendro naudojimo 
                                         # registras.
                 'R2': Register(),       # Žodžio ilgio bendro naudojimo 
@@ -143,7 +202,7 @@ class Processor(object):
                 'CHST' : HexRegister(1),
                                         # Kanalų užimtumo registras.
                 }
-        for name, register in registers.items():
+        for name, register in self.registers.items():
             set_descriptor(self, name, register)
 
 
