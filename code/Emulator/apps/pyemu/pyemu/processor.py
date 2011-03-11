@@ -150,18 +150,53 @@ class Commands(object):
                 int(x), proc.virtual_memory_data.get_block(hex_to_int(y)))
 
     @staticmethod
+    def PDR(proc, y):
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        proc.pager.file_write(
+                int(r1), proc.virtual_memory_data.get_block(hex_to_int(y)))
+
+    @staticmethod
     def GD(proc, x, y):
         proc.virtual_memory_data.set_block(
                 hex_to_int(y), proc.pager.file_read(int(x)))
 
     @staticmethod
-    def HALT(proc):
-        raise StopProgram('HALT')
+    def GDR(proc, y):
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        proc.virtual_memory_data.set_block(
+                hex_to_int(y), proc.pager.file_read(int(r1)))
+
+    @staticmethod
+    def FO(proc, x, y):
+        name = proc.virtual_memory_data[hex_to_int(y)]
+        if x == 'r':
+            proc.R1 = proc.pager.file_open(name)
+        elif x == 'w':
+            proc.R1 = proc.pager.file_create(name)
+        else:
+            raise ValueError(u'Neteisingas failo atidarymo rėžimas.')
+
+    @staticmethod
+    def FC(proc, x):
+        proc.pager.file_close(int(x))
+
+    @staticmethod
+    def FCR(proc, x):
+        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        proc.pager.file_close(int(r1))
+
+    @staticmethod
+    def FD(proc, x):
+        name = proc.virtual_memory_data[hex_to_int(x)]
+        proc.pager.file_delete(name)
 
     #@staticmethod
     #def <++>(proc<++>):
         #<++>
 
+    @staticmethod
+    def HALT(proc):
+        raise StopProgram('HALT')
 
 
 class Processor(object):
@@ -260,7 +295,8 @@ class Processor(object):
         u""" Įvykdo komandą ``command`` su argumentais ``args``.
         """
 
-        print 'command: {0} args: {1}'.format(command, args)
+        print 'IC: {2:3} R1: {3} R2 {4} command: {0} args: {1}'.format(
+                command, args, self.IC, self.R1, self.R2)
         self.commands[command](self, *args)
 
     def execute(self):

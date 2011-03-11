@@ -1,12 +1,24 @@
 #!/usr/bin/pyemu
 
 CODE
+LR1 0
+PDR 0
 PD 1 0
 GD 0 1
 PD 1 1
+FC 1
+FO w 30
+PDR 0
+FC 1
+FO r 30
+GDR 2
+FC 1
+FD 30
 HALT
 ENDCODE
 
 DATA 4
+[0]: 1
 [a]:labas
+[30]:failas
 ENDDATA

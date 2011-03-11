@@ -4,6 +4,7 @@
 import sys
 
 from pyemu.realmachine import RealMachine
+from pyemu.filesystem import file_system
 
 import wx
 
@@ -41,4 +42,5 @@ def main(argv=None):
                 print 'Word {0:2}: "{1}"'.format(i/8, block[i:i+8])
 
         rm.load_virtual_machine(file, stdin, stdout)
+        file_system.show_files()
         rm.processor.execute()

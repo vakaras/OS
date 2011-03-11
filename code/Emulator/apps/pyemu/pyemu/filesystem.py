@@ -50,7 +50,7 @@ class File(persistent.Persistent):
         """
 
         try:
-            data = self.data[number]
+            data = self.data[self.number]
             self.number += 1
             return data
         except IndexError:
@@ -106,6 +106,13 @@ class FileSystem(persistent.Persistent):
         del self.files[name]
         transaction.commit()
 
+    def show_files(self):
+        u""" Grąžina failų sistemoje esančių failų vardų sąrašą.
+        """
+
+        print u'Failų sistemos failų sąrašas:'
+        for i, name in enumerate(self.files.keys()):
+            print u'Failas {0:2}: {1}'.format(i, name.decode('utf-8'))
 
 if not root.has_key('fs'):
     root['fs'] = FileSystem()

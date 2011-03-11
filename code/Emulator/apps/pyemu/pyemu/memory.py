@@ -113,9 +113,12 @@ class Pager(object):
 
         C = self.get_C()
         D = self.get_D()
-        descriptor = self.memory.get_data(
-                (self.PLR, self.PLBR + 4 + 2 * (C + D) + id * 9), 9)
-        return (descriptor[0], descriptor[1:])
+        descriptor = []
+        address = self.memory.get_address_int((self.PLR, self.PLBR))
+        offset =  4 + 2 * (C + D) + id * 9
+        for i in range(9):
+            descriptor.append(self.memory.get_byte(address, offset + i))
+        return (descriptor[0], ''.join(descriptor[1:]))
 
     def set_file_descriptor(self, id, mode, name):
         u""" Nustato nurodyto id failo deskriptorių.
@@ -131,9 +134,11 @@ class Pager(object):
 
         C = self.get_C()
         D = self.get_D()
-        self.memory.put_data(
-                (self.PLR, self.PLBR + 4 + 2 * (C + D) + id * 9),
-                mode + name)
+        address = self.memory.get_address_int((self.PLR, self.PLBR))
+        offset =  4 + 2 * (C + D) + id * 9
+        descriptor = mode + name
+        for i, byte in enumerate(descriptor):
+            self.memory.set_byte(address, offset + i, byte)
 
     def file_open(self, name):
         u""" Atidaro failą skaitymui.
@@ -142,11 +147,11 @@ class Pager(object):
         """
 
         for id in range(4):
-            mode, name = self.get_file_descriptor(id)
+            mode, tmp = self.get_file_descriptor(id)
             if mode == '0':
                 self.files[id] = self.create_reader(
                         file_system.open(name).read)
-                self.set_file_descriptor('r', name)
+                self.set_file_descriptor(id, 'r', name)
                 return id
         raise Exception(u'Viršytas atidarytų failų limitas.')
 
@@ -157,11 +162,11 @@ class Pager(object):
         """
 
         for id in range(4):
-            mode, name = self.get_file_descriptor(id)
+            mode, tmp = self.get_file_descriptor(id)
             if mode == '0':
                 self.files[id] = self.create_writer(
                         file_system.create(name).write)
-                self.set_file_descriptor('w', name)
+                self.set_file_descriptor(id, 'w', name)
                 return id
         raise Exception(u'Viršytas atidarytų failų limitas.')
 
@@ -170,7 +175,7 @@ class Pager(object):
         """
 
         del self.files[id]
-        self.set_file_descriptor('0', '0' * WORD_SIZE)
+        self.set_file_descriptor(id, '0', '0' * WORD_SIZE)
 
     def file_delete(self, name):
         u""" Ištrina failą nurodytu pavadinimu.
