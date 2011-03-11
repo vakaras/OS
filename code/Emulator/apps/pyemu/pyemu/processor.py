@@ -9,6 +9,11 @@ from pyemu.registers import ChoiceRegister, StatusFlagRegister
 from pyemu.registers import hex_to_int, set_descriptor
 
 
+class StopProgram(Exception):
+    u""" Išimtis nurodanti, kad reikia baigti programos darbą.
+    """
+
+
 class Commands(object):
     u""" Objektas representuojantis komandų sistemą.
     """
@@ -139,13 +144,19 @@ class Commands(object):
         if proc.SF.OF == 1:
             proc.IC = x
 
-    #@staticmethod
-    #def <++>(proc<++>):
-        #<++>
+    @staticmethod
+    def PD(proc, x, y):
+        proc.pager.file_write(
+                int(x), proc.virtual_memory_data.get_block(hex_to_int(y)))
 
-    #@staticmethod
-    #def <++>(proc<++>):
-        #<++>
+    @staticmethod
+    def GD(proc, x, y):
+        proc.virtual_memory_data.set_block(
+                hex_to_int(y), proc.pager.file_read(int(x)))
+
+    @staticmethod
+    def HALT(proc):
+        raise StopProgram('HALT')
 
     #@staticmethod
     #def <++>(proc<++>):
@@ -158,7 +169,8 @@ class Processor(object):
     """
 
     def __init__(self, real_memory,
-            virtual_memory_code=None, virtual_memory_data=None):
+            virtual_memory_code=None, virtual_memory_data=None,
+            pager=None):
         u""" Inicializuoja procesorių.
 
         + ``real_memory`` – realios mašinos atmintis.
@@ -166,12 +178,14 @@ class Processor(object):
           segmentas.
         + ``virtual_memory_data`` – virtualios mašinos atmintis, duomenų
           segmentas.
+        + ``pager`` – puslapiavimo mechanizmas.
         """
 
         self.real_memory = real_memory
         self.virtual_memory_code = virtual_memory_code
         self.virtual_memory_data = virtual_memory_data
         self.commands = Commands()
+        self.pager = pager
 
         self.registers = {
                 'R1': Register(),       # Žodžio ilgio bendro naudojimo 
@@ -206,13 +220,15 @@ class Processor(object):
             set_descriptor(self, name, register)
 
 
-    def set_virtual_memory(self, virtual_memory_code, virtual_memory_data):
+    def set_virtual_memory(
+            self, virtual_memory_code, virtual_memory_data, pager):
         u""" Nurodo naudoti ``virtual_memory``, kaip virtualios atminties
         objektą.
         """
 
         self.virtual_memory_code = virtual_memory_code
         self.virtual_memory_data = virtual_memory_data
+        self.pager = pager
 
     def step(self):
         u""" Įvykdo vieną komandą.
@@ -251,5 +267,8 @@ class Processor(object):
         """ Vykdo tol kol vykdosi.
         """
 
-        while self.step():
-            pass
+        try:
+            while self.step():
+                pass
+        except StopProgram:
+            return

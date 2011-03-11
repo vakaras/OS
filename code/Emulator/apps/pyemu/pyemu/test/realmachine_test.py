@@ -311,11 +311,10 @@ class RealMemoryTest(unittest.TestCase):
 
         assert r_mem.get_data((0, 0), 8 + 36) == (
                 "01011011"
-                "00000000"
-                "00000000"
-                "00000000"
-                "00000000"
-                "0000"
+                "i00000000"
+                "o00000000"
+                "000000000"
+                "000000000"
                 )
 
         pager = Pager(r_mem, address=0)

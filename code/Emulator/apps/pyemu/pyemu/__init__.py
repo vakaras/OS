@@ -32,5 +32,13 @@ def main(argv=None):
         frame.Show()
         app.MainLoop()
     else:
-        rm.load_virtual_machine(file)
+
+        def stdin():
+            return raw_input('INPUT: ')
+
+        def stdout(block):
+            for i in range(0, len(block), 8):
+                print 'Word {0:2}: "{1}"'.format(i/8, block[i:i+8])
+
+        rm.load_virtual_machine(file, stdin, stdout)
         rm.processor.execute()

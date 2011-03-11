@@ -55,6 +55,7 @@ class Pager(object):
         self.PLR = None
         self.PLBR = None
         self.memory = memory
+        self.files = {}
 
         if not stdin_handler:
             self.stdin_handler = lambda : ' ' * WORD_SIZE * BLOCK_SIZE
@@ -94,15 +95,137 @@ class Pager(object):
             data.append(ih(i))
         for i in range(PAGER_SIZE + C, PAGER_SIZE + C + D):
             data.append(ih(i))
-        data.append('0'*36)
+        data.append('i' + '0' * WORD_SIZE)
+        data.append('o' + '0' * WORD_SIZE)
+        data.append('0'*18)
+        self.files = {
+                0: self.create_reader(self.stdin_handler),
+                1: self.create_writer(self.stdout_handler),}
 
         self.memory.put_data(
-                self.PLR * BLOCK_SIZE + self.PLR, ''.join(data))
+                self.PLR * BLOCK_SIZE + self.PLBR, ''.join(data))
+
+    def get_file_descriptor(self, id):
+        u""" Gražina nurodyto id failo deskriptorių.
+
+        Forma (<rėžimas>, <failo pavadinimas>).
+        """
+
+        C = self.get_C()
+        D = self.get_D()
+        descriptor = self.memory.get_data(
+                (self.PLR, self.PLBR + 4 + 2 * (C + D) + id * 9), 9)
+        return (descriptor[0], descriptor[1:])
+
+    def set_file_descriptor(self, id, mode, name):
+        u""" Nustato nurodyto id failo deskriptorių.
+
+        + ``id`` – failo id.
+        + ``mode`` – failo atidarymo rėžimas.
+        + ``name`` – failo pavadinimas.
+
+        """
+
+        if len(mode) != 1 or len(name) != 8:
+            raise ValueError(u'Netinkamo ilgio argumentai')
+
+        C = self.get_C()
+        D = self.get_D()
+        self.memory.put_data(
+                (self.PLR, self.PLBR + 4 + 2 * (C + D) + id * 9),
+                mode + name)
+
+    def file_open(self, name):
+        u""" Atidaro failą skaitymui.
+
+        Sukuria failo deskriptorių ir grąžina failo id.
+        """
+
+        for id in range(4):
+            mode, name = self.get_file_descriptor(id)
+            if mode == '0':
+                self.files[id] = self.create_reader(
+                        file_system.open(name).read)
+                self.set_file_descriptor('r', name)
+                return id
+        raise Exception(u'Viršytas atidarytų failų limitas.')
+
+    def file_create(self, name):
+        u""" Atidaro failą rašymui.
+
+        Sukuria failo deskriptorių ir grąžina fialo id.
+        """
+
+        for id in range(4):
+            mode, name = self.get_file_descriptor(id)
+            if mode == '0':
+                self.files[id] = self.create_writer(
+                        file_system.create(name).write)
+                self.set_file_descriptor('w', name)
+                return id
+        raise Exception(u'Viršytas atidarytų failų limitas.')
+
+    def file_close(self, id):
+        u""" Uždaro nurodytą failą.
+        """
+
+        del self.files[id]
+        self.set_file_descriptor('0', '0' * WORD_SIZE)
+
+    def file_delete(self, name):
+        u""" Ištrina failą nurodytu pavadinimu.
+        """
+
+        file_system.delete(name)
+
+    def file_read(self, id):
+        u""" Nuskaito ir grąžina bloką iš failo.
+        """
+
+        return self.files[id]()
+
+    def file_write(self, id, block):
+        u""" Įrašo bloką į failą.
+        """
+
+        self.files[id](block)
+
+    def create_reader(self, read):
+        u""" Sukuria skaitymo funkciją, kuri užtikrina, kad gražintu bloką.
+        """
+
+        def reader():
+            block = read()
+            return block + ' ' * (BLOCK_SIZE * WORD_SIZE - len(block))
+
+        return reader
+
+    def create_writer(self, write):
+        u""" Sukuria rašymo funkciją, kuri užtikrina, kad būtų įrašytas
+        blokas.
+        """
+
+        def writer(block):
+            write(block + ' ' * (BLOCK_SIZE * WORD_SIZE - len(block)))
+
+        return writer
 
     def read(self, address):
         u""" Nuskaito iš atminties virtualios mašinos puslapiavimo lentelę.
         """
         self.PLR, self.PLBR = self.memory.get_address_tuple(address)
+        for id in range(4):
+            mode, name = self.get_file_descriptor(id)
+            if mode == 'i':
+                self.files[id] = self.create_reader(self.stdin_handler)
+            elif mode == 'o':
+                self.files[id] = self.create_writer(self.stdout_handler)
+            elif mode == 'r':
+                self.files[id] = self.create_reader(
+                        file_system.open(name).read)
+            elif mode == 'w':
+                self.files[id] = self.create_writer(
+                        file_system.create(name).write)
 
     def get_byte(self, offset):
         u""" Gražina puslapiavimo lentelės baitą, pasislinkusį nuo pradžios
@@ -110,13 +233,23 @@ class Pager(object):
         """
         return self.memory.get_byte((self.PLR, self.PLBR), offset)
 
+    def get_C(self):
+        u""" Gražina kodo segmento dydį blokais.
+        """
+        return hex_to_int(self.get_byte(0) + self.get_byte(1))
+
+    def get_D(self):
+        u""" Gražina duomenų segmento dydį blokais.
+        """
+        return hex_to_int(self.get_byte(2) + self.get_byte(3))
+
     def get_code_cell_address(self, virtual_address):
         u""" Apskaičiuoja realų ląstelės adresą pagal kodo segmento
         virtualų adresą.
         """
 
         virtual_address = self.memory.get_address_int(virtual_address)
-        C = hex_to_int(self.get_byte(0) + self.get_byte(1))
+        C = self.get_C()
 
         min_address = 0
         max_address = C * BLOCK_SIZE
@@ -136,8 +269,8 @@ class Pager(object):
         """
 
         virtual_address = self.memory.get_address_int(virtual_address)
-        C = hex_to_int(self.get_byte(0) + self.get_byte(1))
-        D = hex_to_int(self.get_byte(2) + self.get_byte(3))
+        C = self.get_C()
+        D = self.get_D()
 
         min_address = 0
         max_address = D * BLOCK_SIZE
@@ -289,11 +422,15 @@ class RealMemory(object):
         word = self[address]
         self[address] = word[0:offset] + value + word[offset+1:]
 
-    def create_virtual_memory(self, code, code_size, data, data_size):
+    def create_virtual_memory(
+            self, code, code_size, data, data_size,
+            stdin_handler=None, stdout_handler=None):
         u""" Išskiria virtualią atmintį ir į ją įkelia kodą bei duomenis.
         """
 
-        pager = Pager(self, C=code_size, D=data_size)
+        pager = Pager(
+                self, C=code_size, D=data_size,
+                stdin_handler=stdin_handler, stdout_handler=stdout_handler)
 
         # Įkeliamas kodo segmentas.
         vmcode = VirtualMemoryCode(self, pager)
@@ -392,3 +529,17 @@ class VirtualMemoryData(object):
         """
 
         self.memory[self.pager.get_data_cell_address(address)] = value
+
+    def get_block(self, virtual_block):
+        u""" Grąžina nurodytą bloką.
+        """
+
+        block, cell = self.pager.get_data_cell_address((virtual_block, 0))
+        return self.memory.get_data((block, 0), BLOCK_SIZE * WORD_SIZE)
+
+    def set_block(self, virtual_block, data):
+        u""" Priskiria nurodytą bloką.
+        """
+
+        block, cell = self.pager.get_data_cell_address((virtual_block, 0))
+        self.memory.put_data((block, 0), data)

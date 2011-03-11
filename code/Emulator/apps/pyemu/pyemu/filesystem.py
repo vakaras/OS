@@ -35,22 +35,32 @@ class File(persistent.Persistent):
 
         self.data = persistent.list.PersistentList()
                                         # Duomenų blokai.
+        self.number = 0                 # Kiek duomenų blokų nuskaitė.
 
     def write(self, block):
         u""" Prideda bloką į failo pabaigą.
         """
         self.data.append(block)
+        transaction.commit()
 
-    def read(self, number):
-        u""" Gražina nurodytąjį bloką.
+    def read(self):
+        u""" Gražina bloką.
 
         Jei blokas yra už ribų, tai grąžina EOF išimtį.
         """
 
         try:
-            return self.data[number]
+            data = self.data[number]
+            self.number += 1
+            return data
         except IndexError:
             raise EOF(u'Failo pabaiga')
+
+    def reset_reader(self):
+        u""" Perkrauna skaitymo skaitliuką.
+        """
+
+        self.number = 0
 
 
 class FileSystem(persistent.Persistent):
@@ -71,6 +81,7 @@ class FileSystem(persistent.Persistent):
         """
 
         self.files[name] = File()
+        transaction.commit()
         return self.files[name]
 
     def open(self, name):
@@ -80,7 +91,10 @@ class FileSystem(persistent.Persistent):
 
         """
 
-        return self.files[name]
+        file = self.files[name]
+        file.reset_reader()
+        transaction.commit()
+        return file
 
     def delete(self, name):
         u""" Ištrina failą.
@@ -90,6 +104,7 @@ class FileSystem(persistent.Persistent):
         """
 
         del self.files[name]
+        transaction.commit()
 
 
 if not root.has_key('fs'):

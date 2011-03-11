@@ -1,0 +1,12 @@
+#!/usr/bin/pyemu
+
+CODE
+PD 1 0
+GD 0 1
+PD 1 1
+HALT
+ENDCODE
+
+DATA 4
+[a]:labas
+ENDDATA

@@ -1,11 +1,9 @@
 #!/usr/bin/pyemu
 
 CODE
-LR1 00a
+namo:LR1 00a
 LR2 00a
-JMP «vykdyti»
-namo:HALT
-vykdyti: CMP
+CMP
 JE «namo»
 ENDCODE
 

@@ -22,7 +22,8 @@ class RealMachine(object):
         self.virtual_memory_data = None
         self.virtual_memory_code = None
 
-    def load_virtual_machine(self, file):
+    def load_virtual_machine(
+            self, file, stdin_handler=None, stdout_handler=None):
         u""" Pakrauna virtualią mašiną.
         """
 
@@ -63,11 +64,14 @@ class RealMachine(object):
 
             self.virtual_memory_code, self.virtual_memory_data = \
                     self.real_memory.create_virtual_memory(
-                            code, code_size, data, data_size)
+                            code, code_size, data, data_size,
+                            stdin_handler, stdout_handler)
+            self.pager = self.virtual_memory_code.pager
             self.processor.PLR = self.virtual_memory_code.pager.PLR
             self.processor.PLBR = self.virtual_memory_code.pager.PLBR
             self.processor.set_virtual_memory(
-                    self.virtual_memory_code, self.virtual_memory_data)
+                    self.virtual_memory_code, self.virtual_memory_data,
+                    self.pager)
             self.processor.IC = 0
             # TODO: Atidaryti išorinius failus.
         else:
