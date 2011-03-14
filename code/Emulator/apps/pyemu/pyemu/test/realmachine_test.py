@@ -43,16 +43,12 @@ class ProcessorTest(unittest.TestCase):
     u""" Testai procesoriaus funkcijoms.
     """
 
-    a = []
 
     def setUp(self):
         u""" Užkrauna mašiną testavimui.
         """
-        self.a.append('setUp')
-        print 'bla: ', self.a
 
         self.rm = RealMachine()
-        self.a.append('rm:' + str(self.rm))
         tests_dir = os.path.abspath(os.path.dirname(__file__))
         self.rm.load_virtual_machine(
                 os.path.join(tests_dir, 'test_program_1'))
@@ -61,10 +57,7 @@ class ProcessorTest(unittest.TestCase):
         self.data = self.rm.virtual_memory_data
 
     def test_command_LR1(self):
-        self.a.append('LR1')
-        print 'bla: ', self.a
         assert self.proc.IC == 0
-        print '->', self.proc.R1, '<-'
         assert self.proc.R1 == '00000000'
         assert self.proc.R2 == '00000000'
         self.code[0] = ' LR1 5'
@@ -78,15 +71,12 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.IC == 1
 
     def test_command_LR2(self):
-        self.a.append('LR2')
-        print 'bla: ', self.a
         assert self.proc.IC == 0
         assert self.proc.R1 == '00000000'
         assert self.proc.R2 == '00000000'
         self.code[0] = ' LR2 5'
         self.data[5] = 230
         self.proc.R2 = 5
-        print self.proc.R1
         assert self.proc.R1 == '00000000'
         assert self.proc.R2 == '       5'
         assert self.proc.step()
@@ -216,9 +206,6 @@ class ProcessorTest(unittest.TestCase):
     def tearDown(self):
         u""" Ištrina mašiną.
         """
-
-        self.a.append('tearDown')
-        print 'bla: ', self.a
 
         del self.rm
         del self.proc
