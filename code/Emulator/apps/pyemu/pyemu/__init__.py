@@ -42,5 +42,6 @@ def main(argv=None):
                 print 'Word {0:2}: "{1}"'.format(i/8, block[i:i+8])
 
         rm.load_virtual_machine(file, stdin, stdout)
-        file_system.show_files()
+        for name in file_system.get_files():
+            print 'Failas {0}'.format(name)
         rm.processor.execute()
