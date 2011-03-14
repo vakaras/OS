@@ -290,8 +290,6 @@ class Processor(object):
         Jei pavyko grąžina ``True``, kitu atveju išmeta išimtį.
         """
 
-        print u'Žingsnis:', self.IC, self.virtual_memory_code[self.IC]
-
         value = self.virtual_memory_code[self.IC]
         self.IC = self.IC + 1
         self.do(**self.parse_command(value))
@@ -304,6 +302,8 @@ class Processor(object):
         Grąžina ``True`` jei pavyko ir ``False`` kitu atveju.
         """
 
+        print u'Žingsnis:'.encode('utf-8'),
+        print self.IC, self.virtual_memory_code[self.IC]
         old_ic = self.IC
         try:
             self._step()

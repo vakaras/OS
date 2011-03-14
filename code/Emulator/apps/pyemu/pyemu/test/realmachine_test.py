@@ -226,15 +226,12 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.IC == 5
 
     def test_command_PD(self):
+
         assert self.proc.IC == 0
         self.code[0] = 'PD 1 0'
-        try:
-            self.proc.step() # <--- WTF?
-        except Exception, e:
-            print 'pa'
-            self.fail('bla')
+        assert self.proc.step() == True
 
-        self.code[0] = 'PD a 0'
+        self.code[1] = 'PD a 0'
         try:
             self.proc._step()
         except WrongOpCode, e:
