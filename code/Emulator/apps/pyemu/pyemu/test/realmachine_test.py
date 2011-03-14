@@ -9,6 +9,8 @@ u""" Testai.
 import os
 import unittest
 
+from pyemu import exceptions
+from pyemu.exceptions import BadAddress, WrongOpCode
 from pyemu.realmachine import RealMachine
 from pyemu.memory import RealMemory, Pager
 from pyemu.memory import VirtualMemoryCode, VirtualMemoryData
@@ -56,6 +58,22 @@ class ProcessorTest(unittest.TestCase):
         self.code = self.rm.virtual_memory_code
         self.data = self.rm.virtual_memory_data
 
+    def test_environment(self):
+        assert self.code.pager.get_C() == 1
+        assert self.data.pager.get_D() == 1
+
+    def test_command_NONE(self):
+        self.code[0] = 'NONE'
+        assert self.proc.PI == '0'
+        assert self.proc.step() == False
+        assert self.proc.PI == '1'
+
+    def test_command_wrong(self):
+        self.code[0] = 'HALT 5'
+        assert self.proc.PI == '0'
+        assert self.proc.step() == False
+        assert self.proc.PI == '1'
+
     def test_command_LR1(self):
         assert self.proc.IC == 0
         assert self.proc.R1 == '00000000'
@@ -69,6 +87,10 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.R1 == '     230'
         assert self.proc.R2 == '00000000'
         assert self.proc.IC == 1
+        self.code[1] = ' LR1 10'
+        assert self.proc.PI == '0'
+        assert self.proc.step() == False
+        assert self.proc.PI == '1'
 
     def test_command_LR2(self):
         assert self.proc.IC == 0
@@ -122,8 +144,8 @@ class ProcessorTest(unittest.TestCase):
         self.proc.R2 = 2
         assert self.proc.R2 == '       2'
         try:
-            assert self.proc.step()
-        except ValueError, e:
+            assert self.proc._step()
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -202,6 +224,29 @@ class ProcessorTest(unittest.TestCase):
         self.code[0] = 'JMP 5'
         assert self.proc.step()
         assert self.proc.IC == 5
+
+    def test_command_PD(self):
+        assert self.proc.IC == 0
+        self.code[0] = 'PD 1 0'
+        try:
+            self.proc.step() # <--- WTF?
+        except Exception, e:
+            print 'pa'
+            self.fail('bla')
+
+        self.code[0] = 'PD a 0'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        #pabandyti x – nėra skaičius, y – nėra skaičius, 
+        #x – yra skaičius didesnis už 4, y – yra netinkamas adresas.
+
+    def test_command_PDR(self):
+        pass
 
     def tearDown(self):
         u""" Ištrina mašiną.
@@ -312,14 +357,14 @@ class RealMemoryTest(unittest.TestCase):
         assert pager.get_data_cell_address((0, 5)) == (17, 5)
         try:
             pager.get_code_cell_address((1, 4))
-        except ValueError, e:
+        except BadAddress, e:
             assert unicode(e) == \
                     u'Virtualus adresas nepriklauso kodo segmentui.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         try:
             pager.get_data_cell_address((1, 4))
-        except ValueError, e:
+        except BadAddress, e:
             assert unicode(e) == \
                     u'Virtualus adresas nepriklauso duomenų segmentui.'
         else:

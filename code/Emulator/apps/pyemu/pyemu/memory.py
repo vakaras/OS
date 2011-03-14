@@ -10,6 +10,7 @@ import re
 
 from math import ceil, floor
 
+from pyemu.exceptions import BadAddress
 from pyemu.registers import WORD_SIZE
 from pyemu.registers import int_to_hex, hex_to_int
 from pyemu.registers import Cell
@@ -273,7 +274,7 @@ class Pager(object):
         min_address = 0
         max_address = C * BLOCK_SIZE
         if not (min_address <= virtual_address <= max_address):
-            raise ValueError(
+            raise BadAddress(
                     u'Virtualus adresas nepriklauso kodo segmentui.')
         virtual_block, cell = self.memory.get_address_tuple(virtual_address)
 
@@ -292,9 +293,9 @@ class Pager(object):
         D = self.get_D()
 
         min_address = 0
-        max_address = D * BLOCK_SIZE
+        max_address = D * BLOCK_SIZE - 1
         if not (min_address <= virtual_address <= max_address):
-            raise ValueError(
+            raise BadAddress(
                     u'Virtualus adresas nepriklauso duomenų segmentui.')
         virtual_block, cell = self.memory.get_address_tuple(virtual_address)
 

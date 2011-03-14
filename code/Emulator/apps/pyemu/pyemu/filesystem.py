@@ -10,6 +10,8 @@ from ZODB.FileStorage import FileStorage
 from ZODB.DB import DB
 from BTrees.OOBTree import OOBTree
 
+from pyemu.exceptions import EndOfFile
+
 
 DATABASE_PATH = os.path.join(
         os.path.abspath(os.path.dirname(__file__)), 'data.fs')
@@ -18,11 +20,6 @@ storage = FileStorage(DATABASE_PATH)
 db = DB(storage)
 connection = db.open()
 root = connection.root()
-
-
-class EOF(Exception):
-    u""" Išimtis žyminti failo pabaigą.
-    """
 
 
 class File(persistent.Persistent):
@@ -46,7 +43,7 @@ class File(persistent.Persistent):
     def read(self):
         u""" Gražina bloką.
 
-        Jei blokas yra už ribų, tai grąžina EOF išimtį.
+        Jei blokas yra už ribų, tai grąžina ``EndOfFile`` išimtį.
         """
 
         try:
@@ -54,7 +51,7 @@ class File(persistent.Persistent):
             self.number += 1
             return data
         except IndexError:
-            raise EOF(u'Failo pabaiga')
+            raise EndOfFile(u'Failo pabaiga')
 
     def reset_reader(self):
         u""" Perkrauna skaitymo skaitliuką.

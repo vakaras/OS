@@ -4,14 +4,27 @@
 
 import inspect
 
+from pyemu.exceptions import ProgramInterrupt, StopProgram, WrongOpCode
 from pyemu.registers import Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
 from pyemu.registers import hex_to_int, set_descriptor
 
 
-class StopProgram(Exception):
-    u""" Išimtis nurodanti, kad reikia baigti programos darbą.
-    """
+def convert_file_args(x, y):
+    try:
+        x = int(x)
+        y = hex_to_int(y)
+    except ValueError:
+        raise WrongOpCode(u'Netinkami komandos argumentai.')
+    return x, y
+
+
+def convert_address_arg(y):
+    try:
+        y = hex_to_int(y)
+    except ValueError:
+        raise WrongOpCode(u'Netinkami komandos argumentai.')
+    return y
 
 
 class Commands(object):
@@ -32,7 +45,10 @@ class Commands(object):
         u""" Gražina komandų sistemos komandą.
         """
 
-        return self.commands[command]
+        try:
+            return self.commands[command]
+        except KeyError:
+            raise WrongOpCode(command)
 
     @staticmethod
     def LR1(proc, x):
@@ -146,14 +162,16 @@ class Commands(object):
 
     @staticmethod
     def PD(proc, x, y):
+        x, y = convert_file_args(x, y)
         proc.pager.file_write(
-                int(x), proc.virtual_memory_data.get_block(hex_to_int(y)))
+                x, proc.virtual_memory_data.get_block(y))
 
     @staticmethod
     def PDR(proc, y):
+        y = convert_address_arg(y)
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         proc.pager.file_write(
-                int(r1), proc.virtual_memory_data.get_block(hex_to_int(y)))
+                int(r1), proc.virtual_memory_data.get_block(y))
 
     @staticmethod
     def GD(proc, x, y):
@@ -174,7 +192,8 @@ class Commands(object):
         elif x == 'w':
             proc.R1 = proc.pager.file_create(name)
         else:
-            raise ValueError(u'Neteisingas failo atidarymo rėžimas.')
+            raise exceptions.ValueError(
+                    u'Neteisingas failo atidarymo rėžimas.')
 
     @staticmethod
     def FC(proc, x):
@@ -265,16 +284,33 @@ class Processor(object):
         self.virtual_memory_data = virtual_memory_data
         self.pager = pager
 
+    def _step(self):
+        """ Įvykdo vieną komandą.
+
+        Jei pavyko grąžina ``True``, kitu atveju išmeta išimtį.
+        """
+
+        print u'Žingsnis:', self.IC, self.virtual_memory_code[self.IC]
+
+        value = self.virtual_memory_code[self.IC]
+        self.IC = self.IC + 1
+        self.do(**self.parse_command(value))
+
+        return True
+
     def step(self):
         u""" Įvykdo vieną komandą.
 
         Grąžina ``True`` jei pavyko ir ``False`` kitu atveju.
         """
 
-        print u'Žingsnis:', self.IC, self.virtual_memory_code[self.IC]
-        value = self.virtual_memory_code[self.IC]
-        self.IC = self.IC + 1
-        self.do(**self.parse_command(value))
+        old_ic = self.IC
+        try:
+            self._step()
+        except ProgramInterrupt:
+            self.PI = 1
+            self.IC = old_ic
+            return False
         return True
 
     def parse_command(self, value):
@@ -297,14 +333,14 @@ class Processor(object):
 
         print 'IC: {2:3} R1: {3} R2 {4} command: {0} args: {1}'.format(
                 command, args, self.IC, self.R1, self.R2)
-        self.commands[command](self, *args)
+        try:
+            self.commands[command](self, *args)
+        except TypeError:
+            raise WrongOpCode(u'Netinkami argumentai komandai.')
 
     def execute(self):
         """ Vykdo tol kol vykdosi.
         """
 
-        try:
-            while self.step():
-                pass
-        except StopProgram:
-            return
+        while self.step():
+            pass

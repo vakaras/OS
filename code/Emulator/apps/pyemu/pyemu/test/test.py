@@ -7,6 +7,8 @@ u""" Testai.
 
 
 import unittest
+
+from pyemu import exceptions
 from pyemu.registers import to_unicode, to_bytes
 from pyemu.registers import int_to_hex, hex_to_int
 from pyemu.registers import set_descriptor
@@ -63,7 +65,7 @@ class Registers(unittest.TestCase):
         assert cell2B.value == '\xc5\xa1'
         try:
             cell2B.value = 123
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -98,7 +100,7 @@ class Registers(unittest.TestCase):
         assert a.reg2B == '\xc5\xa1'
         try:
             a.reg2B = 123
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -124,7 +126,7 @@ class Registers(unittest.TestCase):
         assert b.reg2B == '\xc5\xa1'
         try:
             b.reg2B = 123
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -146,13 +148,13 @@ class Registers(unittest.TestCase):
         assert ir4B.value == '  -1'
         try:
             ir4B.value = 'a'
-        except ValueError, e:
-            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Reikšmė turi būti skaičius'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         try:
             ir4B.value = 1234
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -176,13 +178,13 @@ class Registers(unittest.TestCase):
         assert a.reg4B == -1
         try:
             a.reg4B = 'a'
-        except ValueError, e:
-            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Reikšmė turi būti skaičius'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         try:
             a.reg4B = 1234
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -208,19 +210,19 @@ class Registers(unittest.TestCase):
         assert hr4B.value == '   0x1'
         try:
             hr4B.value = -1
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Turi būti sveikas teigiamas skaičius.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         try:
             hr4B.value = 'a'
-        except ValueError, e:
-            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Reikšmė turi būti skaičius'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         try:
             hr4B.value = 0x12345
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
@@ -244,13 +246,13 @@ class Registers(unittest.TestCase):
         assert a.reg4B == 1
         try:
             a.reg4B = 'a'
-        except ValueError, e:
-            assert str(e) == 'invalid literal for int() with base 10: \'a\''
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Reikšmė turi būti skaičius'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         try:
             a.reg4B = 0x12345
-        except ValueError, e:
+        except exceptions.ValueError, e:
             assert unicode(e) == u'Reikšmė netelpa ląstelėje.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))

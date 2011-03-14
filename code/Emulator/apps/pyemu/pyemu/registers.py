@@ -7,6 +7,8 @@ emuliacijai.
 """
 
 
+from pyemu import exceptions
+
 WORD_SIZE = 8                           # Žodžio dydis yra 8 baitai.
 
 
@@ -102,7 +104,7 @@ class Cell(object):
             self._value = self._format.format(value)
             self.handler()
         else:
-            raise ValueError(u'Reikšmė netelpa ląstelėje.')
+            raise exceptions.ValueError(u'Reikšmė netelpa ląstelėje.')
         return self
 
     def get_value(self):
@@ -151,16 +153,19 @@ class IntegerRegister(Register):
         self.value = 0
 
     def set_value(self, value):
-        u""" Patikrina ar reikšmė yra sveikas skaičius ir ar ji telpa. Tada 
+        u""" Patikrina ar reikšmė yra sveikas skaičius ir ar ji telpa. Tada
         ją priskiria. Klaidos atveju išmeta ``ValueError``.
         """
 
-        value_as_integer = int(value)
+        try:
+            value_as_integer = int(value)
+        except ValueError:
+            raise exceptions.ValueError(u'Reikšmė turi būti skaičius')
         value_as_string = self._format.format(value_as_integer)
         if len(value_as_string) <= self.size:
             self._value = value_as_string
         else:
-            raise ValueError(u'Reikšmė netelpa ląstelėje.')
+            raise exceptions.ValueError(u'Reikšmė netelpa ląstelėje.')
         return self
 
     def __int__(self):
@@ -211,15 +216,19 @@ class HexRegister(Register):
         telpa. Tada ją priskiria. Klaidos atveju išmeta ``ValueError``.
         """
 
-        value_as_integer = int(value)
+        try:
+            value_as_integer = int(value)
+        except ValueError:
+            raise exceptions.ValueError(u'Reikšmė turi būti skaičius')
         if value_as_integer < 0:
-            raise ValueError(u'Turi būti sveikas teigiamas skaičius.')
+            raise exceptions.ValueError(
+                    u'Turi būti sveikas teigiamas skaičius.')
         value_as_string = self._format.format(hex(value_as_integer))
         if len(value_as_string) <= self.size + 2:
                                         # Kompensuojamas „0x“ dydis.
             self._value = value_as_string
         else:
-            raise ValueError(u'Reikšmė netelpa ląstelėje.')
+            raise exceptions.ValueError(u'Reikšmė netelpa ląstelėje.')
         return self
 
     def __int__(self):

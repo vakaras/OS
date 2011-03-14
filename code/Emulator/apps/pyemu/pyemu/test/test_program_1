@@ -1,6 +1,7 @@
 #!/usr/bin/pyemu
 
 CODE
+PD 1 0
 LR1 00a
 LR2 00a
 JMP «vykdyti»
