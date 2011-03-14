@@ -154,9 +154,9 @@ class Pager(object):
         for id in range(4):
             mode, tmp = self.get_file_descriptor(id)
             if mode == '0':
+                self.set_file_descriptor(id, 'r', name)
                 self.files[id] = self.create_reader(
                         file_system.open(name).read)
-                self.set_file_descriptor(id, 'r', name)
                 return id
         raise Exception(u'Viršytas atidarytų failų limitas.')
 
@@ -174,9 +174,9 @@ class Pager(object):
         for id in range(4):
             mode, file_name = self.get_file_descriptor(id)
             if mode == '0':
+                self.set_file_descriptor(id, 'w', name)
                 self.files[id] = self.create_writer(
                         file_system.create(name).write)
-                self.set_file_descriptor(id, 'w', name)
                 return id
         raise Exception(u'Viršytas atidarytų failų limitas.')
 
