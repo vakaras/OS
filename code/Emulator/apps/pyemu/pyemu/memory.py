@@ -147,6 +147,11 @@ class Pager(object):
         """
 
         for id in range(4):
+            mode, file_name = self.get_file_descriptor(id)
+            if mode != 0 and file_name == name:
+                raise ValueError(u'Failas tokiu vardu jau atidarytas.')
+
+        for id in range(4):
             mode, tmp = self.get_file_descriptor(id)
             if mode == '0':
                 self.files[id] = self.create_reader(
@@ -162,7 +167,12 @@ class Pager(object):
         """
 
         for id in range(4):
-            mode, tmp = self.get_file_descriptor(id)
+            mode, file_name = self.get_file_descriptor(id)
+            if mode != 0 and file_name == name:
+                raise ValueError(u'Failas tokiu vardu jau atidarytas.')
+
+        for id in range(4):
+            mode, file_name = self.get_file_descriptor(id)
             if mode == '0':
                 self.files[id] = self.create_writer(
                         file_system.create(name).write)
@@ -181,6 +191,10 @@ class Pager(object):
         u""" Ištrina failą nurodytu pavadinimu.
         """
 
+        for id in range(4):
+            mode, file_name = self.get_file_descriptor(id)
+            if mode != 0 and file_name == name:
+                raise ValueError(u'Failas tokiu vardu atidarytas.')
         file_system.delete(name)
 
     def file_read(self, id):

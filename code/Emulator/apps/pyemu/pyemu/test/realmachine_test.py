@@ -354,6 +354,8 @@ class RealMemoryTest(unittest.TestCase):
         assert vmdata[0, 4] == '01234567'
         vmdata[0, 5] = 'abababab'
         assert r_mem[17, 5] == 'abababab'
+        vmdata.set_block(0, '01234567' * 16)
+        assert vmdata.get_block(0) == '01234567' * 16
 
     def test_creating_virtual_memory(self):
 
@@ -378,3 +380,139 @@ class RealMemoryTest(unittest.TestCase):
         assert vmdata[10] == 'labas   '
         assert r_mem.get_data((17, 0), 8 * 16) == (
                 '00000000' * 10 + 'labas   ' + '00000000' * 5)
+
+    def test_io(self):
+
+        rm = RealMemory()
+
+        def stdin():
+            return '01234567' * 15
+
+        out = []
+        def stdout(block):
+            out.append(block)
+
+        pager = Pager(
+                rm, C=1, D=1, stdin_handler=stdin, stdout_handler=stdout)
+
+        assert pager.file_read(0) == '01234567' * 15 + ' ' * 8
+        try:
+            pager.file_write(0, 'Sveikas pasauli!')
+        except TypeError, e:
+            assert str(e) == 'reader() takes no arguments (1 given)'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert len(out) == 0
+        pager.file_write(1, 'Sveikas pasauli!')
+        assert len(out) == 1
+        assert out[0] == 'Sveikas ' + 'pasauli!' + ' ' * 8 * 14
+        try:
+            pager.file_read(1)
+        except TypeError, e:
+            assert str(e) == 'writer() takes exactly 1 argument (0 given)'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert rm.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "i00000000"
+                "o00000000"
+                "000000000"
+                "000000000"
+                )
+        pager.file_close(0)
+        assert rm.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "000000000"
+                "o00000000"
+                "000000000"
+                "000000000"
+                )
+        try:
+            pager.file_read(0)
+        except KeyError, e:
+            assert str(e) == '0'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        try:
+            pager.file_create('namas')
+        except ValueError, e:
+            assert unicode(e) == u'Netinkamo ilgio argumentai'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        assert pager.file_create('tmpfile1') == 0
+        assert rm.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "wtmpfile1"
+                "o00000000"
+                "000000000"
+                "000000000"
+                )
+        try:
+            pager.file_create('tmpfile1')
+        except ValueError, e:
+            assert unicode(e) == u'Failas tokiu vardu jau atidarytas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            pager.file_open('tmpfile1')
+        except ValueError, e:
+            assert unicode(e) == u'Failas tokiu vardu jau atidarytas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert pager.file_create('tmpfile2') == 2
+        assert pager.file_create('tmpfile3') == 3
+        assert rm.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "wtmpfile1"
+                "o00000000"
+                "wtmpfile2"
+                "wtmpfile3"
+                )
+        try:
+            pager.file_create('tmpfile4')
+        except Exception, e:
+            assert unicode(e) == u'Viršytas atidarytų failų limitas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        try:
+            pager.file_open('tmpfile4')
+        except Exception, e:
+            assert unicode(e) == u'Viršytas atidarytų failų limitas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        pager.file_write(2, 'trkkrt')
+        pager.file_close(2)
+        assert pager.file_open('tmpfile2') == 2
+        assert rm.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "wtmpfile1"
+                "o00000000"
+                "rtmpfile2"
+                "wtmpfile3"
+                )
+        pager = Pager(rm, address=0)
+        assert rm.get_data((0, 0), 8 + 36) == (
+                "01011011"
+                "wtmpfile1"
+                "o00000000"
+                "rtmpfile2"
+                "wtmpfile3"
+                )
+        assert pager.file_read(2) == 'trkkrt  ' + ' ' * 8 * 15
+        try:
+            pager.file_delete('tmpfile3')
+        except ValueError, e:
+            assert unicode(e) == u'Failas tokiu vardu atidarytas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+        pager.file_close(0)
+        pager.file_close(1)
+        pager.file_close(2)
+        pager.file_close(3)
+        pager.file_delete('tmpfile1')
+        pager.file_delete('tmpfile2')
+        pager.file_delete('tmpfile3')
