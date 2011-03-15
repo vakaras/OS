@@ -38,3 +38,15 @@ class StopProgram(ProgramInterrupt):
 class EndOfFile(ProgramInterrupt):
     u""" Klasė failo pabaigai žymėti.
     """
+
+class WrongFileDescriptor(ProgramInterrupt):
+    u""" Klasė failų descriptorius klaidoms žymėti.
+    """
+
+class ReadingWriteOnlyFileError(ProgramInterrupt):
+    u""" Klasė skaitymo iš rašymui atidaryto failo klaidai pažymėti.
+    """
+
+class WritingReadOnlyFileError(ProgramInterrupt):
+    u""" Klasė rašymo į skaitymui atidaryto failo klaidai pažymėti.
+    """

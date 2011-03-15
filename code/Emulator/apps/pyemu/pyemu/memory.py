@@ -10,7 +10,9 @@ import re
 
 from math import ceil, floor
 
-from pyemu.exceptions import BadAddress
+from pyemu.exceptions import BadAddress, WrongFileDescriptor
+from pyemu.exceptions import ReadingWriteOnlyFileError
+from pyemu.exceptions import WritingReadOnlyFileError
 from pyemu.registers import WORD_SIZE
 from pyemu.registers import int_to_hex, hex_to_int
 from pyemu.registers import Cell
@@ -202,13 +204,25 @@ class Pager(object):
         u""" Nuskaito ir grąžina bloką iš failo.
         """
 
-        return self.files[id]()
+        try:
+            return self.files[id]()
+        except KeyError:
+            raise WrongFileDescriptor(u'Nežinomas id.')
+        except TypeError:
+            raise ReadingWriteOnlyFileError(
+                    u'Bandoma skaityti iš failo atidaryto rašymui.')
 
     def file_write(self, id, block):
         u""" Įrašo bloką į failą.
         """
 
-        self.files[id](block)
+        try:
+            self.files[id](block)
+        except KeyError:
+            raise WrongFileDescriptor(u'Nežinomas id.')
+        except TypeError:
+            raise WritingReadOnlyFileError(
+                    u'Bandoma rašyti į failą atidarytą rašymui.')
 
     def create_reader(self, read):
         u""" Sukuria skaitymo funkciją, kuri užtikrina, kad gražintu bloką.

@@ -3,7 +3,9 @@
 
 
 import inspect
+import sys, traceback
 
+from pyemu import exceptions
 from pyemu.exceptions import ProgramInterrupt, StopProgram, WrongOpCode
 from pyemu.registers import Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
@@ -25,6 +27,76 @@ def convert_address_arg(y):
     except ValueError:
         raise WrongOpCode(u'Netinkami komandos argumentai.')
     return y
+
+
+class ArgumentConverter(object):
+    u""" Pasirūpina, kad komandai perduoti argumentai būtų
+    reikiamo tipo.
+    """
+
+    def __init__(self, *signature):
+        u"""
+
+        ``*signature`` – komandos argumentų „parašas“. Kiekvienas
+        argumentas gali būti iš:
+
+        + ``a`` – argumentas hex, konvertuoja į int;
+        + ``i`` – sveikasis skaičius, konvertuoja į int;
+        + ``?`` – bet koks argumentas, nekonvertuojamas.
+
+        """
+
+        self.signature = signature
+
+    def __call__(self, fn):
+        u""" „Dekoravimas“.
+
+        + ``fn`` – dekoruojamoji funkcija.
+        """
+
+        def convert(proc, *args):
+            u""" Funkcija, kuri konvertuoja komandų argumentus.
+            """
+
+            if len(args) != len(self.signature):
+                raise WrongOpCode(
+                        u'Netinkamas argumentų kiekis.')
+            clean_args = []
+            for arg, arg_type in zip(args, self.signature):
+                try:
+                    if arg_type == 'a':
+                        clean_args.append(hex_to_int(arg))
+                    elif arg_type == 'i':
+                        clean_args.append(int(arg))
+                    elif arg_type == '?':
+                        clean_args.append(arg)
+                    else:
+                        raise TypeError(
+                                u'Blogas komandos parašas.')
+                except ValueError:
+                    raise WrongOpCode(
+                            u'Netinkami komandos argumentai.')
+            return fn(proc, *clean_args)
+
+        return convert
+
+
+def check_integer_result(proc, size, x):
+    try:
+        Register(size).value = x
+    except exceptions.ValueError:
+        proc.SF.CF = 1
+        x = int(str(x)[:8])
+    else:
+        proc.SF.CF = 0
+    try:
+        IntegerRegister(size).value = x
+    except exceptions.ValueError:
+        proc.SF.OF = 1
+        x = '{0:+}'.format(x)[:8]
+    else:
+        proc.SF.OF = 0
+    return x
 
 
 class Commands(object):
@@ -51,64 +123,70 @@ class Commands(object):
             raise WrongOpCode(command)
 
     @staticmethod
+    @ArgumentConverter('a')
     def LR1(proc, x):
-        proc.R1 = proc.virtual_memory_data[hex_to_int(x)]
+        proc.R1 = proc.virtual_memory_data[x]
 
     @staticmethod
+    @ArgumentConverter('a')
     def LR2(proc, x):
-        proc.R2 = proc.virtual_memory_data[hex_to_int(x)]
+        proc.R2 = proc.virtual_memory_data[x]
 
     @staticmethod
+    @ArgumentConverter('a')
     def SR1(proc, x):
-        proc.virtual_memory_data[hex_to_int(x)] = proc.R1
+        proc.virtual_memory_data[x] = proc.R1
 
     @staticmethod
+    @ArgumentConverter('a')
     def SR2(proc, x):
-        proc.virtual_memory_data[hex_to_int(x)] = proc.R2
+        proc.virtual_memory_data[x] = proc.R2
 
     @staticmethod
     def ADD(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) + int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
-        # TODO: Išimtys turi sukelti pertraukimus.
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) + int(r2))
 
     @staticmethod
+    @ArgumentConverter('a')
     def ADDM(proc, x):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.virtual_memory_data[hex_to_int(x)] = int(r1) + int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.virtual_memory_data[x] = check_integer_result( 
+                proc, proc.registers['R1'].size, int(r1) + int(r2))
 
     @staticmethod
     def SUB(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) - int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) - int(r2))
 
     @staticmethod
+    @ArgumentConverter('a')
     def SUBM(proc, x):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.virtual_memory_data[hex_to_int(x)] = int(r1) - int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.virtual_memory_data[x] = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) - int(r2))
 
     @staticmethod
     def DIV(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) / int(r2)
-        proc.R2 = int(r1) % int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) / int(r2))
+        proc.R2 = check_integer_result(
+                proc, proc.registers['R2'].size, int(r1) % int(r2))
 
     @staticmethod
     def MUL(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) * int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) * int(r2))
 
     @staticmethod
     def CMP(proc):
@@ -122,71 +200,81 @@ class Commands(object):
             proc.SF.SF = 1
 
     @staticmethod
+    @ArgumentConverter('a')
     def JMP(proc, x):
         proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JE(proc, x):
         if proc.SF.ZF == 1:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JA(proc, x):
         if proc.SF.ZF == 0 and proc.SF.SF == 0:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JNB(proc, x):
         if proc.SF.SF == 0:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JB(proc, x):
         if proc.SF.SF == 1:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JNA(proc, x):
         if proc.SF.ZF == 1 or proc.SF.SF == 1:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JC(proc, x):
         if proc.SF.CF == 1:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('a')
     def JO(proc, x):
         if proc.SF.OF == 1:
             proc.IC = x
 
     @staticmethod
+    @ArgumentConverter('i', 'a')
     def PD(proc, x, y):
-        x, y = convert_file_args(x, y)
         proc.pager.file_write(
                 x, proc.virtual_memory_data.get_block(y))
 
     @staticmethod
+    @ArgumentConverter('a')
     def PDR(proc, y):
-        y = convert_address_arg(y)
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         proc.pager.file_write(
                 int(r1), proc.virtual_memory_data.get_block(y))
 
     @staticmethod
+    @ArgumentConverter('i', 'a')
     def GD(proc, x, y):
-        proc.virtual_memory_data.set_block(
-                hex_to_int(y), proc.pager.file_read(int(x)))
+        proc.virtual_memory_data.set_block(y, proc.pager.file_read(x))
 
     @staticmethod
+    @ArgumentConverter('a')
     def GDR(proc, y):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         proc.virtual_memory_data.set_block(
                 hex_to_int(y), proc.pager.file_read(int(r1)))
 
     @staticmethod
+    @ArgumentConverter('?', 'a')
     def FO(proc, x, y):
-        name = proc.virtual_memory_data[hex_to_int(y)]
+        name = proc.virtual_memory_data[y]
         if x == 'r':
             proc.R1 = proc.pager.file_open(name)
         elif x == 'w':
@@ -196,17 +284,19 @@ class Commands(object):
                     u'Neteisingas failo atidarymo rėžimas.')
 
     @staticmethod
+    @ArgumentConverter('a')
     def FC(proc, x):
-        proc.pager.file_close(int(x))
+        proc.pager.file_close(x)
 
     @staticmethod
-    def FCR(proc, x):
+    def FCR(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         proc.pager.file_close(int(r1))
 
     @staticmethod
+    @ArgumentConverter('a')
     def FD(proc, x):
-        name = proc.virtual_memory_data[hex_to_int(x)]
+        name = proc.virtual_memory_data[x]
         proc.pager.file_delete(name)
 
     #@staticmethod
@@ -335,7 +425,7 @@ class Processor(object):
                 command, args, self.IC, self.R1, self.R2)
         try:
             self.commands[command](self, *args)
-        except TypeError:
+        except TypeError, e:
             raise WrongOpCode(u'Netinkami argumentai komandai.')
 
     def execute(self):
