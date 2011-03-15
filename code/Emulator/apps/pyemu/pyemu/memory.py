@@ -577,3 +577,10 @@ class VirtualMemoryData(object):
 
         block, cell = self.pager.get_data_cell_address((virtual_block, 0))
         self.memory.put_data((block, 0), data)
+
+    def get_cell(self, address):
+        u""" Grąžina atminties ląstelės objektą.
+        """
+
+        return self.memory._get_cell(
+                self.pager.get_data_cell_address(address))

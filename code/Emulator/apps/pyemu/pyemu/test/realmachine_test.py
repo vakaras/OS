@@ -185,7 +185,7 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.R1 == '       1'
         self.proc.R2 = 2
         assert self.proc.R2 == '       2'
-        assert self.proc.step()
+        assert self.proc._step()
         assert self.data[5] == '       3'
 
     def test_command_SUB(self):

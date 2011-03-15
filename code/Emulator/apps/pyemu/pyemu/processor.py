@@ -12,23 +12,6 @@ from pyemu.registers import ChoiceRegister, StatusFlagRegister
 from pyemu.registers import hex_to_int, set_descriptor
 
 
-def convert_file_args(x, y):
-    try:
-        x = int(x)
-        y = hex_to_int(y)
-    except ValueError:
-        raise WrongOpCode(u'Netinkami komandos argumentai.')
-    return x, y
-
-
-def convert_address_arg(y):
-    try:
-        y = hex_to_int(y)
-    except ValueError:
-        raise WrongOpCode(u'Netinkami komandos argumentai.')
-    return y
-
-
 class ArgumentConverter(object):
     u""" Pasirūpina, kad komandai perduoti argumentai būtų
     reikiamo tipo.
@@ -81,22 +64,56 @@ class ArgumentConverter(object):
         return convert
 
 
-def check_integer_result(proc, size, x):
-    try:
-        Register(size).value = x
-    except exceptions.ValueError:
-        proc.SF.CF = 1
-        x = int(str(x)[:8])
-    else:
-        proc.SF.CF = 0
-    try:
-        IntegerRegister(size).value = x
-    except exceptions.ValueError:
-        proc.SF.OF = 1
-        x = '{0:+}'.format(x)[:8]
-    else:
-        proc.SF.OF = 0
-    return x
+class ArithmeticCommandEnvironment(object):
+    u""" Dekoratorius parūpinantis, kad aritmetinių veiksmų komandos gautų
+    teisingus parametrus registruose ir kad prireikus būtų nustatyti
+    reikiami SF požymiai.
+    """
+
+    def __init__(self):
+        u""" Inicializuoja aplinką.
+        """
+
+    def __call__(self, fn):
+        u""" „Dekoravimas“.
+
+        + ``fn`` – dekoruojamoji funkcija.
+        """
+
+        def create(proc, *args):
+            u""" Funkcija, kuri prideda du papildomus argumentus –
+            sveikuosius, skaičius, kurie yra konvertuotos registrų
+            R1 ir R2 reikšmės.
+            """
+
+            r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+            r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
+
+            pairs = fn(proc, int(r1), int(r2), *args)
+            if not isinstance(pairs[0], tuple):
+                pairs = (pairs,)
+            for cell, rez in pairs:
+                cell.value = self.check_integer_result(
+                    proc, cell.size, rez)
+
+        return create
+
+    def check_integer_result(self, proc, size, x):
+        try:
+            Register(size).value = x
+        except exceptions.ValueError:
+            proc.SF.CF = 1
+            x = int(str(x)[:8])
+        else:
+            proc.SF.CF = 0
+        try:
+            IntegerRegister(size).value = x
+        except exceptions.ValueError:
+            proc.SF.OF = 1
+            x = '{0:+}'.format(x)[:8]
+        else:
+            proc.SF.OF = 0
+        return x
 
 
 class Commands(object):
@@ -143,50 +160,37 @@ class Commands(object):
         proc.virtual_memory_data[x] = proc.R2
 
     @staticmethod
-    def ADD(proc):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = check_integer_result(
-                proc, proc.registers['R1'].size, int(r1) + int(r2))
+    @ArithmeticCommandEnvironment()
+    def ADD(proc, r1, r2):
+        return proc.registers['R1'], r1 + r2
 
     @staticmethod
     @ArgumentConverter('a')
-    def ADDM(proc, x):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.virtual_memory_data[x] = check_integer_result( 
-                proc, proc.registers['R1'].size, int(r1) + int(r2))
+    @ArithmeticCommandEnvironment()
+    def ADDM(proc, r1, r2, x):
+        return proc.virtual_memory_data.get_cell(x), r1 + r2
 
     @staticmethod
-    def SUB(proc):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = check_integer_result(
-                proc, proc.registers['R1'].size, int(r1) - int(r2))
+    @ArithmeticCommandEnvironment()
+    def SUB(proc, r1, r2):
+        return proc.registers['R1'], r1 - r2
 
     @staticmethod
     @ArgumentConverter('a')
-    def SUBM(proc, x):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.virtual_memory_data[x] = check_integer_result(
-                proc, proc.registers['R1'].size, int(r1) - int(r2))
+    @ArithmeticCommandEnvironment()
+    def SUBM(proc, r1, r2, x):
+        return proc.virtual_memory_data.get_cell(x), r1 - r2
 
     @staticmethod
-    def DIV(proc):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = check_integer_result(
-                proc, proc.registers['R1'].size, int(r1) / int(r2))
-        proc.R2 = check_integer_result(
-                proc, proc.registers['R2'].size, int(r1) % int(r2))
+    @ArithmeticCommandEnvironment()
+    def DIV(proc, r1, r2):
+        return ((proc.registers['R1'], r1 / r2),
+                (proc.registers['R2'], r1 % r2),)
 
     @staticmethod
-    def MUL(proc):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = check_integer_result(
-                proc, proc.registers['R1'].size, int(r1) * int(r2))
+    @ArithmeticCommandEnvironment()
+    def MUL(proc, r1, r2):
+        return proc.registers['R1'], r1 * r2
 
     @staticmethod
     def CMP(proc):
