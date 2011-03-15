@@ -3,6 +3,7 @@
 
 
 import inspect
+import sys, traceback
 
 from pyemu.exceptions import ProgramInterrupt, StopProgram, WrongOpCode
 from pyemu.registers import Register, IntegerRegister, HexRegister
@@ -175,11 +176,12 @@ class Commands(object):
 
     @staticmethod
     def GD(proc, x, y):
-        proc.virtual_memory_data.set_block(
-                hex_to_int(y), proc.pager.file_read(int(x)))
+        x, y = convert_file_args(x, y)
+        proc.virtual_memory_data.set_block(y, proc.pager.file_read(x))
 
     @staticmethod
     def GDR(proc, y):
+        y = convert_address_arg(y)
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         proc.virtual_memory_data.set_block(
                 hex_to_int(y), proc.pager.file_read(int(r1)))
@@ -335,7 +337,7 @@ class Processor(object):
                 command, args, self.IC, self.R1, self.R2)
         try:
             self.commands[command](self, *args)
-        except TypeError:
+        except TypeError, e:
             raise WrongOpCode(u'Netinkami argumentai komandai.')
 
     def execute(self):

@@ -10,7 +10,9 @@ import os
 import unittest
 
 from pyemu import exceptions
-from pyemu.exceptions import BadAddress, WrongOpCode
+from pyemu.exceptions import BadAddress, WrongOpCode, WrongFileDescriptor
+from pyemu.exceptions import ReadingWriteOnlyFileError
+from pyemu.exceptions import WritingReadOnlyFileError
 from pyemu.realmachine import RealMachine
 from pyemu.memory import RealMemory, Pager
 from pyemu.memory import VirtualMemoryCode, VirtualMemoryData
@@ -231,6 +233,7 @@ class ProcessorTest(unittest.TestCase):
         self.code[0] = 'PD 1 0'
         assert self.proc.step() == True
 
+        assert self.proc.IC == 1
         self.code[1] = 'PD a 0'
         try:
             self.proc._step()
@@ -239,11 +242,123 @@ class ProcessorTest(unittest.TestCase):
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
-        #pabandyti x – nėra skaičius, y – nėra skaičius, 
-        #x – yra skaičius didesnis už 4, y – yra netinkamas adresas.
+        assert self.proc.IC == 2
+        self.code[2] = 'PD 1 z'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 3
+        self.code[3] = 'PD 5 0'
+        try:
+            self.proc._step()
+        except WrongFileDescriptor, e:
+            assert unicode(e) == u'Nežinomas id.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 4
+        self.code[4] = 'PD 1 30'
+        try:
+            self.proc._step()
+        except BadAddress, e:
+            assert unicode(e) == \
+                    u'Virtualus adresas nepriklauso duomenų segmentui.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
     def test_command_PDR(self):
-        pass
+        assert self.proc.IC == 0
+        self.proc.R1 = 1
+        self.code[0] = 'PDR 0'
+        assert self.proc.step() == True
+
+        assert self.proc.IC == 1
+        self.proc.R1 = 'a'
+        self.code[1] = 'PDR 0'
+        try:
+            self.proc._step()
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Reikšmė turi būti skaičius'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 2
+        self.proc.R1 = 1
+        self.code[2] = 'PDR z'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 3
+        self.proc.R1 = 5
+        self.code[3] = 'PDR 0'
+        try:
+            self.proc._step()
+        except WrongFileDescriptor, e:
+            assert unicode(e) == u'Nežinomas id.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 4
+        self.proc.R1 = 1
+        self.code[4] = 'PDR 30'
+        try:
+            self.proc._step()
+        except BadAddress, e:
+            assert unicode(e) == \
+                    u'Virtualus adresas nepriklauso duomenų segmentui.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+    def test_command_GD(self):
+
+        assert self.proc.IC == 0
+        self.code[0] = 'GD 0 0'
+        assert self.proc.step() == True
+
+        assert self.proc.IC == 1
+        self.code[1] = 'GD a 0'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 2
+        self.code[2] = 'GD 0 z'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 3
+        self.code[3] = 'GD 5 0'
+        try:
+            self.proc._step()
+        except WrongFileDescriptor, e:
+            assert unicode(e) == u'Nežinomas id.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 4
+        self.code[4] = 'GD 0 20'
+        try:
+            self.proc._step()
+        except BadAddress, e:
+            assert unicode(e) == \
+                    u'Virtualus adresas nepriklauso duomenų segmentui.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
     def tearDown(self):
         u""" Ištrina mašiną.
@@ -427,8 +542,9 @@ class RealMemoryTest(unittest.TestCase):
         assert pager.file_read(0) == '01234567' * 15 + ' ' * 8
         try:
             pager.file_write(0, 'Sveikas pasauli!')
-        except TypeError, e:
-            assert str(e) == 'reader() takes no arguments (1 given)'
+        except WritingReadOnlyFileError, e:
+            assert unicode(e) == \
+                    u'Bandoma rašyti į failą atidarytą rašymui.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
@@ -438,8 +554,9 @@ class RealMemoryTest(unittest.TestCase):
         assert out[0] == 'Sveikas ' + 'pasauli!' + ' ' * 8 * 14
         try:
             pager.file_read(1)
-        except TypeError, e:
-            assert str(e) == 'writer() takes exactly 1 argument (0 given)'
+        except ReadingWriteOnlyFileError, e:
+            assert unicode(e) == \
+                    u'Bandoma skaityti iš failo atidaryto rašymui.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
@@ -460,8 +577,8 @@ class RealMemoryTest(unittest.TestCase):
                 )
         try:
             pager.file_read(0)
-        except KeyError, e:
-            assert str(e) == '0'
+        except WrongFileDescriptor, e:
+            assert unicode(e) == u'Nežinomas id.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
