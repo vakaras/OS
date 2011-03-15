@@ -77,6 +77,7 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.PI == '1'
 
     def test_command_LR1(self):
+
         assert self.proc.IC == 0
         assert self.proc.R1 == '00000000'
         assert self.proc.R2 == '00000000'
@@ -88,11 +89,21 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.step()
         assert self.proc.R1 == '     230'
         assert self.proc.R2 == '00000000'
+
         assert self.proc.IC == 1
         self.code[1] = ' LR1 10'
         assert self.proc.PI == '0'
         assert self.proc.step() == False
         assert self.proc.PI == '1'
+
+        assert self.proc.IC == 1
+        self.code[1] = ' LR1 z'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
     def test_command_LR2(self):
         assert self.proc.IC == 0
@@ -122,13 +133,28 @@ class ProcessorTest(unittest.TestCase):
         assert self.data[5] == '       2'
 
     def test_command_ADD(self):
+        assert self.proc.IC == 0
         self.code[0] = 'ADD'
         self.proc.R1 = 1
         assert self.proc.R1 == '       1'
         self.proc.R2 = 2
         assert self.proc.R2 == '       2'
+        assert self.proc.SF.CF == 0
+        assert self.proc.SF.OF == 0
         assert self.proc.step()
+        assert self.proc.SF.CF == 0
+        assert self.proc.SF.OF == 0
         assert self.proc.R1 == '       3'
+
+        self.proc.R1 = 9999999
+        self.proc.R2 = 9999999
+        assert self.proc.IC == 1
+        self.code[1] = 'ADD'
+        assert self.proc.SF.CF == 0
+        assert self.proc.SF.OF == 0
+        assert self.proc._step() == True
+        assert self.proc.SF.CF == 0
+        assert self.proc.SF.OF == 1
 
     def test_command_ADD_1(self):
         self.code[0] = 'ADD'
@@ -198,6 +224,16 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.R2 == '     342'
         assert self.proc.step()
         assert self.proc.R1 == ' 1447686'
+
+        assert self.proc.IC == 1
+        assert self.proc.SF.CF == 0
+        assert self.proc.SF.OF == 0
+        self.proc.R1 = 9999999
+        self.proc.R2 = 9999999
+        self.code[1] = 'MUL'
+        assert self.proc.step()
+        assert self.proc.SF.CF == 1
+        assert self.proc.SF.OF == 1
 
     def test_command_CMP(self):
         self.code[0] = 'CMP'

@@ -5,6 +5,7 @@
 import inspect
 import sys, traceback
 
+from pyemu import exceptions
 from pyemu.exceptions import ProgramInterrupt, StopProgram, WrongOpCode
 from pyemu.registers import Register, IntegerRegister, HexRegister
 from pyemu.registers import ChoiceRegister, StatusFlagRegister
@@ -26,6 +27,24 @@ def convert_address_arg(y):
     except ValueError:
         raise WrongOpCode(u'Netinkami komandos argumentai.')
     return y
+
+
+def check_integer_result(proc, size, x):
+    try:
+        Register(size).value = x
+    except exceptions.ValueError:
+        proc.SF.CF = 1
+        x = int(str(x)[:8])
+    else:
+        proc.SF.CF = 0
+    try:
+        IntegerRegister(size).value = x
+    except exceptions.ValueError:
+        proc.SF.OF = 1
+        x = '{0:+}'.format(x)[:8]
+    else:
+        proc.SF.OF = 0
+    return x
 
 
 class Commands(object):
@@ -53,63 +72,65 @@ class Commands(object):
 
     @staticmethod
     def LR1(proc, x):
-        proc.R1 = proc.virtual_memory_data[hex_to_int(x)]
+        proc.R1 = proc.virtual_memory_data[convert_address_arg(x)]
 
     @staticmethod
     def LR2(proc, x):
-        proc.R2 = proc.virtual_memory_data[hex_to_int(x)]
+        proc.R2 = proc.virtual_memory_data[convert_address_arg(x)]
 
     @staticmethod
     def SR1(proc, x):
-        proc.virtual_memory_data[hex_to_int(x)] = proc.R1
+        proc.virtual_memory_data[convert_address_arg(x)] = proc.R1
 
     @staticmethod
     def SR2(proc, x):
-        proc.virtual_memory_data[hex_to_int(x)] = proc.R2
+        proc.virtual_memory_data[convert_address_arg(x)] = proc.R2
 
     @staticmethod
     def ADD(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) + int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
-        # TODO: Išimtys turi sukelti pertraukimus.
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) + int(r2))
 
     @staticmethod
     def ADDM(proc, x):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.virtual_memory_data[hex_to_int(x)] = int(r1) + int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.virtual_memory_data[convert_address_arg(x)] = \
+                check_integer_result(
+                        proc, proc.registers['R1'].size, int(r1) + int(r2))
 
     @staticmethod
     def SUB(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) - int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) - int(r2))
 
     @staticmethod
     def SUBM(proc, x):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.virtual_memory_data[hex_to_int(x)] = int(r1) - int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.virtual_memory_data[convert_address_arg(x)] = \
+                check_integer_result(
+                        proc, proc.registers['R1'].size, int(r1) - int(r2))
 
     @staticmethod
     def DIV(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) / int(r2)
-        proc.R2 = int(r1) % int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) / int(r2))
+        proc.R2 = check_integer_result(
+                proc, proc.registers['R2'].size, int(r1) % int(r2))
 
     @staticmethod
     def MUL(proc):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
         r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
-        proc.R1 = int(r1) * int(r2)
-        # FIXME: Kaip turi suformuoti SF požymius?
+        proc.R1 = check_integer_result(
+                proc, proc.registers['R1'].size, int(r1) * int(r2))
 
     @staticmethod
     def CMP(proc):
