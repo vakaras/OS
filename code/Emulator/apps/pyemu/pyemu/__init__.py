@@ -5,8 +5,7 @@ import sys
 
 from pyemu.realmachine import RealMachine
 from pyemu.filesystem import file_system
-
-import wx
+import pyemu.gui
 
 def main(argv=None):
     """
@@ -25,15 +24,10 @@ def main(argv=None):
         print u'Naudojimas: pyemu <failas>'
         sys.exit(1)
 
-    rm = RealMachine()
-
     if gui:
-        app = wx.App()
-        frame = wx.Frame(None, -1, 'Bla')
-        frame.Show()
-        app.MainLoop()
+        pyemu.gui.start_gui(file)
     else:
-
+        
         def stdin():
             return raw_input('INPUT: ')
 
@@ -41,6 +35,7 @@ def main(argv=None):
             for i in range(0, len(block), 8):
                 print 'Word {0:2}: "{1}"'.format(i/8, block[i:i+8])
 
+        rm = RealMachine()
         rm.load_virtual_machine(file, stdin, stdout)
         for name in file_system.get_files():
             print 'Failas {0}'.format(name)
