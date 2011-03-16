@@ -14,6 +14,9 @@ bootstrap:
 gui:
 	bin/pyemu gui apps/pyemu/pyemu/test/test_program_1
 
+fib:
+	bin/pyemu apps/pyemu/pyemu/test/test_program_fib
+
 run:
 	bin/pyemu apps/pyemu/pyemu/test/test_program_1
 

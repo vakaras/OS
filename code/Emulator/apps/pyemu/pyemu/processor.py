@@ -12,6 +12,14 @@ from pyemu.registers import ChoiceRegister, StatusFlagRegister
 from pyemu.registers import hex_to_int, set_descriptor
 
 
+def reg_to_int(register):
+    u""" Konvertuoja bendrojo naudojimo registro reikšmę į skaičių.
+    """
+
+    r = IntegerRegister(register.size).value = register.value
+    return int(r)
+
+
 class ArgumentConverter(object):
     u""" Pasirūpina, kad komandai perduoti argumentai būtų
     reikiamo tipo.
@@ -86,8 +94,8 @@ class ArithmeticCommandEnvironment(object):
             R1 ir R2 reikšmės.
             """
 
-            r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-            r2 = IntegerRegister(proc.registers['R2'].size).value = proc.R2
+            r1 = reg_to_int(proc.registers['R1'])
+            r2 = reg_to_int(proc.registers['R2'])
 
             pairs = fn(proc, int(r1), int(r2), *args)
             if not isinstance(pairs[0], tuple):
@@ -193,13 +201,24 @@ class Commands(object):
         return proc.registers['R1'], r1 * r2
 
     @staticmethod
+    @ArgumentConverter('a')
+    @ArithmeticCommandEnvironment()
+    def MULM(proc, r1, r2, x):
+        return proc.virtual_memory_data.get_cell(x), r1 * r2
+
+    @staticmethod
     def CMP(proc):
-        if proc.R1 > proc.R2:
+        r1 = reg_to_int(proc.registers['R1'])
+        r2 = reg_to_int(proc.registers['R2'])
+        print 'CMP:', r1, r2
+        if r1 > r2:
             proc.SF.ZF = 0
             proc.SF.SF = 0
-        elif proc.R1 == proc.R2:
+        elif r1 == r2:
+            print 'keicia 2'
             proc.SF.ZF = 1
         else:
+            print 'keicia 3'
             proc.SF.ZF = 0
             proc.SF.SF = 1
 
@@ -259,7 +278,7 @@ class Commands(object):
     @staticmethod
     @ArgumentConverter('a')
     def PDR(proc, y):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r1 = reg_to_int(proc.registers['R1'])
         proc.pager.file_write(
                 int(r1), proc.virtual_memory_data.get_block(y))
 
@@ -271,7 +290,7 @@ class Commands(object):
     @staticmethod
     @ArgumentConverter('a')
     def GDR(proc, y):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r1 = reg_to_int(proc.registers['R1'])
         proc.virtual_memory_data.set_block(y, proc.pager.file_read(int(r1)))
 
     @staticmethod
@@ -293,7 +312,7 @@ class Commands(object):
 
     @staticmethod
     def FCR(proc):
-        r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
+        r1 = reg_to_int(proc.registers['R1'])
         proc.pager.file_close(int(r1))
 
     @staticmethod
@@ -400,7 +419,8 @@ class Processor(object):
         old_ic = self.IC
         try:
             self._step()
-        except ProgramInterrupt:
+        except ProgramInterrupt, e:
+            print 'Klaida:', unicode(e).encode('utf-8')
             self.PI = 1
             self.IC = old_ic
             return False
@@ -424,8 +444,9 @@ class Processor(object):
         u""" Įvykdo komandą ``command`` su argumentais ``args``.
         """
 
-        print 'IC: {2:3} R1: {3} R2 {4} command: {0} args: {1}'.format(
-                command, args, self.IC, self.R1, self.R2)
+        print ('IC: {2:3} PI: {5} SF(C{6.CF} Z{6.ZF} S{6.SF} O{6.OF}) '\
+               'R1: {3} R2: {4} command: {0} args: {1}').format(
+                command, args, self.IC, self.R1, self.R2, self.PI, self.SF)
         try:
             self.commands[command](self, *args)
         except TypeError, e:
@@ -437,3 +458,5 @@ class Processor(object):
 
         while self.step():
             pass
+        print ('IC: {2:3} PI: {5} R1: {3} R2: {4} ').format(
+                0, 0, self.IC, self.R1, self.R2, self.PI)

@@ -250,7 +250,7 @@ class ProcessorTest(unittest.TestCase):
         self.proc.R2 = 1
         assert self.proc.step()
         assert self.proc.SF.ZF == 0
-        assert self.proc.SF.SF == 0
+        assert self.proc.SF.SF == 1
 
     def test_command_CMP_1(self):
         self.code[0] = 'CMP'
@@ -265,7 +265,7 @@ class ProcessorTest(unittest.TestCase):
         self.proc.R2 = -1
         assert self.proc.step()
         assert self.proc.SF.ZF == 0
-        assert self.proc.SF.SF == 1
+        assert self.proc.SF.SF == 0
 
     def test_command_JMP(self):
         self.code[0] = 'JMP 5'
