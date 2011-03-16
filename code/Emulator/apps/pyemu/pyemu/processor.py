@@ -272,8 +272,7 @@ class Commands(object):
     @ArgumentConverter('a')
     def GDR(proc, y):
         r1 = IntegerRegister(proc.registers['R1'].size).value = proc.R1
-        proc.virtual_memory_data.set_block(
-                hex_to_int(y), proc.pager.file_read(int(r1)))
+        proc.virtual_memory_data.set_block(y, proc.pager.file_read(int(r1)))
 
     @staticmethod
     @ArgumentConverter('?', 'a')

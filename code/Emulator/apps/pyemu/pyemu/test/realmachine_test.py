@@ -76,6 +76,15 @@ class ProcessorTest(unittest.TestCase):
         assert self.proc.step() == False
         assert self.proc.PI == '1'
 
+        assert self.proc.IC == 0
+        self.code[0] = 'LR1 0 1'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkamas argumentų kiekis.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
     def test_command_LR1(self):
 
         assert self.proc.IC == 0
@@ -395,6 +404,88 @@ class ProcessorTest(unittest.TestCase):
                     u'Virtualus adresas nepriklauso duomenų segmentui.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+    def test_command_GDR(self):
+        assert self.proc.IC == 0
+        self.proc.R1 = 0
+        self.code[0] = 'GDR 0'
+        assert self.proc.step() == True
+
+        assert self.proc.IC == 1
+        self.proc.R1 = 'a'
+        self.code[1] = 'GDR 0'
+        try:
+            self.proc._step()
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Reikšmė turi būti skaičius'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 2
+        self.proc.R1 = 0
+        self.code[2] = 'GDR z'
+        try:
+            self.proc._step()
+        except WrongOpCode, e:
+            assert unicode(e) == u'Netinkami komandos argumentai.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 3
+        self.proc.R1 = 5
+        self.code[3] = 'GDR 0'
+        try:
+            self.proc._step()
+        except WrongFileDescriptor, e:
+            assert unicode(e) == u'Nežinomas id.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 4
+        self.proc.R1 = 0
+        self.code[4] = 'GDR 30'
+        try:
+            self.proc._step()
+        except BadAddress, e:
+            assert unicode(e) == \
+                    u'Virtualus adresas nepriklauso duomenų segmentui.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+    def test_command_FO_FC_FCR_FD(self):
+
+        assert self.proc.IC == 0
+        self.data[0] = 'tmp_file'
+        self.code[0] = 'FO w 0'
+        self.code[1] = 'FC 2'
+        assert self.proc.step()
+        assert self.proc.step()
+
+        assert self.proc.IC == 2
+        self.code[2] = 'FO r 0'
+        self.code[3] = 'FCR'
+        assert self.proc.step()
+        assert self.proc.step()
+
+        assert self.proc.IC == 4
+        self.code[4] = 'FO q 0'
+        try:
+            self.proc._step()
+        except exceptions.ValueError, e:
+            assert unicode(e) == u'Neteisingas failo atidarymo rėžimas.'
+        else:
+            self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
+
+        assert self.proc.IC == 5
+        self.code[5] = 'FD 0'
+        assert self.proc.step()
+
+    def test_execute(self):
+
+        assert self.proc.IC == 0
+        self.code[0] = 'SR1 2'
+        self.code[1] = 'HALT'
+        self.proc.execute()
 
     def tearDown(self):
         u""" Ištrina mašiną.
