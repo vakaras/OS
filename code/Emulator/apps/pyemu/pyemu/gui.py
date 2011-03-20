@@ -341,7 +341,7 @@ def DoExecute(caller):
         rm.processor.execute()
     except StopProgram, ei:
         stdout(unicode(ei))
-    except Exception, e
+    except Exception, e:
         stdout(unicode(e))
     del vm_data[:]
     del data[:]
@@ -368,7 +368,7 @@ def DoStep(caller):
         rm.processor.step()
     except StopProgram, ei:
         stdout(unicode(ei))
-    except Exception, e
+    except Exception, e:
         stdout(unicode(e))
     del vm_data[:]
     del data[:]
