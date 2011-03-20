@@ -341,7 +341,7 @@ class RealMemory(object):
                 block.append(Cell())
             self._cells.append(block)
 
-    def SetHandler(handler):
+    def SetHandler(self, handler):
         if not handler:
             self.handler = lambda x, y: None
         else:
