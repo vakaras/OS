@@ -12,7 +12,7 @@ bootstrap:
 	python bootstrap.py
 
 gui:
-	bin/pyemu gui apps/pyemu/pyemu/test/test_program_1
+	bin/pyemu gui apps/pyemu/pyemu/test/test_program_fib
 
 fib:
 	bin/pyemu apps/pyemu/pyemu/test/test_program_fib

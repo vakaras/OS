@@ -352,6 +352,7 @@ class Processor(object):
         self.virtual_memory_data = virtual_memory_data
         self.commands = Commands()
         self.pager = pager
+        self.error_message = None
 
         self.registers = {
                 'R1': Register(),       # Žodžio ilgio bendro naudojimo 
