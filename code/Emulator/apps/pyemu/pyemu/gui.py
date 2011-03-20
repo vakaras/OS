@@ -9,6 +9,7 @@ from pyemu.realmachine import RealMachine
 from pyemu.filesystem import file_system
 from pyemu.memory import BLOCK_SIZE
 from pyemu.memory import BLOCKS
+from pyemu.memory import PAGER_SIZE
 
 from pyemu import exceptions
 from pyemu.exceptions import StopProgram
@@ -109,6 +110,9 @@ class SimpleGridForVM(wx.grid.Grid):
         self.ProcessTableMessage(msg)
         wx.grid.Grid.ForceRefresh(self) 
 
+    def SetValue(self, row, col, value):
+        if row > -1 and col > -1:
+          self.SetCellValue(row, col, value)
 
 class SimpleGrid(wx.grid.Grid):
     def __init__(self, parent, data_list):
@@ -175,6 +179,7 @@ class VMFrame(wx.Frame):
 
     def OnQuit(self, event):
         self.Close()
+
 
     def DoNextStep(self, event):
         DoStep(self)
@@ -268,7 +273,8 @@ class TestFrame(wx.Frame):
 
     def OnQuit(self, event):
         self.Close()
-        event.Skip()
+        print "Baigtas darbas."
+        sys.exit()
 
     def setRegistersOnLoad(self):
         self.IC_text.SetValue(str(rm.processor.registers["IC"]))
@@ -335,30 +341,34 @@ def onCellChange(x, y):
 def DoExecute(caller):
     if not rm.processor.execute():
         stdout(rm.processor.error_message)
-#    del vm_data[:]
-#    del data[:]
-#    for i in range(BLOCKS):
-#        row = []
-#        for j in range(BLOCK_SIZE):
-#            row.append(rm.real_memory[i, j])
-#        data.append(row)
-#    for i in range(rm.pager.get_C()):
-#        row = []
-#        for j in range(BLOCK_SIZE):
-#            row.append(rm.virtual_memory_code[i, j])
-#        vm_data.append(row)
-#    for i in range(rm.pager.get_D()):
-#        row = []
-#        for j in range(BLOCK_SIZE):
-#            row.append(rm.virtual_memory_data[i, j])
-#        vm_data.append(row)
-#    caller.grid_1.UpdateValues()
-#    caller.setRegistersOnLoad()
+    del vm_data[:]
+    del data[:]
+    for i in range(BLOCKS):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.real_memory[i, j])
+        data.append(row)
+    for i in range(rm.pager.get_C()):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.virtual_memory_code[i, j])
+        vm_data.append(row)
+    for i in range(rm.pager.get_D()):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.virtual_memory_data[i, j])
+        vm_data.append(row)
+    caller.grid_1.UpdateValues()
+    caller.setRegistersOnLoad()
     return True
 
 def DoStep(caller):
     if not rm.processor.step():
         stdout(rm.processor.error_message)
+    while len(pakito) > 0:
+        (x, y) = pakito.pop()
+        caller.grid_1.SetValue(x - PAGER_SIZE, y, rm.real_memory[(x, y)])
+        caller.parent.grid_1.SetValue(x, y, rm.real_memory[(x, y)])
 #    del vm_data[:]
 #    del data[:]
 #    for i in range(BLOCKS):
@@ -400,12 +410,11 @@ class Changer(object):
     def get_handler(self):
         if self.frame:
             def handler(x, y):
-                #self.frame.grid_1.SetValue(x, y, rm.real_memory[x, y])
-                print "pakito"+str(x)+str(y)
+                pakito.append((x, y))
         return handler
 
 c = Changer()
-
+pakito = []
 data = []
 vm_data = []
 colLabels = ["0","1", "2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
@@ -441,7 +450,6 @@ def start_gui(file):
         app.SetTopWindow(frame)
         frame.Centre()
         frame.Show()
-#        frame.grid_1.SetValue(3,5, "jonas")
     except Exception, detail:
         stdout_dialog = StdOutDialog(unicode(detail))
         return 1
