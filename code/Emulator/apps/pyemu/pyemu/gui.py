@@ -14,15 +14,6 @@ from pyemu import exceptions
 from pyemu.exceptions import StopProgram
 
 
-data = []
-vm_data = []
-colLabels = ["0","1", "2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
-rowLabelsForVM = []
-rowLabels = []
-app = wx.App()
-rm = RealMachine()
-
-
 class StdOutDialog(wx.Frame):
     def __init__(self, message, *args, **kwds):
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE
@@ -277,6 +268,7 @@ class TestFrame(wx.Frame):
 
     def OnQuit(self, event):
         self.Close()
+        event.Skip()
 
     def setRegistersOnLoad(self):
         self.IC_text.SetValue(str(rm.processor.registers["IC"]))
@@ -336,60 +328,58 @@ def getRowLabelsForVM():
     for i in range(150):
         rowLabelsForVM.append("%s" % i)
 
+def onCellChange(x, y):
+    pass
+
+
 def DoExecute(caller):
-    try:
-        rm.processor.execute()
-    except StopProgram, ei:
-        stdout(unicode(ei))
-    except Exception, e:
-        stdout(unicode(e))
-    del vm_data[:]
-    del data[:]
-    for i in range(BLOCKS):
-        row = []
-        for j in range(BLOCK_SIZE):
-            row.append(rm.real_memory[i, j])
-        data.append(row)
-    for i in range(rm.pager.get_C()):
-        row = []
-        for j in range(BLOCK_SIZE):
-            row.append(rm.virtual_memory_code[i, j])
-        vm_data.append(row)
-    for i in range(rm.pager.get_D()):
-        row = []
-        for j in range(BLOCK_SIZE):
-            row.append(rm.virtual_memory_data[i, j])
-        vm_data.append(row)
-    caller.grid_1.UpdateValues()
-    caller.setRegistersOnLoad()
+    if not rm.processor.execute():
+        stdout(rm.processor.error_message)
+#    del vm_data[:]
+#    del data[:]
+#    for i in range(BLOCKS):
+#        row = []
+#        for j in range(BLOCK_SIZE):
+#            row.append(rm.real_memory[i, j])
+#        data.append(row)
+#    for i in range(rm.pager.get_C()):
+#        row = []
+#        for j in range(BLOCK_SIZE):
+#            row.append(rm.virtual_memory_code[i, j])
+#        vm_data.append(row)
+#    for i in range(rm.pager.get_D()):
+#        row = []
+#        for j in range(BLOCK_SIZE):
+#            row.append(rm.virtual_memory_data[i, j])
+#        vm_data.append(row)
+#    caller.grid_1.UpdateValues()
+#    caller.setRegistersOnLoad()
+    return True
 
 def DoStep(caller):
-    try:
-        rm.processor.step()
-    except StopProgram, ei:
-        stdout(unicode(ei))
-    except Exception, e:
-        stdout(unicode(e))
-    del vm_data[:]
-    del data[:]
-    for i in range(BLOCKS):
-        row = []
-        for j in range(BLOCK_SIZE):
-            row.append(rm.real_memory[i, j])
-        data.append(row)
-    for i in range(rm.pager.get_C()):
-        row = []
-        for j in range(BLOCK_SIZE):
-            row.append(rm.virtual_memory_code[i, j])
-        vm_data.append(row)
-    for i in range(rm.pager.get_D()):
-        row = []
-        for j in range(BLOCK_SIZE):
-            row.append(rm.virtual_memory_data[i, j])
-        vm_data.append(row)
-    caller.grid_1.UpdateValues()
-    caller.parent.grid_1.UpdateValues()
-    caller.setRegistersOnLoad()
+    if not rm.processor.step():
+        stdout(rm.processor.error_message)
+#    del vm_data[:]
+#    del data[:]
+#    for i in range(BLOCKS):
+#        row = []
+#        for j in range(BLOCK_SIZE):
+#            row.append(rm.real_memory[i, j])
+#        data.append(row)
+#    for i in range(rm.pager.get_C()):
+#        row = []
+#        for j in range(BLOCK_SIZE):
+#            row.append(rm.virtual_memory_code[i, j])
+#        vm_data.append(row)
+#    for i in range(rm.pager.get_D()):
+#        row = []
+#        for j in range(BLOCK_SIZE):
+#            row.append(rm.virtual_memory_data[i, j])
+#        vm_data.append(row)
+#    caller.grid_1.UpdateValues()
+#    caller.parent.grid_1.UpdateValues()
+#    caller.setRegistersOnLoad()
+    return True
 
 def stdin():
     stdin_dialog = StdInDialog(None)
@@ -397,6 +387,15 @@ def stdin():
 
 def stdout(message):
     stdout_dialog = StdOutDialog(message)
+    return True
+
+data = []
+vm_data = []
+colLabels = ["0","1", "2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
+rowLabelsForVM = []
+rowLabels = []
+app = wx.App()
+rm = RealMachine(onCellChange)
 
 def start_gui(file):
     try:

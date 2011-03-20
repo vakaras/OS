@@ -13,11 +13,11 @@ class RealMachine(object):
     u""" Realią mašiną simuliuojantis objektas.
     """
 
-    def __init__(self):
+    def __init__(self, cell_handler=None):
         u""" Inicializuoja mašinos objektą.
         """
-
-        self.real_memory = RealMemory()
+        
+        self.real_memory = RealMemory(cell_handler)
         self.processor = Processor(self.real_memory)
         self.virtual_memory_data = None
         self.virtual_memory_code = None
