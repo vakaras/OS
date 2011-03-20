@@ -352,6 +352,7 @@ class Processor(object):
         self.virtual_memory_data = virtual_memory_data
         self.commands = Commands()
         self.pager = pager
+        self.error_message = None
 
         self.registers = {
                 'R1': Register(),       # Žodžio ilgio bendro naudojimo 
@@ -420,7 +421,7 @@ class Processor(object):
         try:
             self._step()
         except ProgramInterrupt, e:
-            raise StopProgram('Nutraukta:' + unicode(e).encode('utf-8'))
+            self.error_message = unicode(e)
             self.PI = 1
             self.IC = old_ic
             return False
