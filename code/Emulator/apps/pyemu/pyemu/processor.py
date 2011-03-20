@@ -420,7 +420,7 @@ class Processor(object):
         try:
             self._step()
         except ProgramInterrupt, e:
-            print 'Klaida:', unicode(e).encode('utf-8')
+            raise StopProgram('Nutraukta:' + unicode(e).encode('utf-8'))
             self.PI = 1
             self.IC = old_ic
             return False

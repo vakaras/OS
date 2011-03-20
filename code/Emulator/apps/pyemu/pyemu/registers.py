@@ -327,3 +327,11 @@ class StatusFlagRegister(object):
             self._bytes[flag] = True if value else False
         else:
             raise AttributeError(u'Nežinomas požymis.'.encode('utf-8'))
+
+    def toString(self):
+        u""" Grąžina SF string reikšmę:
+        
+        CxZxSxOx, kur x = požymio reikšmė.
+        """
+        
+        return 'C{0.CF} Z{0.ZF} S{0.SF} O{0.OF}'.format(self)

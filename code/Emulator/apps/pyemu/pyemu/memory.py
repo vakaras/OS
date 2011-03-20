@@ -166,7 +166,7 @@ class Pager(object):
     def file_create(self, name):
         u""" Atidaro failą rašymui.
 
-        Sukuria failo deskriptorių ir grąžina fialo id.
+        Sukuria failo deskriptorių ir grąžina failo id.
         """
 
         for id in range(4):

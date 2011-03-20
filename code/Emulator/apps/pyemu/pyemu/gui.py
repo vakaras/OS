@@ -10,6 +10,18 @@ from pyemu.filesystem import file_system
 from pyemu.memory import BLOCK_SIZE
 from pyemu.memory import BLOCKS
 
+from pyemu import exceptions
+from pyemu.exceptions import StopProgram
+
+
+data = []
+vm_data = []
+colLabels = ["0","1", "2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
+rowLabelsForVM = []
+rowLabels = []
+app = wx.App()
+rm = RealMachine()
+
 
 class StdOutDialog(wx.Frame):
     def __init__(self, message, *args, **kwds):
@@ -19,12 +31,23 @@ class StdOutDialog(wx.Frame):
         result = dial.ShowModal()
         dial.Destroy()
 
-
 class StdInDialog(wx.Frame):
     def __init__(self, *args, **kwds):
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE
+        wx.Frame.__init__(self, None, -1, "")
+        dialog = wx.TextEntryDialog( None, 'INPUT:', 'Input dialog', '' )
+        result = dialog.ShowModal()
+        if result == wx.ID_OK:
+            self.std_input = dialog.GetValue()
+        else:
+            self.std_input = ""
+        dialog.Destroy()
+
+class StdInDialog_old(wx.Frame):
+    def __init__(self, *args, **kwds):
+        kwds["style"] = wx.DEFAULT_DIALOG_STYLE
         wx.Frame.__init__(self, *args, **kwds)
-        self.input_text = wx.TextCtrl(self, -1, "", style=wx.TE_PROCESS_ENTER)
+        self.input_text = wx.TextCtrl(self,-1, "", style=wx.TE_PROCESS_ENTER)
         self.std_input = ""
 
         self.__set_properties()
@@ -33,12 +56,12 @@ class StdInDialog(wx.Frame):
         self.Bind(wx.EVT_TEXT_ENTER, self.Entered, self.input_text)
 
     def __set_properties(self):
-        self.SetTitle("dialog_1")
-        self.text_ctrl_1.SetMinSize((250, 25))
+        self.SetTitle("INPUT:")
+        self.input_text.SetMinSize((250, 25))
 
     def __do_layout(self):
         sizer_2 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_2.Add(self.text_ctrl_1, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 0)
+        sizer_2.Add(self.input_text, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 0)
         self.SetSizer(sizer_2)
         sizer_2.Fit(self)
         self.Layout()
@@ -52,7 +75,7 @@ class GenericTable(wx.grid.PyGridTableBase):
         self.data = data
         self.rowLabels = rowLabels
         self.colLabels = colLabels
-        
+
     def GetNumberRows(self):
         return len(self.data)
 
@@ -62,7 +85,7 @@ class GenericTable(wx.grid.PyGridTableBase):
     def GetColLabelValue(self, col):
         if self.colLabels:
             return self.colLabels[col]
-        
+
     def GetRowLabelValue(self, row):
         if self.rowLabels:
             return self.rowLabels[row]
@@ -76,21 +99,47 @@ class GenericTable(wx.grid.PyGridTableBase):
         return None
 
     def SetValue(self, row, col, value):
-        pass         
+        self.data[row][col] = value
+
 
 class SimpleGridForVM(wx.grid.Grid):
     def __init__(self, parent, data_list):
         wx.grid.Grid.__init__(self, parent, -1)
         getRowLabelsForVM()
-        tableBase = GenericTable(vm_data, rowLabelsForVM, colLabels)
-        self.SetTable(tableBase)
+        self.SetTableBase()
+    
+    def SetTableBase(self):
+        self.tableBase = GenericTable(vm_data, rowLabelsForVM, colLabels)
+        self.SetTable(self.tableBase)
+
+    def UpdateValues( self ):
+        """Update all displayed values"""
+        msg = wx.grid.GridTableMessage(self.tableBase, wx.grid.GRIDTABLE_REQUEST_VIEW_GET_VALUES)
+        self.ProcessTableMessage(msg)
+        wx.grid.Grid.ForceRefresh(self) 
+
 
 class SimpleGrid(wx.grid.Grid):
     def __init__(self, parent, data_list):
         wx.grid.Grid.__init__(self, parent, -1)
         getRowLabels()
-        tableBase = GenericTable(data_list, rowLabels, colLabels)
-        self.SetTable(tableBase)
+        self.SetTableBase()
+    
+    def SetTableBase(self):
+        self.tableBase = GenericTable(data, rowLabels, colLabels)
+        self.SetTable(self.tableBase)
+
+    def UpdateValues( self ):
+        """Update all displayed values"""
+        msg = wx.grid.GridTableMessage(self.tableBase, wx.grid.GRIDTABLE_REQUEST_VIEW_GET_VALUES)
+        self.ProcessTableMessage(msg)
+        wx.grid.Grid.ForceRefresh(self) 
+
+    def SetValue(self, row, col, value):
+        if row > -1 and col > -1:
+          self.SetCellValue(row, col, value)
+
+
 
 class MenuBar(wx.Menu):
     def __init__(self, parent):
@@ -107,9 +156,10 @@ class MenuBar(wx.Menu):
         parent.SetMenuBar(menubar)
 
 class VMFrame(wx.Frame):
-    def __init__(self, parent, *args, **kwds):
-        kwds["style"] = wx.DEFAULT_FRAME_STYLE
-        wx.Frame.__init__(self, parent, -1, "Virtuali masina", size=(1366, 719))
+    def __init__(self, parent, mode):
+        self.mode = mode
+        self.parent = parent
+        wx.Frame.__init__(self, self.parent, -1, "Virtuali masina", size=(1366, 719))
         manu = MenuBar(self)
 
         self.R1_text= wx.TextCtrl(self)
@@ -124,6 +174,9 @@ class VMFrame(wx.Frame):
         self.R2_text.SetEditable(False)
         self.SF_text.SetEditable(False)
         self.IC_text.SetEditable(False)
+        if self.mode == "Supervizorius":
+            self.NextButton = wx.Button(self, -1, "&Next step")
+            self.Bind(wx.EVT_BUTTON, self.DoNextStep, self.NextButton)
 
         self.grid_1 = SimpleGridForVM(self, vm_data)
         self.__set_properties()
@@ -132,8 +185,14 @@ class VMFrame(wx.Frame):
     def OnQuit(self, event):
         self.Close()
 
-    def setRegistersOnLoad(self, rm):
+    def DoNextStep(self, event):
+        DoStep(self)
+
+    def setRegistersOnLoad(self):
         self.IC_text.SetValue(str(rm.processor.registers["IC"]))
+        self.R1_text.SetValue(str(rm.processor.registers["R1"]))
+        self.R2_text.SetValue(str(rm.processor.registers["R2"]))
+        self.SF_text.SetValue(str(rm.processor.registers["SF"].toString()))
 
     def __set_properties(self):
         self.Maximize()
@@ -148,27 +207,27 @@ class VMFrame(wx.Frame):
 
     def __do_layout(self):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
-        fgs = wx.FlexGridSizer(4, 8, 5, 5)
+        fgs = wx.FlexGridSizer(1, 9, 5, 5)
         fgs.AddMany([
           (self.R1),(self.R1_text, 0,0,0), #R1 registras
           (self.R2),(self.R2_text, 0),     #R2 registras
           (self.SF), (self.SF_text, 0),     #SF registras
           (self.IC), (self.IC_text, 0)
         ])
+        if self.mode == "Supervizorius":
+            fgs.Add(self.NextButton, 0, 0)
         sizer_1.Add(fgs, 0,wx.ALIGN_CENTER_VERTICAL, 0)
         sizer_1.Add(self.grid_1, 4, wx.ALIGN_CENTER_VERTICAL, 0)
         self.SetSizer(sizer_1)
         sizer_1.Fit(self)
         self.Layout()
-        
+        self.setRegistersOnLoad()
 
 class TestFrame(wx.Frame):
-    def __init__(self, parent, *args, **kwds):
-        # begin wxGlade: MyFrame1.__init__
-        kwds["style"] = wx.DEFAULT_FRAME_STYLE
+    def __init__(self, parent):
         wx.Frame.__init__(self, parent, -1, "Reali masina", size=(1366, 719))
         manu = MenuBar(self)
-        #wx.Frame.__init__(self, *args, **kwds)
+
         self.R1_text= wx.TextCtrl(self)
         self.R1 = wx.StaticText(self, label="R1:")
         self.R1_text.SetEditable(False)
@@ -207,21 +266,29 @@ class TestFrame(wx.Frame):
         self.grid_1 = SimpleGrid(self, data)
         self.__set_properties()
         self.__do_layout()
-        # end wxGlade
 
     def OnClick(self, event):
-        vmframe = VMFrame(self, -1, "")
-        app.SetTopWindow(vmframe)
-        vmframe.Centre()
-        vmframe.Show()
+        if(self.MODE_radio.GetStringSelection() == "Vartotojas"):
+            DoExecute(self)
+        self.vmframe = VMFrame(self, self.MODE_radio.GetStringSelection())
+        app.SetTopWindow(self.vmframe)
+        self.vmframe.Centre()
+        self.vmframe.Show()
 
     def OnQuit(self, event):
         self.Close()
 
-    def setRegistersOnLoad(self, rm):
+    def setRegistersOnLoad(self):
         self.IC_text.SetValue(str(rm.processor.registers["IC"]))
         self.PLR_text.SetValue(str(rm.processor.registers["PLR"]))
         self.PLBR_text.SetValue(str(rm.processor.registers["PLBR"]))
+        self.CHST_text.SetValue(str(rm.processor.registers["CHST"]))
+        self.R1_text.SetValue(str(rm.processor.registers["R1"]))
+        self.R2_text.SetValue(str(rm.processor.registers["R2"]))
+        self.SF_text.SetValue(str(rm.processor.registers["SF"].toString()))
+        self.IOI_text.SetValue(str(rm.processor.registers["IOI"]))
+        self.SI_text.SetValue(str(rm.processor.registers["SI"]))
+        self.PI_text.SetValue(str(rm.processor.registers["PI"]))
 
     def __set_properties(self):
         self.SetTitle("Reali masina")
@@ -257,16 +324,8 @@ class TestFrame(wx.Frame):
         self.SetSizer(sizer_1)
         sizer_1.Fit(self)
         self.Layout()
+        self.setRegistersOnLoad()
         
-
-data = []
-vm_data = []
-colLabels = ["0","1", "2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
-rowLabelsForVM = []
-rowLabels = []
-app = wx.App()
-rm = RealMachine()
-
 def getRowLabels():
     for i in range(BLOCKS):
         rowLabels.append("%s" % i)
@@ -277,17 +336,70 @@ def getRowLabelsForVM():
     for i in range(150):
         rowLabelsForVM.append("%s" % i)
 
+def DoExecute(caller):
+    try:
+        rm.processor.execute()
+    except StopProgram, ei:
+        stdout(unicode(ei))
+    except Exception, e
+        stdout(unicode(e))
+    del vm_data[:]
+    del data[:]
+    for i in range(BLOCKS):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.real_memory[i, j])
+        data.append(row)
+    for i in range(rm.pager.get_C()):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.virtual_memory_code[i, j])
+        vm_data.append(row)
+    for i in range(rm.pager.get_D()):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.virtual_memory_data[i, j])
+        vm_data.append(row)
+    caller.grid_1.UpdateValues()
+    caller.setRegistersOnLoad()
+
+def DoStep(caller):
+    try:
+        rm.processor.step()
+    except StopProgram, ei:
+        stdout(unicode(ei))
+    except Exception, e
+        stdout(unicode(e))
+    del vm_data[:]
+    del data[:]
+    for i in range(BLOCKS):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.real_memory[i, j])
+        data.append(row)
+    for i in range(rm.pager.get_C()):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.virtual_memory_code[i, j])
+        vm_data.append(row)
+    for i in range(rm.pager.get_D()):
+        row = []
+        for j in range(BLOCK_SIZE):
+            row.append(rm.virtual_memory_data[i, j])
+        vm_data.append(row)
+    caller.grid_1.UpdateValues()
+    caller.parent.grid_1.UpdateValues()
+    caller.setRegistersOnLoad()
 
 def stdin():
     stdin_dialog = StdInDialog(None)
     return stdin_dialog.std_input
 
 def stdout(message):
-    stdout_dialog = StdOutDialog(None, message, -1, "")
+    stdout_dialog = StdOutDialog(message)
 
 def start_gui(file):
     try:
-
         rm.load_virtual_machine(file, stdin, stdout)
         
         for i in range(BLOCKS):
@@ -306,9 +418,8 @@ def start_gui(file):
             for j in range(BLOCK_SIZE):
                 row.append(rm.virtual_memory_data[i, j])
             vm_data.append(row)
-        
-        frame = TestFrame(None, -1, "")
-        frame.setRegistersOnLoad(rm)
+
+        frame = TestFrame(None)
         app.SetTopWindow(frame)
         frame.Centre()
         frame.Show()
@@ -316,4 +427,3 @@ def start_gui(file):
         stdout_dialog = StdOutDialog(unicode(detail))
         return 1
     app.MainLoop()
-    
