@@ -27,7 +27,7 @@ def main(argv=None):
     if gui:
         pyemu.gui.start_gui(file)
     else:
-        
+
         def stdin():
             return raw_input('INPUT: ')
 
