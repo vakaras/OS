@@ -341,6 +341,11 @@ class RealMemory(object):
                 block.append(Cell())
             self._cells.append(block)
 
+    def SetHandler(handler):
+        if not handler:
+            self.handler = lambda x, y: None
+        else:
+            self.handler = handler
 
     def get_address_tuple(self, address):
         u""" Grąžina bloko ir elemento bloke adresus.
