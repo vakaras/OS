@@ -1,0 +1,27 @@
+#!/usr/bin/pyemu
+
+CODE
+GD 0 0
+LR1 0
+SR1 12
+loop: LR2 26
+CMP
+JNA «end»
+LR2 15
+MULM 15
+LR2 27
+ADD
+LR2 26
+JMP «loop»
+end: PD 1 1
+HALT
+ENDCODE
+
+DATA 3
+[10]:Skaičiaus 
+[12]: 0 
+[13]: faktorialas yra 
+[15]: 1
+[26]: 0
+[27]: -1
+ENDDATA
