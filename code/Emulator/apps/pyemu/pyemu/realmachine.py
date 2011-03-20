@@ -22,6 +22,9 @@ class RealMachine(object):
         self.virtual_memory_data = None
         self.virtual_memory_code = None
 
+    def passHandler(self, cell_handler):
+        self.real_memory.SetHandler(cell_handler)
+
     def load_virtual_machine(
             self, file, stdin_handler=None, stdout_handler=None):
         u""" Pakrauna virtualią mašiną.

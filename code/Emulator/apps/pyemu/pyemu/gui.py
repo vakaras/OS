@@ -389,13 +389,30 @@ def stdout(message):
     stdout_dialog = StdOutDialog(message)
     return True
 
+class Changer(object):
+
+    def __init__(self):
+       self.frame = None
+
+    def set_frame(self, frame):
+        self.frame = frame
+
+    def get_handler(self):
+        if self.frame:
+            def handler(x, y):
+                #self.frame.grid_1.SetValue(x, y, rm.real_memory[x, y])
+                print "pakito"+str(x)+str(y)
+        return handler
+
+c = Changer()
+
 data = []
 vm_data = []
 colLabels = ["0","1", "2","3","4","5","6","7","8","9","A","B","C","D","E","F"]
 rowLabelsForVM = []
 rowLabels = []
 app = wx.App()
-rm = RealMachine(onCellChange)
+rm = RealMachine()
 
 def start_gui(file):
     try:
@@ -419,9 +436,12 @@ def start_gui(file):
             vm_data.append(row)
 
         frame = TestFrame(None)
+        c.set_frame(frame)
+        rm.passHandler(c.get_handler())
         app.SetTopWindow(frame)
         frame.Centre()
         frame.Show()
+#        frame.grid_1.SetValue(3,5, "jonas")
     except Exception, detail:
         stdout_dialog = StdOutDialog(unicode(detail))
         return 1
