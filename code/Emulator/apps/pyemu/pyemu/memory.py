@@ -370,7 +370,7 @@ class RealMemory(object):
             address = block * BLOCK_SIZE + cell
         return address
 
-    def _get_cell(self, address, call_handler=False):
+    def _get_cell(self, address, call_handler=True):
         u""" Grąžina atminties ląstelę, kuri yra nurodyta adresu.
         """
 
@@ -383,13 +383,13 @@ class RealMemory(object):
         u""" Grąžina adresu nurodytos ląstelės reikšmę.
         """
 
-        return self._get_cell(address).value
+        return self._get_cell(address, False).value
 
     def __setitem__(self, address, value):
         u""" Priskiria adresu nurodytai ląstelei nurodytą reikšmę.
         """
 
-        self._get_cell(address, True).value = value
+        self._get_cell(address).value = value
 
     def put_data(self, address, data):
         u""" Nurodytu adresu į atmintį pakrauna duomenis ``data``.
