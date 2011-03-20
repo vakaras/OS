@@ -364,12 +364,8 @@ def DoExecute(caller):
     caller.setRegistersOnLoad()
 
 def DoStep(caller):
-    try:
-        rm.processor.step()
-    except StopProgram, ei:
-        stdout(unicode(ei))
-    except Exception, e:
-        stdout(unicode(e))
+    if not rm.processor.step():
+        stdout(rm.processor.error_message)
     del vm_data[:]
     del data[:]
     for i in range(BLOCKS):
