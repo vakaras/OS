@@ -22,3 +22,11 @@ run:
 
 runio:
 	bin/pyemu apps/pyemu/pyemu/test/test_program_io
+
+tags:
+	bin/ctags -v
+
+check:
+	bin/pylint \
+		--output-format=html --include-ids=y \
+		"${TESTS}" >> var/pylint.html
