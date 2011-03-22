@@ -253,7 +253,7 @@ class TestFrame(wx.Frame):
         self.Bind(wx.EVT_BUTTON, self.GetFile2, self.File2_button)
         self.File3_button = wx.Button(self, -1, "Failas #3")
         self.Bind(wx.EVT_BUTTON, self.GetFile3, self.File3_button)
-        self.File4_button = wx.Button(self, -1, "Failas #3")
+        self.File4_button = wx.Button(self, -1, "Failas #4")
         self.Bind(wx.EVT_BUTTON, self.GetFile4, self.File4_button)
         self.R2_text.SetEditable(False)
         self.SF_text.SetEditable(False)
@@ -331,7 +331,7 @@ class TestFrame(wx.Frame):
                     data = files[fileNr].read()
                     file_content += unicode(data)
             except Exception, e:
-                stdout(unicode(e))
+                pass
             self.fileFrame = FileInfoFrame(self)
             app.SetTopWindow(self.fileFrame)
             self.fileFrame.file_name.SetLabel(str(file_name))

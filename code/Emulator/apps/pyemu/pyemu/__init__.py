@@ -10,16 +10,16 @@ import pyemu.gui
 def main(argv=None):
     """
     """
-
+    
     if not argv:
         argv = sys.argv[:]
 
     gui = False
-    if len(argv) == 2:
-        file = argv[1]
-    elif len(argv) == 3 and argv[1] == 'gui':
+    if len(argv) == 1:
+        file = argv[0]
+    elif len(argv) == 2 and argv[0] == 'gui':
         gui = True
-        file = argv[2]
+        file = argv[1]
     else:
         print u'Naudojimas: pyemu <failas>'
         sys.exit(1)
