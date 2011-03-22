@@ -222,7 +222,7 @@ class Pager(object):
             raise WrongFileDescriptor(u'Nežinomas id.')
         except TypeError:
             raise WritingReadOnlyFileError(
-                    u'Bandoma rašyti į failą atidarytą rašymui.')
+                    u'Bandoma rašyti į failą atidarytą skaitymui.')
 
     def create_reader(self, read):
         u""" Sukuria skaitymo funkciją, kuri užtikrina, kad gražintu bloką.

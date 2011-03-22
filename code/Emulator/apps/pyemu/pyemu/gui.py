@@ -181,6 +181,7 @@ class VMFrame(wx.Frame):
 
     def DoNextStep(self, event):
         DoStep(self)
+        self.parent.getFileButtons()
 
     def setRegistersOnLoad(self):
         self.IC_text.SetValue(str(rm.processor.registers["IC"]))
@@ -247,14 +248,7 @@ class TestFrame(wx.Frame):
         self.MODE_radio = wx.RadioBox(self, -1, "MODE", choices=["Vartotojas", "Supervizorius"], majorDimension=0, style=wx.RA_SPECIFY_ROWS)
         self.RUN_button = wx.Button(self, -1, "paleisti")
         self.Bind(wx.EVT_BUTTON, self.OnClick, self.RUN_button)
-        self.File1_button = wx.Button(self, -1, "Failas #1")
-        self.Bind(wx.EVT_BUTTON, self.GetFile1, self.File1_button)
-        self.File2_button = wx.Button(self, -1, "Failas #2")
-        self.Bind(wx.EVT_BUTTON, self.GetFile2, self.File2_button)
-        self.File3_button = wx.Button(self, -1, "Failas #3")
-        self.Bind(wx.EVT_BUTTON, self.GetFile3, self.File3_button)
-        self.File4_button = wx.Button(self, -1, "Failas #4")
-        self.Bind(wx.EVT_BUTTON, self.GetFile4, self.File4_button)
+        self.File_button = None
         self.R2_text.SetEditable(False)
         self.SF_text.SetEditable(False)
         self.IC_text.SetEditable(False)
@@ -268,18 +262,11 @@ class TestFrame(wx.Frame):
         self.grid_1 = SimpleGrid(self, data)
         self.__set_properties()
         self.__do_layout()
-        
-    def GetFile1(self,event):
-        self.getFileInfo(0)
 
-    def GetFile2(self,event):
-        self.getFileInfo(1)
-    
-    def GetFile3(self,event):
-        self.getFileInfo(2)
-    
-    def GetFile4(self,event):
-        self.getFileInfo(3)
+    def get_GetFile(self, id):
+      def GetFile(event):
+          self.getFileInfo(id)
+      return GetFile
 
     def OnClick(self, event):
         if(self.MODE_radio.GetStringSelection() == "Vartotojas"):
@@ -320,16 +307,14 @@ class TestFrame(wx.Frame):
     def getFileInfo(self, fileNr):
         content = []
         files = file_system.get_files()
+        print ' '.join(files)
         if len(files)-1 < fileNr:
             stdout("Šis failas dar nesukurtas")
         else:
             file_name = files[fileNr]
             files[fileNr] = file_system.open(files[fileNr])
             try:
-                file_content = ""
-                while True:
-                    data = files[fileNr].read()
-                    file_content += unicode(data)
+                file_content = '\n'.join(files[fileNr].data)
             except Exception, e:
                 pass
             self.fileFrame = FileInfoFrame(self)
@@ -358,19 +343,30 @@ class TestFrame(wx.Frame):
           (self.EMPTY), (self.MODE_radio),     #SF registras
           (self.EMPTY), (self.RUN_button, 0, wx.EXPAND)     #SF registras
         ])
-        fgs2 = wx.FlexGridSizer(4,1,0,0)
-        fgs2.AddMany([
-          (self.File1_button), (self.File2_button),
-          (self.File3_button), (self.File4_button)
-        ])
+        self.fgs2 = wx.FlexGridSizer(4,2,0,0)
+        self.getFileButtons()
         inner_fgs.Add(fgs1, 0, 0, 0)
-        inner_fgs.Add(fgs2, 0, 0, 0)
+        inner_fgs.Add(self.fgs2, 0, 0, 0)
         sizer_1.Add(inner_fgs, 0,wx.ALIGN_CENTER_VERTICAL, 0)
         sizer_1.Add(self.grid_1, 4, wx.ALIGN_CENTER_VERTICAL, 0)
         self.SetSizer(sizer_1)
         sizer_1.Fit(self)
         self.Layout()
         self.setRegistersOnLoad()
+
+    def getFileButtons(self):
+        if self.File_button != None:
+            for i in range(len(self.File_button)):
+                self.fgs2.Hide(self.File_button[i])
+        self.File_button = []
+        files = file_system.get_files()
+        for i in range(len(files)):
+            self.File_button.append(wx.Button(self, -1, files[i]))
+            self.Bind(wx.EVT_BUTTON, self.get_GetFile(i), self.File_button[i])
+        for i in range(len(self.File_button)):
+            self.fgs2.Add(self.File_button[i])
+        self.fgs2.Layout()
+
         
 def getRowLabels():
     for i in range(BLOCKS):
