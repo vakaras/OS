@@ -755,7 +755,7 @@ class RealMemoryTest(unittest.TestCase):
             pager.file_open('tmpfile4')
         except Exception, e:
             assert unicode(e) == u'Viršytas atidarytų failų limitas.'
-        else: 342    266    22% 
+        else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
         pager.file_write(2, 'trkkrt')
         pager.file_close(2)
