@@ -192,8 +192,12 @@ class Commands(object):
     @staticmethod
     @ArithmeticCommandEnvironment()
     def DIV(proc, r1, r2):
-        return ((proc.registers['R1'], r1 / r2),
-                (proc.registers['R2'], r1 % r2),)
+        try:
+            return ((proc.registers['R1'], r1 / r2),
+                    (proc.registers['R2'], r1 % r2),)
+        except ZeroDivisionError:
+            return ((proc.registers['R1'], '0' * 9),
+                    (proc.registers['R2'], '0' * 9))
 
     @staticmethod
     @ArithmeticCommandEnvironment()
