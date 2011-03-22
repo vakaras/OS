@@ -671,7 +671,7 @@ class RealMemoryTest(unittest.TestCase):
             pager.file_write(0, 'Sveikas pasauli!')
         except WritingReadOnlyFileError, e:
             assert unicode(e) == \
-                    u'Bandoma rašyti į failą atidarytą rašymui.'
+                    u'Bandoma rašyti į failą atidarytą skaitymui.'
         else:
             self.fail(u'Turėjo būti išmesta išimtis.'.encode('utf-8'))
 
