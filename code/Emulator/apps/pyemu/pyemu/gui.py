@@ -13,6 +13,7 @@ from pyemu.memory import PAGER_SIZE
 
 from pyemu import exceptions
 from pyemu.exceptions import StopProgram
+from pyemu.filesystem import file_system
 
 
 class StdOutDialog(wx.Frame):
@@ -34,32 +35,29 @@ class StdInDialog(wx.Frame):
         else:
             self.std_input = ""
         dialog.Destroy()
-
-class StdInDialog_old(wx.Frame):
-    def __init__(self, *args, **kwds):
+        
+class FileInfoFrame(wx.Frame):
+    def __init__(self, parent, *args, **kwds):
         kwds["style"] = wx.DEFAULT_DIALOG_STYLE
-        wx.Frame.__init__(self, *args, **kwds)
-        self.input_text = wx.TextCtrl(self,-1, "", style=wx.TE_PROCESS_ENTER)
-        self.std_input = ""
+        wx.Frame.__init__(self, parent, -1, "")
+        self.sizer_1_staticbox = wx.StaticBox(self, -1, "Failas")
+        self.file_name = wx.StaticText(self, -1, "")
+        self.file_contents = wx.TextCtrl(self, -1, "", style=wx.TE_MULTILINE|wx.TE_LINEWRAP)
 
         self.__set_properties()
         self.__do_layout()
 
-        self.Bind(wx.EVT_TEXT_ENTER, self.Entered, self.input_text)
-
     def __set_properties(self):
-        self.SetTitle("INPUT:")
-        self.input_text.SetMinSize((250, 25))
+        self.SetTitle("Failas")
+        self.file_contents.SetMinSize((500, 300))
 
     def __do_layout(self):
-        sizer_2 = wx.BoxSizer(wx.HORIZONTAL)
-        sizer_2.Add(self.input_text, 0, wx.ALIGN_CENTER_HORIZONTAL|wx.ALIGN_CENTER_VERTICAL, 0)
-        self.SetSizer(sizer_2)
-        sizer_2.Fit(self)
+        sizer_1 = wx.StaticBoxSizer(self.sizer_1_staticbox, wx.VERTICAL)
+        sizer_1.Add(self.file_name, 0, 0, 0)
+        sizer_1.Add(self.file_contents, 0, 0, 0)
+        self.SetSizer(sizer_1)
+        sizer_1.Fit(self)
         self.Layout()
-
-    def Entered(self, event):
-        self.std_input = self.input_text.GetValue()
 
 class GenericTable(wx.grid.PyGridTableBase):
     def __init__(self, data, rowLabels=None, colLabels=None):
@@ -249,6 +247,14 @@ class TestFrame(wx.Frame):
         self.MODE_radio = wx.RadioBox(self, -1, "MODE", choices=["Vartotojas", "Supervizorius"], majorDimension=0, style=wx.RA_SPECIFY_ROWS)
         self.RUN_button = wx.Button(self, -1, "paleisti")
         self.Bind(wx.EVT_BUTTON, self.OnClick, self.RUN_button)
+        self.File1_button = wx.Button(self, -1, "Failas #1")
+        self.Bind(wx.EVT_BUTTON, self.GetFile1, self.File1_button)
+        self.File2_button = wx.Button(self, -1, "Failas #2")
+        self.Bind(wx.EVT_BUTTON, self.GetFile2, self.File2_button)
+        self.File3_button = wx.Button(self, -1, "Failas #3")
+        self.Bind(wx.EVT_BUTTON, self.GetFile3, self.File3_button)
+        self.File4_button = wx.Button(self, -1, "Failas #3")
+        self.Bind(wx.EVT_BUTTON, self.GetFile4, self.File4_button)
         self.R2_text.SetEditable(False)
         self.SF_text.SetEditable(False)
         self.IC_text.SetEditable(False)
@@ -262,6 +268,18 @@ class TestFrame(wx.Frame):
         self.grid_1 = SimpleGrid(self, data)
         self.__set_properties()
         self.__do_layout()
+        
+    def GetFile1(self,event):
+        self.getFileInfo(0)
+
+    def GetFile2(self,event):
+        self.getFileInfo(1)
+    
+    def GetFile3(self,event):
+        self.getFileInfo(2)
+    
+    def GetFile4(self,event):
+        self.getFileInfo(3)
 
     def OnClick(self, event):
         if(self.MODE_radio.GetStringSelection() == "Vartotojas"):
@@ -299,11 +317,34 @@ class TestFrame(wx.Frame):
         self.grid_1.EnableDragRowSize(0)
         self.grid_1.SetMinSize((1360, 500))
 
+    def getFileInfo(self, fileNr):
+        content = []
+        files = file_system.get_files()
+        if len(files)-1 < fileNr:
+            stdout("Šis failas dar nesukurtas")
+        else:
+            file_name = files[fileNr]
+            files[fileNr] = file_system.open(files[fileNr])
+            try:
+                file_content = ""
+                while True:
+                    data = files[fileNr].read()
+                    file_content += unicode(data)
+            except Exception, e:
+                stdout(unicode(e))
+            self.fileFrame = FileInfoFrame(self)
+            app.SetTopWindow(self.fileFrame)
+            self.fileFrame.file_name.SetLabel(str(file_name))
+            self.fileFrame.file_contents.SetValue(str(file_content))
+            self.fileFrame.Centre()
+            self.fileFrame.Show()
+
 
     def __do_layout(self):
         sizer_1 = wx.BoxSizer(wx.VERTICAL)
-        fgs = wx.FlexGridSizer(4, 8, 5, 5)
-        fgs.AddMany([
+        inner_fgs = wx.FlexGridSizer(1,2,0,0)
+        fgs1 = wx.FlexGridSizer(4, 8, 5, 5)
+        fgs1.AddMany([
           (self.R1),(self.R1_text, 0,0,0), #R1 registras
           (self.R2),(self.R2_text, 0),     #R2 registras
           (self.SF), (self.SF_text, 0),     #SF registras
@@ -317,7 +358,14 @@ class TestFrame(wx.Frame):
           (self.EMPTY), (self.MODE_radio),     #SF registras
           (self.EMPTY), (self.RUN_button, 0, wx.EXPAND)     #SF registras
         ])
-        sizer_1.Add(fgs, 0,wx.ALIGN_CENTER_VERTICAL, 0)
+        fgs2 = wx.FlexGridSizer(4,1,0,0)
+        fgs2.AddMany([
+          (self.File1_button), (self.File2_button),
+          (self.File3_button), (self.File4_button)
+        ])
+        inner_fgs.Add(fgs1, 0, 0, 0)
+        inner_fgs.Add(fgs2, 0, 0, 0)
+        sizer_1.Add(inner_fgs, 0,wx.ALIGN_CENTER_VERTICAL, 0)
         sizer_1.Add(self.grid_1, 4, wx.ALIGN_CENTER_VERTICAL, 0)
         self.SetSizer(sizer_1)
         sizer_1.Fit(self)
@@ -388,7 +436,8 @@ def DoStep(caller):
 #        vm_data.append(row)
 #    caller.grid_1.UpdateValues()
 #    caller.parent.grid_1.UpdateValues()
-#    caller.setRegistersOnLoad()
+    caller.setRegistersOnLoad()
+    caller.parent.setRegistersOnLoad()
     return True
 
 def stdin():
