@@ -1,0 +1,13 @@
+#!/usr/bin/pyemu
+
+CODE
+LR1 000
+LR2 001
+DIV
+HALT
+ENDCODE
+
+DATA 1
+[0]: 1
+[1]: 0
+ENDDATA
