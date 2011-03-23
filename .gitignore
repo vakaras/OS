@@ -12,3 +12,7 @@ code/Emulator/parts
 code/Emulator/.coverage
 code/Emulator/var
 data.fs*
+doc/Real/bin/
+doc/Real/bootstrap.py
+doc/Real/build/
+doc/Real/parts/

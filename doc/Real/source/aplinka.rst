@@ -28,11 +28,12 @@ terminale suvedus šią komandą:
 
 .. code-block:: bash
 
-  sudo apt-get install build-essential nasm 
+  sudo apt-get install build-essential nasm libxpm-dev
 
 + **build-essential** yra meta paketas su visais įrankiais reikalingais 
   *C/C++* programų kompiliavimui.
 + **nasm** yra asembleris.
++ **libxpm-dev** yra biblioteka reikalinga emuliatoriaus kompiliavimui.
 
 Emuliavimas
 ===========
@@ -48,10 +49,45 @@ Tam pirmiausia mums reikia parsisiųsti *bochs* išeities tekstus
 
 .. code-block:: bash
 
-  # Prisijungiam prie serverio:
+  # Prisijungiam prie serverio (kai paprašo slaptažodžio reikia tiesiog
+  # paspausti „Įvesti“ klavišą):
   cvs -d:pserver:anonymous@bochs.cvs.sourceforge.net:/cvsroot/bochs login
-  # Parsisiunčiame naujausią versiją:
+  # Parsisiunčiame naujausią versiją (gali užtrukti):
   cvs -z3 -d:pserver:anonymous@bochs.cvs.sourceforge.net:/cvsroot/bochs checkout bochs
   cd bochs
-  # „Atsukame“ versiją į stabilią:
+  # „Atsukame“ versiją į stabilią (gali užtrukti):
   cvs update -d -r REL_2_4_1_FINAL
+
+Dabar susikuriame naują failą ``.conf.mano``:
+  
+.. code-block:: bash
+
+  #!/bin/bash
+
+  ./configure \
+      --prefix "${BOCHSDIR}" \
+      --with-x11 \
+      --enable-smp \
+      --enable-x86-64 \
+      --enable-plugins \
+      --enable-disasm \
+      --enable-show-ips 
+
++ ``"${BOCHSDIR}"`` – katalogas, kuriame bus išsaugoti sukompiliuotos
+  programos failai.
++ ``--with-x11`` – nurodymas naudoti **X11** grafinę aplinką.
++ ``--enable-smp`` – nurodymas įkompiliuoti kelių procesorių palaikymą.
++ ``--enable-x86-64`` – nurodymas įkompiliuoti 64 bitų palaikimą.
++ ``--enable-show-ips`` – nurodymas rodyti atliktų instrukcijų kiekį.
+
+Pakeičiame jo leidimus:
+
+.. code-block:: bash
+  
+  chmod 755 .conf.mano
+
+Kompiliuojame:
+
+.. code-block:: bash
+
+  ./.conf.mano && make && make install
