@@ -1,4 +1,4 @@
-SOURCES=boot.o main.o
+SOURCES=boot.o main.o common.o
 
 # 64bit
 #CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector 
@@ -10,10 +10,12 @@ LDFLAGS=-Tlink.ld -melf_i386
 ASFLAGS=-felf
 CPPFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector -m32
 
+fresh: clean all
+
 all: $(SOURCES) link
 
 clean:
-	rm *.o kernel
+	rm -f *.o kernel
 
 link:
 	ld $(LDFLAGS) -o kernel $(SOURCES)
