@@ -1,5 +1,6 @@
 #include "monitor.h"
 #include "descriptor_tables.h"
+#include "isr.h"
 
 void *__gxx_personality_v0;
 
@@ -43,6 +44,9 @@ int main() {
   monitor.write_dec(123456789u);
   monitor.write_string("\n\n");
   monitor.write_dec(0u);
+
+  asm volatile ("int $0x3");
+  asm volatile ("int $0x4");
 
   return 0xBABADEAD;
   }

@@ -1,4 +1,4 @@
-SOURCES=boot.o main.o common.o
+SOURCES=boot.o main.o common.o gdt.o interrupt.o isr.o
 
 # 64bit
 #CFLAGS=-nostdlib -nostdinc -fno-builtin -fno-stack-protector 
