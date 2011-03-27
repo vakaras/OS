@@ -25,9 +25,6 @@
 #define COLOR_LIGHT_BROWN   0xE
 #define COLOR_WHITE         0xF
 
-#define FOREGROUND 0x0f                 // TODO: Ištrinti
-#define BACKGROUND 0xf0
-
 #include "common.h"
 
 
@@ -125,13 +122,55 @@ private:
       this->move();
       }
 
+    // Pastumia žymeklį per vieną simbolį atgal.
+    void dec() {
+      this->col--;
+      this->move();
+      }
+
+    // Pastumia žymeklį per tiek pozicijų į priekį, kad pozicija būtų
+    // 8 kartotinis.
+    void tab() {
+      this->col = (this->col + 8) & (~(8 - 1));
+      this->move();
+      }
+
+    // Grąžina žymeklį į eilutės pradžią.
+    void back() {
+      this->col = 0;
+      this->move();
+      }
+
+    // Perkelia žymeklį į naują eilutę.
+    void newline() {
+      this->col = 0;
+      this->row++;
+      this->move();
+      }
+
     // Užrašo simbolį ir paslenka žymeklį.
     void put(char character) {
-      this->monitor.set_character(this->row, this->col, character);
-      // TODO: Užbaigti, kad apdorotų \n \r \b ir t.t.
-      this->inc();
+
+      if (character == '\b' && this->col) {
+        this->dec();
+        }
+      else if (character == '\t') {
+        this->tab();
+        }
+      else if (character == '\r') {
+        this->back();
+        }
+      else if (character == '\n') {
+        this->newline();
+        }
+      else if (character >= ' ') {      // Visi kiti nematomi simboliai yra
+                                        // ignoruojami.
+        this->monitor.set_character(this->row, this->col, character);
+        this->inc();
+        }
+      
       }
-    
+
     } cursor;
 
 // Metodai.
@@ -207,9 +246,12 @@ public:
     for (int i = 1; i < SCREEN_HEIGHT; i++) {
       for (int j = 0; j< SCREEN_WIDTH; j++) {
         ScreenCharacter *sc = this->video_memory.get_pointer(i, j);
-        //*sc = this->video_memory.get(i, j); FIXME: Išsiaiškinti, kodėl
-        // nesikompiliuoja.
         this->video_memory.set(i-1, j, *sc);
+        // *sc = this->video_memory.get(i, j); 
+        // Nesikompiliuoja, nes g++ reikalauja, kad būtų realizuota funkcija
+        // memmove. Žr.:
+        // http://unix.derkeiler.com/Mailing-Lists/FreeBSD/hackers/\
+        // 2009-01/msg00224.html
         }
       }
 
@@ -228,160 +270,47 @@ public:
       }
     }
 
-  };
+  /// Išveda skaičių šešioliktainiu formatu.
+  void write_hex(u32int number) {
 
-
-
-class Monitor2 {
-
-// Atributai.
-
-private:
-
-  // Rodyklė į VGA atmintį.
-  u16int *memory;
-
-  // Naujo teksto spalva.
-  u8int color;
-
-  Point<u16int> cursor;
-
-// Metodai.
-
-  // Grąžina kursoriaus padėti poslinkiu.
-  u16int get_offset() {
-    return this->cursor.x * SCREEN_WIDTH + this->cursor.y;
-    }
-
-  // Grąžina dvibaitį, kurio viršutiniame baite yra spalva.
-  u16int get_color() {
-    return this->color << BYTE_SIZE;
-    }
-
-  // Nurodytai ekrano eilutei priskiria perduotąją.
-  void set_line(u8int number, const u16int line[]) {
-
-    for (int i = 0; i < SCREEN_WIDTH && line[i]; i++) {
-      this->memory[number * SCREEN_WIDTH + i] = line[i];
-      }
-
-    }
-
-  // Atnaujina žymeklį (hardware cursor).
-  void move_cursor() {
-
-    u16int offset = this->get_offset();
-
-    send_byte(0x3D4, 14);               // Nurodymas, kad siųsime 
-                                        // viršutinį baitą.
-    send_byte(0x3D5, offset >> BYTE_SIZE);
-                                        // Išsiunčiame viršutinį baitą.
-    send_byte(0x3D4, 15);               // Nurodymas, kad siųsime
-                                        // apatinį baitą.
-    send_byte(0x3D5, offset);           // Išsiunčiame apatinį baitą.
-
-    }
-
-  // Pastumia tekstą per vieną eilutę.
-  void scroll() {
-
-    // Nusistatome tarpą, su numatytaja spalva.
-    u16int blank = 0x20 | this->get_color();
-
-    // Pasiekėme paskutinę eilutę, reikia pastumti ekraną.
-    if (this->cursor.y >= (SCREEN_HEIGHT - 1)) {
-
-      // Pastumiame visas eilutes per vieną į viršų.
-      for (int i = 0; i < SCREEN_HEIGHT - 1; i++) {
-        this->set_line(i, this->memory + (i * SCREEN_WIDTH));
+    for (int i = 32 - 4; i >= 0; i -= 4) {
+      u8int digit = (number >> i) & 0xF;
+      if (digit >= 10) {
+        this->put_character(digit - 10 + 'A');
         }
-
-      // Išvalome paskutinę eilutę.
-      for (int i = (SCREEN_HEIGHT - 1) * SCREEN_WIDTH; 
-          i < SCREEN_HEIGHT * SCREEN_WIDTH; i++) {
-        this->memory[i] = blank;
+      else {
+        this->put_character(digit + '0');
         }
-
-      this->cursor.y = SCREEN_HEIGHT - 1;
-
       }
-
-    }
-
-public:
-
-  Monitor2() {
-    this->memory = (u16int *)0xB8000;
-    this->color = (FOREGROUND & COLOR_WHITE) | (BACKGROUND & COLOR_BLACK);
-    }
-  
-  void set_foreground_color(u8int color) {
-    this->color = (FOREGROUND & color) | (BACKGROUND & this->color);
-    }
-  
-  void set_background_color(u8int color) {
-    this->color = (FOREGROUND & this->color) | (BACKGROUND & this->color);
-    }
-
-  // Užrašyti nurodytąjį simbolį c ekrane.
-  void put(char c) {
-
-    if (c == '\b' && this->cursor.x) {
-      this->cursor.x--;
-      }
-    else if (c == '\t') {
-      this->cursor.x = (this->cursor.x + 8) & ~(8 - 1);
-      }
-    else if (c == '\r') {
-      this->cursor.x = 0;
-      }
-    else if (c == '\n') {
-      this->cursor.x = 0;
-      this->cursor.y++;
-      }
-    else if (c >= ' ') {
-      *(this->memory + this->get_offset()) = this->get_color() | c;
-      this->cursor.y++;
-      }
-
-    if (this->cursor.x >= SCREEN_WIDTH) {
-      this->cursor.x = 0;
-      this->cursor.y++;
-      }
-
-    this->scroll();
-    this->move_cursor();
     
     }
 
-  // Išvalyti ekraną;
-  void clear() {
-
-    // Nusistatome tarpą, su numatytaja spalva.
-    u16int blank = 0x20 | this->get_color();
-
-    for (int i = 0; i < SCREEN_WIDTH * SCREEN_HEIGHT; i++) {
-      this->memory[i] = blank;
+  /// Išveda skaičių dešimtainiu formatu.
+  void write_dec(s32int number) {
+    if (number < 0) {
+      this->put_character('-');
+      this->write_dec(((u32int) -number));
       }
-    
-    this->cursor.x = 0;
-    this->cursor.y = 0;
-    this->move_cursor();
-
+    else {
+      this->put_character('+');
+      this->write_dec(((u32int) number));
+      }
     }
 
-  // Užrašyti simbolių eilutę, kurios pabaigos požymis yra 0, ekrane.
-  void write(const char *str) {
-
-    for (const char *c = str; c; c++) {
-      this->put(*c);
+  /// Išveda skaičių dešimtainiu formatu.
+  void write_dec(u32int number) {
+    int length = 1;
+    for (int i = number; i; i /= 10) {
+      length *= 10;
       }
-
+    if (length > 1) {
+      length /= 10;
+      }
+    for (; length; length /= 10) {
+      this->put_character('0' + ((number) / length) % 10);
+      }
     }
 
   };
-
-
-
 
 #endif

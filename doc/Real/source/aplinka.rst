@@ -18,6 +18,7 @@ Naudojama failų sistemos struktūra yra tokia:
   OS/       # Šakninis katalogas su visais failais.
     src/    # Katalogas, kuriame laikomi visi išeities tekstai.
     bin/    # Katalogas, kuriame saugomos pagalbinės programos.
+    data/   # Katalogas, kuriame saugomi įvairūs failai.
 
 
 Kompiliavimas
@@ -91,3 +92,42 @@ Kompiliuojame:
 .. code-block:: bash
 
   ./.conf.mano && make && make install
+
+Sukuriame simbolinę nuorodą ``OS/bin`` kataloge:
+
+.. code-block:: bash
+
+  ln -s ${BOCHSDIR}/bin/* bin/
+
+Sukuriame nustatymų failą ``OS/data/bochsrc.txt``:
+
+.. code-block:: bash
+
+  megs: 32
+  romimage: file=${BOCHSDIR}/share/bochs/BIOS-bochs-latest
+  vgaromimage: file=${BOCHSDIR}/share/bochs/VGABIOS-elpin-2.40
+  floppya: 1_44=/dev/loop0, status=inserted
+  boot: a
+  log: data/bochsout.txt
+  mouse: enabled=0
+  clock: sync=realtime
+  cpu: ips=500000
+
+Kaip ir anksčiau ``${BOCHSDIR}`` reikia pakeisti katalogo, į kurį buvo
+įdiegtas ``bochs`` adresu.
+
+Naudingi scenarijai
+===================
+
++ Kompiliavimo automatizavimas failas ``OS/src/Makefile``.
+
+  Pastaba: norint 64 bitų kompiuteryje sukompiliuoti 32 bitų OS reikia
+  į ``LDFLAGS`` pridėti ``-melf_i386`` ir į ``CPPFLAGS`` pridėti
+  ``-m32``.
+
+  Pastaba: norint sukompiliuoti 64 bitų kompiuteryje 64 bitų OS reikia
+  nustatyti ``ASFLAGS=-felf64``.
+
++ Saistymo failas ``OS/src/link.ld``.
++ Diskelio atvaizdo atnaujinimas ``bin/update_image``.
++ Emuliatoriaus paleidimas ``bin/run_bochs``.

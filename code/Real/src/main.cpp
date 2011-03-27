@@ -1,32 +1,10 @@
 #include "monitor.h"
+#include "descriptor_tables.h"
 
 void *__gxx_personality_v0;
 
 int main() {
 
-
-  Monitor2 monitor2;
-  //monitor.clear();
-  //monitor.set_foreground_color(COLOR_GREEN);
-  //monitor.write("Sveikas pasauli!\n");
-  //monitor.write("Kaip laikaisi?\n");
-  
-  // The VGA framebuffer starts at 0xB8000.
-  u16int *video_memory = (u16int *)0xB8000;
-
-  *(video_memory + 0) = '0' | 0x0F00;
-  *(video_memory + 1) = '0' | 0x0200;
-  *(video_memory + 2) = '0' | 0x0200;
-  *(video_memory + 3) = '0' | 0x0F00;
-
-  //Array2dPointer<ScreenCharacter> video(
-      //(ScreenCharacter *)0xB8000, SCREEN_WIDTH, SCREEN_HEIGHT);
-
-  //video.set(1, 1, ScreenCharacter('A'));
-  //video.set(2, 2, ScreenCharacter('A', COLOR_GREEN));
-  //video.set(3, 3, ScreenCharacter('A', COLOR_BLACK, COLOR_WHITE));
-  //video.set(4, 4, ScreenCharacter('A'));
-  
   Monitor monitor;
   monitor.set_background_color(COLOR_CYAN);
   monitor.clear();
@@ -53,6 +31,18 @@ int main() {
     monitor.put_character('0' + i % 10);
     monitor.write_string(". Sveikas pasauli! ");
     }
+
+  monitor.write_string("\n\n");
+  monitor.write_string("1\t2\t3\t4\n");
+  monitor.write_string("11\t22\t33\t44\rAAAA\n");
+
+  monitor.write_hex(0x123DEAD);
+  monitor.write_string("\n\n");
+  monitor.write_dec(0x123DEAD);
+  monitor.write_string("\n\n");
+  monitor.write_dec(123456789u);
+  monitor.write_string("\n\n");
+  monitor.write_dec(0u);
 
   return 0xBABADEAD;
   }

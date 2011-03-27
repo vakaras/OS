@@ -3,6 +3,8 @@
 *.log
 *.out
 *.pyc
+*.o
+kernel
 .installed.cfg
 .mr.developer.cfg
 *.egg-info
