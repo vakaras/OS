@@ -1,0 +1,12 @@
+#!/bin/bash
+
+# Prijungiam diskelį į /mnt.
+sudo losetup /dev/loop0 data/floppy.img
+sudo mount /dev/loop0 /mnt
+# Nukopijuojame sukompiliuotą OS į diskelį.
+sudo cp src/kernel /mnt/kernel
+# Atjungiame diskelį.
+sudo umount /dev/loop0
+sudo losetup -d /dev/loop0
+# Diskelio atvaizdą nukopijuojame į ten kur jį galėtų pasiekti GRUB.
+sudo cp data/floppy.img /boot/images/

@@ -1,0 +1,5 @@
+#!/bin/bash
+
+sudo /sbin/losetup /dev/loop0 data/floppy.img
+sudo bochs -f data/bochsrc.txt
+sudo /sbin/losetup -d /dev/loop0
