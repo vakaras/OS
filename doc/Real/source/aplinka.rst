@@ -132,8 +132,8 @@ Naudingi scenarijai
 + Diskelio atvaizdo atnaujinimas ``bin/update_image``.
 + Emuliatoriaus paleidimas ``bin/run_bochs``.
 
-OS paleidimas
-=============
+OS paleidimas iš floppy
+=======================
 
 Pridedam punktą į GRUB meniu. Sukurti failą ``/etc/grub.d/50_custom``:
 
@@ -168,3 +168,16 @@ Ir atnaujinti GRUB su komanda:
 .. code-block:: bash
 
   update-grub
+
+OS paleidimas iš HDD
+====================
+
+Sukompiliuotą kernel failą keliame į /boot/ katalogą.
+
+Pridedam punktą į GRUB meniu: /boot/grub/grub.cfg
+  menuentry 'l-HDD-k-OS (Laptop HDD Killer OS)' {
+	  multiboot /boot/kernel
+	  boot
+  }
+  
+Paleisti kompiuterį iš naujo GRUB meniu pasirenkant naująją opciją
