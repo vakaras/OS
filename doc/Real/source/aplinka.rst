@@ -131,3 +131,40 @@ Naudingi scenarijai
 + Saistymo failas ``OS/src/link.ld``.
 + Diskelio atvaizdo atnaujinimas ``bin/update_image``.
 + Emuliatoriaus paleidimas ``bin/run_bochs``.
+
+OS paleidimas
+=============
+
+Pridedam punktą į GRUB meniu. Sukurti failą ``/etc/grub.d/50_custom``:
+
+.. code-block:: bash
+
+  #!/bin/sh
+  set -e
+
+  IMAGES=/boot/images
+  . /usr/lib/grub/grub-mkconfig_lib
+  if test -e /boot/memdisk ; then
+    MEMDISKPATH=$( make_system_path_relative_to_its_root "/boot/memdisk" )
+    echo "Found memdisk: $MEMDISKPATH" >&2
+    find $IMAGES -name "*.img" | sort | 
+    while read image ; do
+        IMAGEPATH=$( make_system_path_relative_to_its_root "$image" )
+        echo "Found floppy image: $IMAGEPATH" >&2
+        cat << EOF
+  menuentry "Bootable floppy: $(basename $IMAGEPATH | sed s/.img//)" {
+  EOF
+        prepare_grub_to_access_device ${GRUB_DEVICE_BOOT} | sed -e "s/^/\t/"
+        cat << EOF
+          linux16 $MEMDISKPATH bigraw
+          initrd16 $IMAGEPATH
+  }
+  EOF
+    done
+  fi
+
+Ir atnaujinti GRUB su komanda:
+
+.. code-block:: bash
+
+  update-grub
