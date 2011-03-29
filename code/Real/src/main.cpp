@@ -6,7 +6,11 @@ void *__gxx_personality_v0;
 
 int main() {
 
+  // Inicijuojam sistemą.
   Monitor monitor;
+  GDT gdt;
+  IDT idt;
+
   monitor.set_background_color(COLOR_CYAN);
   monitor.clear();
   monitor.set_character(1, 1, 'A');
@@ -27,11 +31,11 @@ int main() {
   monitor.put_character('A');
   monitor.put_character('S');
 
-  for (int i = 0; i < 100; i++) {
-    monitor.put_character('0' + i / 10);
-    monitor.put_character('0' + i % 10);
-    monitor.write_string(". Sveikas pasauli! ");
-    }
+  //for (int i = 0; i < 100; i++) {
+    //monitor.put_character('0' + i / 10);
+    //monitor.put_character('0' + i % 10);
+    //monitor.write_string(". Sveikas pasauli! ");
+    //}
 
   monitor.write_string("\n\n");
   monitor.write_string("1\t2\t3\t4\n");
@@ -46,7 +50,7 @@ int main() {
   monitor.write_dec(0u);
 
   asm volatile ("int $0x3");
-  asm volatile ("int $0x4");
+  //asm volatile ("int $0x4");
 
   return 0xBABADEAD;
   }

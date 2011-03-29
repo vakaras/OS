@@ -104,4 +104,10 @@ public:
 
   };
 
+// Nukopijuoja nurodytus len baitų iš src į dest.
+void memcpy(u8int *dest, const u8int *src, u32int length);
+
+// Užpildo nurodytą atmintį reikšme value.
+void memset(u8int *dest, u8int value, u32int length);
+
 #endif
