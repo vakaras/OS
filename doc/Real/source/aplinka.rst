@@ -29,12 +29,13 @@ terminale suvedus šią komandą:
 
 .. code-block:: bash
 
-  sudo apt-get install build-essential nasm libxpm-dev
+  sudo apt-get install build-essential nasm libxpm-dev xorriso
 
 + **build-essential** yra meta paketas su visais įrankiais reikalingais 
   *C/C++* programų kompiliavimui.
 + **nasm** yra asembleris.
 + **libxpm-dev** yra biblioteka reikalinga emuliatoriaus kompiliavimui.
++ **xorriso** reikalingas grub2 paleidimo atvaizdžiui sukurti.
 
 Emuliavimas
 ===========
@@ -106,8 +107,8 @@ Sukuriame nustatymų failą ``OS/data/bochsrc.txt``:
   megs: 32
   romimage: file=${BOCHSDIR}/share/bochs/BIOS-bochs-latest
   vgaromimage: file=${BOCHSDIR}/share/bochs/VGABIOS-elpin-2.40
-  floppya: 1_44=/dev/loop0, status=inserted
-  boot: a
+  ata0-master: type=cdrom, path="data/sgrub.iso", status=inserted
+  boot: cdrom
   log: data/bochsout.txt
   mouse: enabled=0
   clock: sync=realtime
@@ -147,7 +148,7 @@ Pridedam punktą į GRUB meniu. Sukurti failą ``/etc/grub.d/50_custom``:
   if test -e /boot/memdisk ; then
     MEMDISKPATH=$( make_system_path_relative_to_its_root "/boot/memdisk" )
     echo "Found memdisk: $MEMDISKPATH" >&2
-    find $IMAGES -name "*.img" | sort | 
+    find $IMAGES -name "* .img" | sort | # VIM riktas 
     while read image ; do
         IMAGEPATH=$( make_system_path_relative_to_its_root "$image" )
         echo "Found floppy image: $IMAGEPATH" >&2
@@ -172,12 +173,40 @@ Ir atnaujinti GRUB su komanda:
 OS paleidimas iš HDD
 ====================
 
-Sukompiliuotą kernel failą keliame į /boot/ katalogą.
+Sukompiliuotą kernel failą keliame į **/boot/** katalogą.
 
-Pridedam punktą į GRUB meniu: /boot/grub/grub.cfg
+Pridedam punktą į GRUB meniu **/boot/grub/grub.cfg**:
+
+.. code-block:: bash
+
   menuentry 'l-HDD-k-OS (Laptop HDD Killer OS)' {
 	  multiboot /boot/kernel
 	  boot
   }
   
 Paleisti kompiuterį iš naujo GRUB meniu pasirenkant naująją opciją
+
+GRUB 2 naudojimas su bochs
+==========================
+
+Parsisiunčiame `Super Grub2 Disk 
+<http://www.supergrubdisk.org/category/download/supergrub2diskdownload/>`_
+išeities tekstus ir išarchivuojame:
+
+.. code-block:: bash
+
+  wget -c http://prdownload.berlios.de/supergrub/supergrub-1.98s1.tar.gz
+  mv supergrub-1.98s1.tar.gz data/
+  cd data
+  tar -xvf supergrub-1.98s1.tar.gz
+  ln -s supergrub-1.98s1 supergrub-src
+
+Pataisome numatytąjį ``grub.cfg``:
+
+.. code-block:: bash
+
+  echo "menuentry 'l-HDD-k-OS (Laptop HDD Killer OS)' {" \
+    >> supergrub-src/menus/grub.cfg
+  echo "  multiboot /boot/grub/kernel boot" >> supergrub-src/menus/grub.cfg
+  echo "}" >> supergrub-src/menus/grub.cfg
+
