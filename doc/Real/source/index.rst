@@ -11,4 +11,5 @@ Skyriai:
   :maxdepth: 1
 
   aplinka.rst
+  cross.rst
 

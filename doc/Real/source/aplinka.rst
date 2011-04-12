@@ -191,11 +191,12 @@ GRUB 2 naudojimas su bochs
 
 Parsisiunčiame `Super Grub2 Disk 
 <http://www.supergrubdisk.org/category/download/supergrub2diskdownload/>`_
-išeities tekstus ir išarchivuojame:
+išeities tekstus
+`iš <http://prdownload.berlios.de/supergrub/supergrub-1.98s1.tar.gz>`_ 
+ir išarchivuojame:
 
 .. code-block:: bash
 
-  wget -c http://prdownload.berlios.de/supergrub/supergrub-1.98s1.tar.gz
   mv supergrub-1.98s1.tar.gz data/
   cd data
   tar -xvf supergrub-1.98s1.tar.gz
