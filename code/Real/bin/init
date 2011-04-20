@@ -49,6 +49,6 @@ else
 
   echo "Sukuriamos nuorodos."
   ln -s ${compiler}/* bin/
-  ln -s ${bochs}/* bin/
+  ln -s ${bochs}/bin/* bin/
   echo "Nuorodos sukurtos."
 fi

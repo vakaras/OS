@@ -211,3 +211,21 @@ Pataisome numatytąjį ``grub.cfg``:
   echo "  multiboot /boot/grub/kernel boot" >> supergrub-src/menus/grub.cfg
   echo "}" >> supergrub-src/menus/grub.cfg
 
+TODO: Sutavarkyti (64-bit)
+==========================
+
+Pasiruošimas, kai įrankiai sukompiliuoti ir ką tik padarytas ``git clone``:
+
+.. code-block:: bash
+
+  bin/init \
+    ~/Studijos/Programos/bochs \
+    ~/Studijos/Programos/cross/bin \
+    ~/Atsiuntimai/supergrub-1.98s1.tar.gz 
+  cd src
+  make
+  cd bootloader
+  make
+  cd ../..
+  bin/update_cd
+  bin/run_bochs
