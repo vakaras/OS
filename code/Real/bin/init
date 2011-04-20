@@ -1,0 +1,54 @@
+#!/bin/bash
+
+if [ $# != 3 ] ; then
+  echo "Naudojimas: bin/init \\"
+  echo "              <kelias_iki_bochs_katalogo> \\"
+  echo "              <kelias_iki_kompiliatoriaus_bin_katalogo> \\"
+  echo "              <kelias_iki_archyvo_su_supergrub2_išeities_tekstais>"
+else
+  bochs="$1"
+  compiler="$2"
+  sgrub="$3"
+
+  echo "Perkuriamas duomenų katalogas „data“."
+  rm -rf data
+  mkdir data
+
+  echo "Išarchivuojamas SuperGrub2."
+  cp "${sgrub}" data/sgrub.tar.gz
+  cd data
+  tar -xvf sgrub.tar.gz
+  rm -f sgrub.tar.gz
+  mv supergrub* supergrub-src
+  cd supergrub-src/menus
+  echo "menuentry 'l-HDD-k-OS (Laptop HDD Killer OS)' {" >> grub.cfg
+  echo "  multiboot /boot/grub/bootloader " >> grub.cfg
+  echo "  module /boot/grub/kernel " >> grub.cfg
+  echo "  boot " >> grub.cfg
+  echo "  } " >> grub.cfg
+  cd ../..
+  echo "SuperGrub2 paruoštas."
+
+  echo "Kuriamas Bochs nustatymų failas."
+
+  echo "megs: 512" >> bochsrc.txt
+  echo "romimage: file=\"${bochs}/share/bochs/BIOS-bochs-latest\"" >> bochsrc.txt
+  echo "vgaromimage: file=\"${bochs}/share/bochs/VGABIOS-elpin-2.40\"" >> bochsrc.txt
+  echo "ata0-master: type=cdrom, path="data/sgrub.iso", status=inserted" >> bochsrc.txt
+  echo "boot: cdrom" >> bochsrc.txt
+  echo "log: data/bochsout.txt" >> bochsrc.txt
+  echo "mouse: enabled=0" >> bochsrc.txt
+  echo "clock: sync=realtime" >> bochsrc.txt
+  echo "cpu: ips=2000000000" >> bochsrc.txt
+  echo "port_e9_hack: enabled=1" >> bochsrc.txt
+  echo "magic_break: enabled=1" >> bochsrc.txt
+  echo "Bochs nustatymų failas sukurtas."
+  
+  cd ..
+  echo "Duomenų katalogas perkurtas."
+
+  echo "Sukuriamos nuorodos."
+  ln -s ${compiler}/* bin/
+  ln -s ${bochs}/* bin/
+  echo "Nuorodos sukurtos."
+fi

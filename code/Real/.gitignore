@@ -1,2 +1,7 @@
 src/bootloader/bootloader
+data/
+bin/bochs
+bin/bxcommit
+bin/bximage
+bin/x86_64-elf-*
 *.bin
