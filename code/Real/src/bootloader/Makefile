@@ -15,7 +15,7 @@ OUTPUT = bootloader
 .PHONY : all clean
 
 update: bootloader
-	cp bootloader ../../data/supergrub-src/menus/bootloader
+	mv bootloader ../../data/supergrub-src/menus/bootloader
 all: $(OUTPUT)
 clean: 
 	rm -f *.o *.bin
