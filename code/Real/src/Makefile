@@ -1,5 +1,10 @@
 CLEAN = *.o kernel
 
+SOURCES = boot.o main.o
+LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
+ASFLAGS = -felf64
+CPPFLAGS = -nostdlib -nostdinc -fno-builtin -fno-stack-protector
+
 update: kernel
 	mv kernel ../data/supergrub-src/menus/kernel
 	rm -f $(CLEAN)
@@ -7,13 +12,12 @@ update: kernel
 clean:
 	rm -f $(CLEAN)
 
-kernel: boot.o
-	../bin/x86_64-elf-ld \
-		-nostdlib \
-		-nodefaultlibs \
-		-Tlink.ld \
-		-o kernel \
-		boot.o
+kernel: $(SOURCES)
+	../bin/x86_64-elf-ld $(LDFLAGS) -o kernel $(SOURCES)
 
-boot.o:
-	nasm -felf64 boot.s -o boot.o
+.s.o:
+	nasm $(ASFLAGS) $<
+
+.cpp.o:
+	../bin/x86_64-elf-g++ $(CPPFLAGS) -c $<
+

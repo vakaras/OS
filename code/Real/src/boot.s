@@ -1,6 +1,7 @@
 [BITS 64]
 
 [GLOBAL _start]
+[EXTERN main]
 
 _start:
 
@@ -8,4 +9,7 @@ _start:
                                         ; žinotume, jog šitas kodas buvo
                                         ; įvykdytas ir įeiname į begalinį
                                         ; ciklą.
+  cli
+  call main
+
   jmp $
