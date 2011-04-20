@@ -14,11 +14,12 @@ OUTPUT = bootloader
 
 .PHONY : all clean
 
+update: bootloader
+	cp bootloader ../../data/supergrub-src/menus/bootloader
 all: $(OUTPUT)
 clean: 
-	rm -f main.o 
-	rm -f main16.bin
-	rm -f c.o
+	rm -f *.o *.bin
+	rm -f bootloader
 $(OUTPUT): main.o c.o 
 	$(LD) $(LDFLAGS) -o $(OUTPUT) main.o c.o
 main.o : main.s main16.bin 
