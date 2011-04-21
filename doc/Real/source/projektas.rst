@@ -8,6 +8,11 @@ Atmintis
 
 + **[0xB8000; 0xB8FA0)** – atmintis rezervuota vaizdui.
 
+Virtuali atmintis:
+
++ [00000000 00000000; 00007FFF FFFFFFFF] – naudotojo atmintis;
++ [FFFF8000 00000000; FFFFFFFF FFFFFFFF] – OS atmintis;
+
 Perdaryti:
 
 + 32 bitų sistemoje puslapiavimo lentelė yra 4 MB dydžio, jos adresas
@@ -31,3 +36,50 @@ TODO
 + Įdiegti 
   `C Library <http://wiki.osdev.org/GCC_Cross-Compiler#Step_2_-_C_Library>`_
 + Įdiegti `libsupc++ <http://wiki.osdev.org/Libsupcxx>`_.
+
+Pastabos
+========
+
+C funkcijų kvietimas
+--------------------
+
+Pirmieji šeši skaitiniai argumentai (nepriklausomai nuo tipo, gali būti
+tiek ``char``, tiek ``long``) perduodami pradedant kairiausiu tokia
+tvarka: ``RDI``, ``RSI``, ``RDX``, ``RCX``, ``R8`` ir ``R9``. Kiti 
+argumentai yra perduodami per steką.
+
+Šie registrai, taip pat ir ``RAX``, ``R10`` ir ``R11`` yra pakeičiami
+kviečiant funkciją.
+
+`Šaltinis. <http://www.nasm.us/doc/nasmdo11.html>`_
+
+NASM funkcijos kvietimas iš C kodo.
+
+.. code-block:: nasm
+  
+  [GLOBAL foo]
+  foo:
+    mov rax, rdi
+
+.. code-block:: cpp
+
+  extern "C" int foo(int);
+  // ...
+  int a = foo(5);                       ; a įgyja reikšmę 5.
+
+C funkcijos kvietimas iš NASM.
+
+.. code-block:: cpp
+  
+  extern "C" int bar(int a, int b) {
+    return a + b;
+    }
+
+.. code-block:: nasm
+
+  [EXTERN bar]
+  mov rdi, 0x1
+  mov rsi, 0x2
+  call bar                        
+  jmp $                                 ; rax reikšmė yra 0x3
+
