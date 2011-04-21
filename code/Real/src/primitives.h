@@ -21,4 +21,14 @@ void memcpy(u8int *dest, const u8int *src, u32int length);
 // Užpildo nurodytą atmintį reikšme value.
 void memset(u8int *dest, u8int value, u32int length);
 
+// Nusiunčia žinutę į Bochs. (Funkcija skirta derinimui.)
+extern "C" void debug_ping();
+
+// Nusiunčia simbolį į Bochs. (Funkcija skirta derinimui.)
+extern "C" void debug_char(char c);
+
+// Nusiunčia simbolių seką, kurios pabaigos požymis yra 0, į Bochs.
+// (Funkcija skirta derinimui.)
+extern "C" void debug_string(const char *str);
+
 #endif

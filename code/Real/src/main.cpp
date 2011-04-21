@@ -7,15 +7,19 @@
 #include "monitor_defines.h"
 #include "monitor_screen_character.h"
 #include "monitor.h"
+#include "gdt.h"
+//#include "idt.h"
 #include "tests/test_monitor.h"
 
 
 // Globalūs kintamieji.
 Monitor monitor;
+GDT gdt;
 
 extern "C" int main() {
 
-  test_monitor(&monitor);
+  //test_monitor(&monitor);
+  gdt.print_debug_info(&monitor);
 
   return 0xBABADEAD;
   }

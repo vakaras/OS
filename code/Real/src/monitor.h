@@ -222,10 +222,15 @@ public:
       }
     }
 
-  /// Išveda skaičių šešioliktainiu formatu.
-  void write_hex(u32int number) {
+  /** 
+   * Išveda skaičių šešioliktainiu formatu.
+   *
+   * @param number – išvedamas skaičius.
+   * @param size – kiek žemiausių number bitų atspausdinti.
+   */
+  void write_hex(u64int number, u8int size) {
 
-    for (int i = 32 - 4; i >= 0; i -= 4) {
+    for (int i = size - 4; i >= 0; i -= 4) {
       u8int digit = (number >> i) & 0xF;
       if (digit >= 10) {
         this->put_character(digit - 10 + 'A');
@@ -234,7 +239,27 @@ public:
         this->put_character(digit + '0');
         }
       }
-    
+
+    }
+
+  /// Išveda skaičių šešioliktainiu formatu.
+  void write_hex(u32int number) {
+    this->write_hex((u64int) number, 32);
+    }
+
+  /// Išveda skaičių šešioliktainiu formatu.
+  void write_hex(s32int number) {
+    this->write_hex((u64int) number, 32);
+    }
+
+  /// Išveda skaičių šešioliktainiu formatu.
+  void write_hex(u64int number) {
+    this->write_hex((u64int) number, 64);
+    }
+
+  /// Išveda skaičių šešioliktainiu formatu.
+  void write_hex(s64int number) {
+    this->write_hex((u64int) number, 64);
     }
 
   /// Išveda skaičių dešimtainiu formatu.
