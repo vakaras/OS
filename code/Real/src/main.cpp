@@ -57,26 +57,18 @@ struct ScreenCharacter {
   
   };
 
-//Kodėl nesikompiliuoja?
-//void print(const char *str) {
+void print(const char *str) {
+
+  ScreenCharacter *sc = (ScreenCharacter *) 0xB8000;
+  for (const char *i = str; *i; i++) {
+    *(sc++) = ScreenCharacter(*i);
+    }
   
-  //}
+  }
 
 int main() {
 
-  ScreenCharacter *sc = (ScreenCharacter *) 0xB8000;
-  //print("Labas Vyti!"); FIXME: Kodėl?
-  *(sc + 0) = ScreenCharacter('L');
-  *(sc + 1) = ScreenCharacter('a');
-  *(sc + 2) = ScreenCharacter('b');
-  *(sc + 3) = ScreenCharacter('a');
-  *(sc + 4) = ScreenCharacter('s');
-  *(sc + 5) = ScreenCharacter(' ');
-  *(sc + 6) = ScreenCharacter('V');
-  *(sc + 7) = ScreenCharacter('y');
-  *(sc + 8) = ScreenCharacter('t');
-  *(sc + 9) = ScreenCharacter('i');
-  *(sc + 10) = ScreenCharacter('!');
+  print("Labas rytas!"); 
 
   return 0xBABADEAD;
   }

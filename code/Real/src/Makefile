@@ -3,9 +3,12 @@ CLEAN = *.o kernel
 SOURCES = boot.o main.o
 LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
-CPPFLAGS = -nostdlib -nostdinc -fno-builtin -fno-stack-protector
+CPPFLAGS = -m64 -ffreestanding -nostdlib -mcmodel=large \
+					 -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 \
+					 -mno-3dnow
 
-update: kernel
+
+update: clean kernel
 	mv kernel ../data/supergrub-src/menus/kernel
 	rm -f $(CLEAN)
 
