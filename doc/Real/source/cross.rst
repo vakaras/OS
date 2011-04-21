@@ -1,7 +1,7 @@
 Kompiliatoriaus diegimas
 ========================
 
-Pagal `http://wiki.osdev.org/GCC_Cross-Compiler`_
+Pagal `OSDEV vikį. <http://wiki.osdev.org/GCC_Cross-Compiler>`_.
 
 ``${DEST}`` – kur išsaugoti sukompiluotą kompiliatorių.
 
