@@ -1,12 +1,15 @@
 CLEAN = *.o kernel
 
-SOURCES = boot.o main.o
+SOURCES = boot.o main.o icxxabi.o primitives.o
 LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
-CPPFLAGS = -m64 -ffreestanding -nostdlib -mcmodel=large \
+CPPFLAGS = -m64 -mcmodel=large \
+					 -Wall -Wextra -Werror \
+					 -nostdlib -fno-builtin -nostartfiles -nodefaultlibs \
+					 -fno-exceptions -fno-rtti -fno-stack-protector \
 					 -mno-red-zone -mno-mmx -mno-sse -mno-sse2 -mno-sse3 \
-					 -mno-3dnow
-
+					 -mno-3dnow 
+					 
 
 update: clean kernel
 	mv kernel ../data/supergrub-src/menus/kernel

@@ -9,7 +9,7 @@ SECTIONS
     {
         _code = .;
         *(.text)
-        *(.rodata*)
+        *(.gnu.linkonce.t*)
         . = ALIGN(4096);
     }
 
@@ -17,7 +17,25 @@ SECTIONS
    {
         _data = .;
         *(.data)
+        *(.gnu.linkonce.d*)
         . = ALIGN(4096);
+   }
+
+   .rodata : AT(ADDR(.rodata) - KERNEL_VMA)
+   {
+        start_ctors = .;                /* C++ globalūs ir statiniai */
+                                        /* konstruktoriai. */
+        *(.ctor*)
+        end_ctors = .;
+
+        start_dtors = .;                /* C++ globalūs ir statiniai */
+                                        /* destruktoriai. */
+        *(.dtor*)
+        end_dtors = .;
+
+        *(.rodata*)
+        *(.gnu.linkonce.r*)
+
    }
 
    .ehframe : AT(ADDR(.ehframe) - KERNEL_VMA)
@@ -29,15 +47,10 @@ SECTIONS
 
    .bss : AT(ADDR(.bss) - KERNEL_VMA)
    {
-       _bss = .;
-       *(.bss)
-
-       /*
-        * You usually need to include generated COMMON symbols
-        * under kernel BSS section or use gcc's -fno-common
-        */
-
-        *(COMMON)
+       _bss = .; 
+       *(.bss) 
+       *(.COMMON*)
+       *(.gnu.linkonce.b*)
        . = ALIGN(4096);
    }
 
