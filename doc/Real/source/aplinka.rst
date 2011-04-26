@@ -229,3 +229,22 @@ Pasiruošimas, kai įrankiai sukompiliuoti ir ką tik padarytas ``git clone``:
   cd ../..
   bin/update_cd
   bin/run_bochs
+
+Emuliavimas su QEMU + gdb
+=========================
+
+`Idėja <http://weichong78.blogspot.com/2010/04/vmware-qemu-and-gdb-for-boot-time-real.html>`_
+
+Paleidžiam ``QEMU``:
+
+.. code-block:: bash
+
+  qemu -s -S -cpu coreduo -cdrom data/sgrub.iso
+
+Prisijungiam su ``gdb``:
+
+.. code-block:: bashprompt
+
+  $ gdb
+  # ...
+  (gdb) target remote localhost:1234
