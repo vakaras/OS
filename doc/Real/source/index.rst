@@ -13,4 +13,5 @@ Skyriai:
   aplinka.rst
   cross.rst
   projektas.rst
+  pastabos.rst
 
