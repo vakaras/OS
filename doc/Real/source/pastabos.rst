@@ -5,18 +5,78 @@ Pastabos
 Atmintis
 ========
 
+Reali atmintis
+--------------
+
+Šios reikšmės yra gautos bandymu keliu, todėl vystant OS gali keistis:
+
++ 0x0000000000103000 – šiuo **fiziniu** adresu yra saugoma rodyklė į 
+  puslapiavimo mechanizmą;
++ 0x00000000001fa000 – šiuo fiziniu adresu prasideda branduolio kodas?
+  Tada jis turėtų atitikti virtualų adresą 0xffff800000000068.
+
+
+Virtuali atmintis
+-----------------
 
 + **[0xB8000; 0xB8FA0)** – atmintis rezervuota vaizdui.
-
-Virtuali atmintis:
 
 + [00000000 00000000; 00007FFF FFFFFFFF] – naudotojo atmintis;
 + [FFFF8000 00000000; FFFFFFFF FFFFFFFF] – OS atmintis;
 
-Perdaryti:
+Puslapiavimas
+-------------
 
-+ 32 bitų sistemoje puslapiavimo lentelė yra 4 MB dydžio, jos adresas
-  privalo būti lygiuotas 4 KB.
+64 bitų operacinė sistema naudoja ``IA-32E`` puslapiavimo rėžimą 
+(žr. *Intel 64 and IA32 Achitectures Software Developer's Manual*
+*Volume 3 (3A & 3B): System Programming Guide* 142 puslapį). Esmė
+ta, kad virtualus adresas konvertuojamas į fizinį pasinaudojant 
+keturiomis 4 KB dydžio lentelėmis, vis siaurinant adreso sritį, kol
+gaunamas puslapio adresas. Į aukščiausio lygio lentelę (``PML4``) rodo 
+registras ``CR3``. 
+
++-----------+------------------------+-----------------+---------+
+| Trumpinys | Lentelės pavadinimas   | Dokumentacijoje | Sritis  |
++===========+========================+=================+=========+
+| pml       |                        | PML4            | 39-47   |
++-----------+------------------------+-----------------+---------+
+| pdp       | page directory pointer | Directory Ptr   | 30-38   |
++-----------+------------------------+-----------------+---------+
+| pd        | page directory         | Directory       | 21-29   |
++-----------+------------------------+-----------------+---------+
+| pt        | page table             | Table           | 12-20   |      
++-----------+------------------------+-----------------+---------+
+
+``bootloader`` paruošia tokią struktūrą:
+
++ pirmas gigabaitas virtualios atminties (pml[0], pdp[0], pd[*]) rodo į 
+  pirmą gigabaitą fizinės atminties (kadangi naudojami 2MB puslapiai, 
+  tai struktūra pt nenaudojama);
+
++ antroji pusė (adresai nuo 0xFFFF800000000000, 1 MB iš viso) yra 
+  skirta pačiai OS (pml[256], pdp[0], pd[0], pt[*]).
+
+
+Pastaba: Norint naudoti lentelių reikšmes, kaip adresus, reikia *numesti*
+paskutinius 12 bitų. Pavyzdžiui:
+
+.. code-block:: cpp
+
+  u64int *pml = (u64int *) 0x0000000000103000;  // VIM riktas*
+  u64int *pdp1 = (u64int *) (pml[0] & PTINV);   // VIM riktas*
+  u64int *pd1 = (u64int *) (pdp1[0] & PTINV);   // VIM riktas*
+
+
+Pastabos
+--------
+
++ Puslapiavimų aprašymai yra pateikti 118 puslapyje. 64 bitų architektūroje
+  yra naudojamas ``IA-32E`` puslapiavimas (``CR0.PG = 1, CR4.PAE = 1, 
+  IA32_EFER.LME = 1``).
++ ``IA-32E`` puslapiavimas yra aprašytas 142 puslapyje.
++ 125 puslapyje duota lentelė, kurioje nurodyta į kokią struktūrą kada yra
+  kreipiamasi konvertuojant virtualų adresą į realų.
+
 
 TODO
 ====
