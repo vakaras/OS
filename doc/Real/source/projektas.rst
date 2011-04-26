@@ -2,84 +2,85 @@
 Projektas
 =========
 
-Atmintis
+Procesai
 ========
 
+Sisteminiai procesai (veikia ``ring 0``):
 
-+ **[0xB8000; 0xB8FA0)** – atmintis rezervuota vaizdui.
++ ``init`` – menamas procesas, kuriame veikia operacinės sistemos 
+  branduolys;
++ ``waitera`` ir ``waiterb`` – procesai, kurie užima procesorių 
+  *laisvalaikiu*.
 
-Virtuali atmintis:
+Taip pat sistemoje veikia naudotojo procesai, kurie veikia ``ring 3``.
 
-+ [00000000 00000000; 00007FFF FFFFFFFF] – naudotojo atmintis;
-+ [FFFF8000 00000000; FFFFFFFF FFFFFFFF] – OS atmintis;
+Procesai ``waitera`` ir ``waiterb``
+-----------------------------------
 
-Perdaryti:
+Šiuos abu procesus sukuria ``init`` operacinės sistemos startavimo metu.
+Šie du procesai yra žemiausio prioriteto ir yra vykdomi tada, kai nėra
+jokio kito pasiruošusio proceso.
 
-+ 32 bitų sistemoje puslapiavimo lentelė yra 4 MB dydžio, jos adresas
-  privalo būti lygiuotas 4 KB.
+``waitera`` veikimo algoritmas:
 
-TODO
-====
+.. code-block:: python
 
-+ Realizuoti puslapiavimo mechanizmą.
-  `Aprašymas <http://wiki.osdev.org/Page_Frame_Allocation>`_
-  `Veikimo principas <http://wiki.osdev.org/Paging>`_
-+ Realizuoti operatorius „new“ ir „delete“.
-  `Aprašymas <http://wiki.osdev.org/C%2B%2B#The_Operators_.27new.27_and_.27delete.27>`_
-  `Kitas aprašymas <http://wiki.osdev.org/Memory_Allocation>`_
+  while True:
+    create_resource(MessageWaiterA)
+    get_resource(MessageWaiterB)
 
-+ Išsiaiškinti, koks elementas, kokioje realios atminties vietoje gulės.
-+ Išsiaiškinti, kokių tipų resursai bus sistemoje.
-+ Išsiaiškinti, kokie procesai bus sistemoje.
-+ Išsiaiškinti, už kokias funkcijas bus atsakingas OS branduolys.
-+ Išsiaiškinti, kaip galima paleilsti naudotojo programą.
-+ Įdiegti 
-  `C Library <http://wiki.osdev.org/GCC_Cross-Compiler#Step_2_-_C_Library>`_
-+ Įdiegti `libsupc++ <http://wiki.osdev.org/Libsupcxx>`_.
+``waiterb`` veikimo algoritmas:
 
-Pastabos
-========
-
-C funkcijų kvietimas
---------------------
-
-Pirmieji šeši skaitiniai argumentai (nepriklausomai nuo tipo, gali būti
-tiek ``char``, tiek ``long``) perduodami pradedant kairiausiu tokia
-tvarka: ``RDI``, ``RSI``, ``RDX``, ``RCX``, ``R8`` ir ``R9``. Kiti 
-argumentai yra perduodami per steką.
-
-Šie registrai, taip pat ir ``RAX``, ``R10`` ir ``R11`` yra pakeičiami
-kviečiant funkciją.
-
-`Šaltinis. <http://www.nasm.us/doc/nasmdo11.html>`_
-
-NASM funkcijos kvietimas iš C kodo.
-
-.. code-block:: nasm
+.. code-block:: python
   
-  [GLOBAL foo]
-  foo:
-    mov rax, rdi
+  while True:
+    get_resource(MessageWaiterA)
+    create_resource(MessageWaiterB)
 
-.. code-block:: cpp
+Naudotojo procesai
+==================
 
-  extern "C" int foo(int);
-  // ...
-  int a = foo(5);                       ; a įgyja reikšmę 5.
+Naudotojo procesai sistemoje atsiranda vienu iš dviejų būdų:
 
-C funkcijos kvietimas iš NASM.
++ sukuria procesas ``init``, gavęs naudotojo nurodymą (per klaviatūrą);
++ naudotojo procesas sukuria dar vieną naudotojo procesą.
 
-.. code-block:: cpp
-  
-  extern "C" int bar(int a, int b) {
-    return a + b;
-    }
+Naudotojo procesai vykdo programas, kurios yra įkompiliuotos į pačią
+operacinę sistemą. Gavus nurodymą yra padaroma programos kopija, 
+naujai išskirtoje atmintyje (kiekvienai programai yra skiriama 2 MB
+operatyviosios atminties), procesorius yra perjungiamas į naudotojo
+rėžimą ir yra „šokama“ į programos vykdomojo kodo pradžią. Programos
+vykdymo metu atsiradusius pertraukimus apdoroja procesas ``init``.
+Galimi pertraukimai:
 
-.. code-block:: nasm
++ ``int 0x80`` – kreipimasis į operacinės sistemos funkcijas, procesas
+  pereina iš būsenos vykdomas į būseną pasiruošęs arba blokuotas;
++ ``int 0x20`` – laikrodžio pertraukimas, jam įvykus procesas pereina iš
+  būsenos vykdomas į būseną pasiruošęs;
++ įvykus bet kuriam kitam pertraukimui, proceso vykdymas yra nutraukiamas.
 
-  [EXTERN bar]
-  mov rdi, 0x1
-  mov rsi, 0x2
-  call bar                        
-  jmp $                                 ; rax reikšmė yra 0x3
+Resursų sąrašas
+===============
 
++ ``File`` kuria proceso ``init`` objektas ``FileManager``.
++ ``Screen`` (yra 4 tokio tipo resursai) kuria proceso ``init`` objektas
+  ``Monitor``.
++ ``Page`` kuria proceso ``init`` objektas ``MemoryManager``.
+
+.. figure:: resources.png
+  :scale: 100%
+  :alt: Resursų diagrama.
+
+  Resursų diagrama.
+
+
+Operacinės sistemos branduolys
+==============================
+
+Operacinė sistemos kodas yra vykdomas proceso ``init`` aplinkoje.
+
+.. figure:: core.png
+  :scale: 100%
+  :alt: OS branduolio diagrama.
+
+  OS branduolio diagrama.
