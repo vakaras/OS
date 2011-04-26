@@ -4,6 +4,7 @@
 *.out
 *.pyc
 *.o
+*.dia~
 kernel
 .installed.cfg
 .mr.developer.cfg
