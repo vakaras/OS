@@ -8,7 +8,8 @@
 #include "monitor_screen_character.h"
 #include "monitor.h"
 #include "gdt.h"
-//#include "idt.h"
+// #include "idt.h"
+#include "pic.h"
 #include "tests/test_monitor.h"
 
 
@@ -18,8 +19,8 @@ GDT gdt;
 
 extern "C" int main() {
 
-  //test_monitor(&monitor);
-  gdt.print_debug_info(&monitor);
+  test_monitor(&monitor);
+  //gdt.print_debug_info(&monitor);
 
   return 0xBABADEAD;
   }
