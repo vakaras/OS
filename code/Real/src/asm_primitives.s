@@ -29,9 +29,10 @@ gdt_flush:
 
 ; IDT aktyvavimas.
 ; void idt_flush(u64int);
-[GLOBAL idt_flush]
+[GLOBAL install_idt]
 
-idt_flush:
-  mov rax, [rsp + 8]                    ; Parametro nuskaitymas.
+install_idt:
+  call debug_ping
+  mov rax, [rsp]                    ; Parametro nuskaitymas.
   lidt [rax]                            ; Atnaujinama rodyklė į IDT lentelę.
   ret

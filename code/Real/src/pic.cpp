@@ -4,8 +4,9 @@
 
 idt_entry_t interrupt_gate[64];
 idtr_t idtr;
-extern IntPtr isr_table[64];
+extern "C" IntPtr isr_table[64];
 isr_t interrupt_handlers[64];
+
 
 
 static void set_interrupt_gate(const Byte id, const u64int offset, 
@@ -21,10 +22,10 @@ static void set_interrupt_gate(const Byte id, const u64int offset,
   interrupt_gate[id].reserved = 0;
 }
 
-static void install_idt(const u64int idt_ptr)
-{
-  asm volatile("lidt (%0);"::"r"((u64int)idt_ptr):"memory");
-}
+// static void install_idt(const u64int idt_ptr)
+// {
+//   asm volatile("lidt (%0);"::"r"((u64int)idt_ptr):"memory");
+// }
 
 #define EXCEPTION_FAULT     1
 #define EXCEPTION_TRAP      2
@@ -73,7 +74,7 @@ static struct exception
   { "--", "Intel reserved. Do not use.", EXCEPTION_FAULT, false },
 };
 
-extern "C" void default_interrupt_handler(struct context_s *s)
+void default_interrupt_handler(struct context_s *s)
 {
   if(s->vector < 32)
   {
@@ -121,10 +122,11 @@ void InitInterrupts()
     interrupt_handlers[i] = default_interrupt_handler;
     set_interrupt_gate((Byte)i, isr_table[i], 0x8E);
   }
+
   
   idtr.limit = (u16int)((sizeof(struct interrupt_gate_s) * 64) - 1);
   idtr.base = (u64int)&interrupt_gate;
   install_idt((u64int)&idtr);
-  
+//   test();
 //   interrupt_handlers[7] = DeviceNotAvailableExceptionHandler;
 }

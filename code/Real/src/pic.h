@@ -28,5 +28,7 @@ struct idtr_s
                               // the first element in idt_entry_t array.
 } __attribute__((packed));
 typedef struct idtr_s idtr_t;
-
+extern "C" void default_interrupt_handler(struct context_s *s);
+void InitInterrupts();
+extern "C" void install_idt(u64int);
 #endif

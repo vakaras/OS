@@ -1,24 +1,25 @@
 [BITS 64]
 
-extern interrupt_handlers
+[EXTERN default_interrupt_handler]
+[EXTERN debug_ping]
 
 Temp dq 0
 LazySSEStateSave    db  1
 
-global isr_table
+[GLOBAL isr_table]
 
 align 16
 isr_table:
 %assign n 0
 %rep 64
-    dq isr %+ n
+    dq isr%+n
 %assign n n + 1
 %endrep
 
 align 16
 %assign n 0
 %rep 64
-isr %+ n :              ; defines symbols isr0, isr1 etc.
+isr%+n :              ; defines symbols isr0, isr1 etc.
     cli
 %if n <= 7 
     push qword 0        ; push a fake error code
@@ -33,14 +34,17 @@ isr %+ n :              ; defines symbols isr0, isr1 etc.
     push qword 0        ; push a fake error code
 %endif
 
-    mov qword [Temp], rsp
+    ;mov qword [Temp], rsp
     push rax
     push rcx
     push rdx
     push rbx
   .cia:                  ; FIXME: vykdant komandas su qword [Temp] 
                          ; linker failina
-    push qword [Temp]
+    ;push qword [Temp]
+    mov rax, rsp
+    push rax
+    
     push rbp
     push rsi
     push rdi
@@ -69,8 +73,9 @@ isr %+ n :              ; defines symbols isr0, isr1 etc.
     out dx, al
                         ; FIXME: Meginant pasiekti interrupt_handlers
                         ; adresa taip pat failina linker
-    mov rax, [interrupt_handlers + n * 8]
-    call rax
+
+;     mov rax, default_interrupt_handler
+    call default_interrupt_handler
 
     add rsp, 8      ; Pop(qword n)
 
@@ -97,3 +102,18 @@ isr %+ n :              ; defines symbols isr0, isr1 etc.
 %assign n n + 1
 %endrep
 
+[GLOBAL isr64]
+
+isr64:              ; defines symbols isr0, isr1 etc.
+mov al, 'c'
+out 0x09E, al
+mov al, 'c'
+out 0x09E, al
+mov al, 'c'
+out 0x09E, al
+mov al, 'c'
+out 0x09E, al
+mov al, 'c'
+out 0x09E, al
+mov al, 'c'
+out 0x09E, al

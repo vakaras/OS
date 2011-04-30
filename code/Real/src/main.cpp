@@ -18,9 +18,10 @@ Monitor monitor;
 GDT gdt;
 
 extern "C" int main() {
-
+  InitInterrupts();
   test_monitor(&monitor);
   //gdt.print_debug_info(&monitor);
-
+  
+  asm volatile("int $0x4;");
   return 0xBABADEAD;
   }
