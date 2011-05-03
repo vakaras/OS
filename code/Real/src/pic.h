@@ -1,5 +1,5 @@
 #ifndef PIC_H
-#define PIC_H
+#define PIC_H 1
 
 typedef void (*isr_t)(struct context_s *);
 

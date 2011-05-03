@@ -1,5 +1,5 @@
 #ifndef MONITOR_H
-#define MONITOR_H
+#define MONITOR_H 1
 
 #include "monitor_defines.h"
 #include "monitor_screen_character.h"

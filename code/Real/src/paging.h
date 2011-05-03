@@ -1,5 +1,5 @@
-#ifndef PAGING_H
-#define PAGING_H
+#ifndef PAGING_H 
+#define PAGING_H 1
 
 #include "types.h"
 typedef struct page

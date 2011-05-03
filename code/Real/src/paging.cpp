@@ -1,4 +1,3 @@
-
 #include "paging.h"
 #include "memlib.h"
 
@@ -12,7 +11,7 @@ page_directory_t *current_directory=0;
 u64int *frames;
 u64int nframes;
 
-u64int placement_address = 16777215;
+u64int placement_address2 = 16777215;
 
 
 // Macros used in the bitset algorithms.
@@ -38,13 +37,13 @@ static void clear_frame(u64int frame_addr)
 }
 
 // Static function to test if a bit is set.
-static u64int test_frame(u64int frame_addr)
-{
-  u64int frame = frame_addr/0x1000;
-  u64int idx = INDEX_FROM_BIT(frame);
-  u64int off = OFFSET_FROM_BIT(frame);
-  return (frames[idx] & (0x1 << off));
-}
+// static u64int test_frame(u64int frame_addr)
+// {
+//   u64int frame = frame_addr/0x1000;
+//   u64int idx = INDEX_FROM_BIT(frame);
+//   u64int off = OFFSET_FROM_BIT(frame);
+//   return (frames[idx] & (0x1 << off));
+// }
 
 // Static function to find the first free frame.
 static u64int first_frame()
@@ -128,7 +127,7 @@ void initialise_paging()
   // by calling kmalloc(). A while loop causes this to be
   // computed on-the-fly rather than once at the start.
   u64int i = 0;
-  while (i < placement_address)
+  while (i < placement_address2)
   {
     // Kernel code is readable but not writeable from userspace.
     alloc_frame( get_page(i, 1, kernel_directory), 0, 0);

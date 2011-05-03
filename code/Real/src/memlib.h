@@ -1,5 +1,5 @@
 #ifndef MEMLIB_H
-#define MEMLIB_H
+#define MEMLIB_H 1
 
 u64int kmalloc(u64int size, int align, u64int *phys);
 
