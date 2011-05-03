@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Nukopijuojame branduolį.
-cp src/kernel data/supergrub-src/menus/
 cd data/supergrub-src
 ./supergrub-mkrescue
 mv sgd_hybrid.iso ../sgrub.iso
