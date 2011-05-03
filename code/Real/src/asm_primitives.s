@@ -29,7 +29,7 @@ gdt_flush:
 
 ; IDT aktyvavimas.
 ; void idt_flush(u64int);
-[GLOBAL install_idt]
+[GLOBAL idt_flush]
 
 install_idt:
   lidt [rdi]                            ; Atnaujinama rodyklė į IDT lentelę.

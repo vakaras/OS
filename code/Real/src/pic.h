@@ -10,7 +10,7 @@ struct interrupt_gate_s
                               // to when this interrupt fires. (base_lo)
     u16int selector;          // Kernel segment selector.
     Byte  zero;               // This must always be zero.
-    Byte  flags;              // More flags. See documentation.
+    Byte  flags;              // More flags. 0xE - IntGate 0xF - TrapGate
     u16int offset_16_31;      // The upper 16 bits of the address 
                               // to jump to. (base_hi)
 
@@ -30,5 +30,5 @@ struct idtr_s
 typedef struct idtr_s idtr_t;
 extern "C" void default_interrupt_handler(struct context_s *s);
 void InitInterrupts();
-extern "C" void install_idt(u64int);
+// extern "C" void install_idt(u64int);
 #endif

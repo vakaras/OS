@@ -33,7 +33,7 @@ struct context_s
   u64int  vector, 
           R15, R14, R13, R12, 
           R11, R10, R9, R8, 
-          DI, SI, BP, Temp,
+          DI, SI, BP,
           BX, DX, CX, AX,
           error, IP, CS,
           FLAGS, SP, SS;
