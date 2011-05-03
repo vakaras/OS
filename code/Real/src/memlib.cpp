@@ -1,11 +1,13 @@
 #include "types.h"
 #include "memlib.h"
 
+
 u64int placement_address = 16777215;
 
-u64int kmalloc(u64int size, int align, u64int *phys)
-{
-  if (align == 1 && (placement_address & 0xFFFFFFFFFFFFF000)) // If the address is not already page-aligned
+
+u64int kmalloc(u64int size, int align, u64int *phys) {
+  if (align == 1 && (placement_address & 0xFFFFFFFFFFFFF000)) 
+    // If the address is not already page-aligned
   {
     // Align it.
     placement_address &= 0xFFFFFFFFFFFFF000;
@@ -40,17 +42,23 @@ u64int kmalloc(u64int size)
   return kmalloc(size, 0, 0);
 }
 
-// Copy len bytes from src to dest.
-void memcpy(u8int *dest, const u8int *src, u32int len)
-{
-  const u8int *sp = (const u8int *)src;
-  u8int *dp = (u8int *)dest;
-  for(; len != 0; len--) *dp++ = *sp++;
-}
 
-// Write len copies of val into dest.
-void memset(u8int *dest, u8int val, u32int len)
-{
-  u8int *temp = (u8int *)dest;
-  for ( ; len != 0; len--) *temp++ = val;
-}
+// Nukopijuoja nurodytus len baitų iš src į dest.
+void memcpy(u8int *dest, const u8int *src, u32int length) {
+
+  const u8int *sp = src;
+  for(u8int *dp = dest; length != 0; length--) {
+    *dp++ = *sp++;
+    }
+
+  }
+
+
+// Užpildo nurodytą atmintį reikšme value.
+void memset(u8int *dest, u8int value, u32int length) {
+
+  for (u8int *p = dest ; length != 0; length--) {
+    *p++ = value;
+    }
+
+  }
