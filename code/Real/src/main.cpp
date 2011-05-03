@@ -7,10 +7,9 @@
 #include "monitor_defines.h"
 #include "monitor_screen_character.h"
 #include "monitor.h"
-//#include "gdt.h"
 #include "idt.h"
 #include "paging.h"
-// #include "pic.h"
+#include "debug.h"
 #include "tests/test_monitor.h"
 
 #define PAGE_TABLE_PERM ((1<<0) | (1<<1))
@@ -20,7 +19,6 @@
 
 // Globalūs kintamieji.
 Monitor monitor;
-//GDT gdt;
 IDT idt;
 
 extern "C" void interrupt_handler(int *stack) {
@@ -30,11 +28,6 @@ extern "C" void interrupt_handler(int *stack) {
   }
 
 extern "C" void load_pager(u64int);
-
-extern "C" void pause();
-extern "C" void pause0();
-extern "C" void pause1(u64int);
-extern "C" void pause2(u64int, u64int);
 
 extern "C" int main() {
 
