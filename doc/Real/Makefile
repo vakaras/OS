@@ -105,3 +105,6 @@ upload:
 	ssh 77.79.7.73 'rm -rf ~/www/public/*'
 	@echo "Uploading new."
 	scp -r build/html/* 77.79.7.73:~/www/public/
+
+show:
+	xdg-open build/html/index.html

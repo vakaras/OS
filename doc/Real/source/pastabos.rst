@@ -15,7 +15,6 @@ Reali atmintis
 + 0x00000000001fa000 – šiuo fiziniu adresu prasideda branduolio kodas?
   Tada jis turėtų atitikti virtualų adresą 0xffff800000000068.
 
-
 Virtuali atmintis
 -----------------
 
@@ -56,6 +55,9 @@ registras ``CR3``.
 + antroji pusė (adresai nuo 0xFFFF800000000000, 1 MB iš viso) yra 
   skirta pačiai OS (pml[256], pdp[0], pd[0], pt[*]).
 
+  **Svarbu**: virtualus adresas 0xffff800000000000 atitinka 
+  realų adresą 0x00000000001fa000, kitaip tariant branduolys prasideda
+  nuo antrojo megabaito.
 
 Pastaba: Norint naudoti lentelių reikšmes, kaip adresus, reikia *numesti*
 paskutinius 12 bitų. Pavyzdžiui:
@@ -66,6 +68,23 @@ paskutinius 12 bitų. Pavyzdžiui:
   u64int *pdp1 = (u64int *) (pml[0] & PTINV);   // VIM riktas*
   u64int *pd1 = (u64int *) (pdp1[0] & PTINV);   // VIM riktas*
 
+GDT
+---
+
+Paliekam tokį **GDT**, kokį mums paruošė ``bootloader``. Iš ``bochs``
+(``data/bochsout.txt``) gauname, kad mūsų kodo segmentas yra 0x8, o
+duomenų segmentas yra 0x10:
+
+::
+
+  03349000000i[CPU0 ] | SEG selector     base    limit G D
+  03349000000i[CPU0 ] | SEG sltr(index|ti|rpl)     base    limit G D
+  03349000000i[CPU0 ] |  CS:0008( 0001| 0|  0) 00000000 00000fff 1 0
+  03349000000i[CPU0 ] |  DS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+  03349000000i[CPU0 ] |  SS:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+  03349000000i[CPU0 ] |  ES:0010( 0002| 0|  0) 00000000 ffffffff 1 1
+  03349000000i[CPU0 ] |  FS:0018( 0003| 0|  0) 00000000 ffffffff 1 1
+  03349000000i[CPU0 ] |  GS:0018( 0003| 0|  0) 00000000 ffffffff 1 1
 
 Pastabos
 --------
