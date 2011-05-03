@@ -8,7 +8,8 @@
 #include "monitor_screen_character.h"
 #include "monitor.h"
 #include "gdt.h"
-#include "idt.h"
+// #include "idt.h"
+#include "pic.h"
 #include "tests/test_monitor.h"
 
 #define PAGE_TABLE_PERM ((1<<0) | (1<<1))
@@ -85,6 +86,11 @@ extern "C" int main() {
 
   //asm volatile ("int $0x3");
 
+  InitInterrupts();
+  test_monitor(&monitor);
+  //gdt.print_debug_info(&monitor);
+  
+  asm volatile("int $0x4;");
 
   return 0xBABADEAD;
   }

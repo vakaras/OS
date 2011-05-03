@@ -29,12 +29,12 @@ gdt_flush:
 
 ; IDT aktyvavimas.
 ; void idt_flush(u64int);
-[GLOBAL idt_flush]
+[GLOBAL install_idt]
 
-idt_flush:
+install_idt:
   lidt [rdi]                            ; Atnaujinama rodyklė į IDT lentelę.
+  call debug_ping
   ret
-
 
 ; Puslapiavimo aktyvavimas.
 ; void load_pager(u64int);
@@ -43,4 +43,3 @@ idt_flush:
 load_pager:
   mov cr3, rdi
   jmp $
-  ret

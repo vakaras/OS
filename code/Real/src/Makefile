@@ -1,7 +1,7 @@
-CLEAN = *.o kernel
+CLEAN = *.o *~ kernel
 
 SOURCES = boot.o main.o icxxabi.o primitives.o asm_primitives.o \
-					interrupt.o
+					interrupt.o pic.o isr.o 
 LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
 CPPFLAGS = -m64 -mcmodel=large \
