@@ -24,6 +24,7 @@ isr %+ n :              ; defines symbols isr0, isr1 etc.
 push qword 0
 cli
 call debug_ping
+sti
 jmp $
 ;     cli
 ; %if n <= 7 
