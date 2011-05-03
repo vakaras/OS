@@ -5,6 +5,7 @@
 idt_entry_t interrupt_gate[64];
 idtr_t idtr;
 extern "C" IntPtr isr_table[64];
+extern "C" void isr4();
 isr_t interrupt_handlers[64];
 
 
@@ -22,10 +23,11 @@ static void set_interrupt_gate(const Byte id, const u64int offset,
   interrupt_gate[id].reserved = 0;
 }
 
-// static void install_idt(const u64int idt_ptr)
-// {
-//   asm volatile("lidt (%0);"::"r"((u64int)idt_ptr):"memory");
-// }
+static void install_idt(u64int idt_ptr)
+{
+  asm volatile("lidt (%0);"::"r"(idt_ptr):"memory");
+  asm volatile("sti");
+}
 
 #define EXCEPTION_FAULT     1
 #define EXCEPTION_TRAP      2
@@ -76,6 +78,12 @@ static struct exception
 
 void default_interrupt_handler(struct context_s *s)
 {
+  const char * ints = "int";
+  send_byte(0x0E9, (u8int)ints[0]);
+  send_byte(0x0E9, (u8int)ints[1]);
+  send_byte(0x0E9, (u8int)ints[2]);
+  send_byte(0x0E9, 0x0A);
+  
   if(s->vector < 32)
   {
 //     monitor->write_string("Interrupt occurred: #");
@@ -86,17 +94,13 @@ void default_interrupt_handler(struct context_s *s)
     send_byte(0x0E9, symbl);
     symbl = (char)exception[s->vector].mnemonic[1];
     send_byte(0x0E9, symbl);
-    const char * ints = "int";
-    send_byte(0x0E9, (u8int)ints[0]);
-    send_byte(0x0E9, (u8int)ints[1]);
-    send_byte(0x0E9, (u8int)ints[2]);
-    send_byte(0x0E9, 0x0A);
+   
 //     printf("#%s (%s) occurred\n", exception[s->vector].mnemonic, exception[s->vector].description);
     asm volatile(" cli; hlt; ");
   }
 }
 
-static void irq_remap(void)
+static void irq_remap()
 {
   send_byte(0x20, 0x11);
   send_byte(0xA0, 0x11);
@@ -116,17 +120,21 @@ void InitInterrupts()
   u64int i;
   
   irq_remap();
+  send_byte(0x0E9, (u8int)isr_table[62]);
+  send_byte(0x0E9, (u8int)isr_table[63]);
+  send_byte(0x0E9, (u8int)isr_table[64]);
   
   for(i = 0; i < 64; i++)
   {
     interrupt_handlers[i] = default_interrupt_handler;
-    set_interrupt_gate((Byte)i, isr_table[i], 0x8E);
+    set_interrupt_gate((Byte)i, (u64int)isr_table[i], 0x8E);
   }
 
   
   idtr.limit = (u16int)((sizeof(struct interrupt_gate_s) * 64) - 1);
   idtr.base = (u64int)&interrupt_gate;
   install_idt((u64int)&idtr);
+
 //   test();
 //   interrupt_handlers[7] = DeviceNotAvailableExceptionHandler;
 }
