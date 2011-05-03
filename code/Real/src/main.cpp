@@ -63,7 +63,7 @@ extern "C" int main() {
     monitor.write_hex(pd1[i]);
     monitor.write_string("\n");
     }
-  initialise_paging();
+  //initialise_paging();
 
   //u64int *pml = (u64int *) 0x0000000000103000;
   //u64int *pdp1 = (u64int *) (pml[0] & PTINV);
