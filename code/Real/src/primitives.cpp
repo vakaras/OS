@@ -22,27 +22,6 @@ u16int get_bytes2(u16int port) {
   return result;
   }
 
-
-// Nukopijuoja nurodytus len baitų iš src į dest.
-void memcpy(u8int *dest, const u8int *src, u32int length) {
-
-  for (u32int i = 0; i < length; i++) {
-    dest[i] = src[i];
-    }
-  
-  }
-
-
-// Užpildo nurodytą atmintį reikšme value.
-void memset(u8int *dest, u8int value, u32int length) {
-
-  for (u32int i = 0; i < length; i++) {
-    dest[i] = value;
-    }
-
-  }
-
-
 // Nusiunčia baitą į Bochs. (Funkcija skirta derinimui.)
 void debug_ping() {
   debug_string("Veikia.\n");
