@@ -12,6 +12,7 @@
 #include "debug.h"
 #include "tests/test_monitor.h"
 #include "tests/test_debug.h"
+#include "tests/test_idt.h"
 
 #define PAGE_TABLE_PERM ((1<<0) | (1<<1))
 #define PAGE_TABLE_PERM_NOCACHE (PAGE_TABLE_PERM | (1<<3) | (1<<4))
@@ -32,7 +33,10 @@ extern "C" void load_pager(u64int);
 
 extern "C" int main() {
 
+  // Testai.
   test_debug();
+  test_monitor(&monitor);
+  test_idt();
 
   u64int *pml = (u64int *) 0x0000000000103000;
   u64int *pdp1 = (u64int *) (pml[0] & PTINV);
@@ -125,7 +129,6 @@ extern "C" int main() {
 //   load_pager(0xFFFFFFFFFF103000);
 //   load_pager(0x0000000000103000);
 
-  //test_monitor(&monitor);
   //gdt.print_debug_info(&monitor);
 
   //asm volatile ("int $0x3");
