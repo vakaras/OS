@@ -34,3 +34,13 @@ gdt_flush:
 idt_flush:
   lidt [rdi]                            ; Atnaujinama rodyklė į IDT lentelę.
   ret
+
+
+; Puslapiavimo aktyvavimas.
+; void load_pager(u64int);
+[GLOBAL load_pager]
+
+load_pager:
+  mov cr3, rdi
+  jmp $
+  ret
