@@ -6,6 +6,14 @@
 [EXTERN debug_ping]
 [EXTERN debug_char]
 
+; Sustabdo procesorių begaliniame cikle. (Funkcija derinimui.)
+global pause, pause0, pause1, pause2 
+pause2:
+pause1:
+pause0:
+pause:
+  xchg bx, bx
+  ret
 
 ; GDT aktyvavimas.
 ; void gdt_flush(u64int);
