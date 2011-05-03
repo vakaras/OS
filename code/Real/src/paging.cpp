@@ -1,5 +1,11 @@
 #include "paging.h"
 #include "memlib.h"
+#include "primitives.h"
+
+#define PHYSICAL_ADDRESS_START 0x00000000001fa000
+#define VIRTUAL_ADDRESS_START 0xffff800000000000
+#define FIX_ADDRESS(a) ((a) - \
+VIRTUAL_ADDRESS_START + PHYSICAL_ADDRESS_START)
 
 // The kernel's page directory
 page_directory_t *kernel_directory=0;
@@ -15,8 +21,8 @@ u64int placement_address2 = 16777215;
 
 
 // Macros used in the bitset algorithms.
-#define INDEX_FROM_BIT(a) (a/(8*4))
-#define OFFSET_FROM_BIT(a) (a%(8*4))
+#define INDEX_FROM_BIT(a) (a/(8*4*2))
+#define OFFSET_FROM_BIT(a) (a%(8*4*2))
 
 // Static function to set a bit in the frames bitset
 static void set_frame(u64int frame_addr)
@@ -109,7 +115,6 @@ void initialise_paging()
   // The size of physical memory. For the moment we
   // assume it is 16MB big.
   u64int mem_end_page = 0x1000000;
-  
   nframes = mem_end_page / 0x1000;
   frames = (u64int*)kmalloc(INDEX_FROM_BIT(nframes));
   memset((u8int*)frames, 0, INDEX_FROM_BIT(nframes));
@@ -117,8 +122,7 @@ void initialise_paging()
   // Let's make a page directory.
   kernel_directory = (page_directory_t*)kmalloc_a(sizeof(page_directory_t));
   memset((u8int*)kernel_directory, 0, sizeof(page_directory_t));
-  current_directory = kernel_directory;
-  
+  current_directory = kernel_directory;  
   // We need to identity map (phys addr = virt addr) from
   // 0x0 to the end of used memory, so we can access this
   // transparently, as if paging wasn't enabled.
@@ -133,6 +137,7 @@ void initialise_paging()
     alloc_frame( get_page(i, 1, kernel_directory), 0, 0);
     i += 0x1000;
   }
+  
   // Before we enable paging, we must register our page fault handler.
   //register_interrupt_handler(14, page_fault);
   
@@ -142,8 +147,12 @@ void initialise_paging()
 
 void switch_page_directory(page_directory_t *dir)
 {
+  
   current_directory = dir;
-  asm volatile("mov %0, %%cr3":: "r"(&dir->tablesPhysical));
+//   monitor->
+/*  debug_string("Kol kas iki cia nuejau\n");*/
+  asm volatile("mov %0, %%cr3":: "r"(FIX_ADDRESS(&dir->tablesPhysical)));
+//   debug_string("Patekau kur norejau\n");
   u64int cr0;
   asm volatile("mov %%cr0, %0": "=r"(cr0));
   cr0 |= 0x80000000; // Enable paging!

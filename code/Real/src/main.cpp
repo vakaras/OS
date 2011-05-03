@@ -21,7 +21,7 @@
 // Globalūs kintamieji.
 Monitor monitor;
 //GDT gdt;
-IDT idt;
+IDT idt(&monitor);
 
 extern "C" void interrupt_handler(int *stack) {
 
@@ -35,6 +35,10 @@ extern "C" void pause();
 extern "C" void pause0();
 extern "C" void pause1(u64int);
 extern "C" void pause2(u64int, u64int);
+
+extern "C" void default_interrupt_handler(struct context_s *s){
+  idt.process_interrupt(s);
+}
 
 extern "C" int main() {
 
@@ -63,7 +67,7 @@ extern "C" int main() {
     monitor.write_hex(pd1[i]);
     monitor.write_string("\n");
     }
-  initialise_paging();
+//   initialise_paging();
 
   //u64int *pml = (u64int *) 0x0000000000103000;
   //u64int *pdp1 = (u64int *) (pml[0] & PTINV);

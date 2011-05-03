@@ -1,5 +1,5 @@
 #ifndef ARRAY_2D_POINTER_H
-#define ARRAY_2D_POINTER_H
+#define ARRAY_2D_POINTER_H 1
 
 
 /**

@@ -2,6 +2,7 @@
 #define PAGING_H 1
 
 #include "types.h"
+
 typedef struct page
 {
    u64int present    : 1;   // Page present in memory
