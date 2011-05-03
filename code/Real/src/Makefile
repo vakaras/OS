@@ -2,10 +2,6 @@ CLEAN = *.o *~ kernel
 
 SOURCES = boot.o main.o icxxabi.o primitives.o asm_primitives.o \
 					isr.o paging.o memlib.o debug.o debug.asm.o
-extern "C" void pause();
-extern "C" void pause0();
-extern "C" void pause1(u64int);
-extern "C" void pause2(u64int, u64int);
 LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
 CPPFLAGS = -m64 -mcmodel=large \

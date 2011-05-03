@@ -11,6 +11,7 @@
 #include "paging.h"
 #include "debug.h"
 #include "tests/test_monitor.h"
+#include "tests/test_debug.h"
 
 #define PAGE_TABLE_PERM ((1<<0) | (1<<1))
 #define PAGE_TABLE_PERM_NOCACHE (PAGE_TABLE_PERM | (1<<3) | (1<<4))
@@ -30,6 +31,8 @@ extern "C" void interrupt_handler(int *stack) {
 extern "C" void load_pager(u64int);
 
 extern "C" int main() {
+
+  test_debug();
 
   u64int *pml = (u64int *) 0x0000000000103000;
   u64int *pdp1 = (u64int *) (pml[0] & PTINV);
