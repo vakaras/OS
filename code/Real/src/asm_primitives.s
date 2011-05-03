@@ -32,6 +32,5 @@ gdt_flush:
 [GLOBAL idt_flush]
 
 idt_flush:
-  mov rax, [rsp + 8]                    ; Parametro nuskaitymas.
-  lidt [rax]                            ; Atnaujinama rodyklė į IDT lentelę.
+  lidt [rdi]                            ; Atnaujinama rodyklė į IDT lentelę.
   ret

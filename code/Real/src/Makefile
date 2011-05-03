@@ -1,6 +1,7 @@
 CLEAN = *.o kernel
 
-SOURCES = boot.o main.o icxxabi.o primitives.o asm_primitives.o
+SOURCES = boot.o main.o icxxabi.o primitives.o asm_primitives.o \
+					interrupt.o
 LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
 CPPFLAGS = -m64 -mcmodel=large \

@@ -8,13 +8,20 @@
 #include "monitor_screen_character.h"
 #include "monitor.h"
 #include "gdt.h"
-//#include "idt.h"
+#include "idt.h"
 #include "tests/test_monitor.h"
 
 
 // Globalūs kintamieji.
 Monitor monitor;
 GDT gdt;
+IDT idt;
+
+extern "C" void interrupt_handler(int *stack) {
+
+  monitor.write_hex((u64int) stack);
+
+  }
 
 extern "C" int main() {
 
