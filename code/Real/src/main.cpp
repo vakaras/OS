@@ -38,7 +38,6 @@ extern "C" void pause2(u64int, u64int);
 
 extern "C" int main() {
 
-<<<<<<< HEAD
   u64int *pml = (u64int *) 0x0000000000103000;
   u64int *pdp1 = (u64int *) (pml[0] & PTINV);
   u64int *pd1 = (u64int *) (pdp1[0] & PTINV);
@@ -64,8 +63,7 @@ extern "C" int main() {
     monitor.write_hex(pd1[i]);
     monitor.write_string("\n");
     }
-    initialise_paging();
-=======
+  initialise_paging();
 
   //u64int *pml = (u64int *) 0x0000000000103000;
   //u64int *pdp1 = (u64int *) (pml[0] & PTINV);
@@ -93,7 +91,6 @@ extern "C" int main() {
     //monitor.write_string("\n");
     //}
 
->>>>>>> ed655c0ed01af721a1f644649a72c68b6cc5d549
     
   //u64int *p2 = (u64int *) 0xFFFF800000000000;
   //for (int i = 0; i < 100; i++) {
@@ -143,13 +140,11 @@ extern "C" int main() {
   monitor.write_hex(FIX_ADDRESS((u64int) &idt));
 
   //gdt.print_debug_info(&monitor);
-<<<<<<< HEAD
   //idt.print_debug_info(&monitor);
   u64int a, b;
   a = 23;
   b = 0;
   b = a + b + 1;
-=======
   idt.print_debug_info(&monitor);
   //u64int a, b;
   //a = 23;
@@ -158,7 +153,6 @@ extern "C" int main() {
 
   pause();
   asm volatile("int $0x4;");
->>>>>>> ed655c0ed01af721a1f644649a72c68b6cc5d549
 
   return 0xBABADEAD;
   }
