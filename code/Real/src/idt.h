@@ -1,5 +1,5 @@
 #ifndef IDT_H
-#define IDT_H
+#define IDT_H 1
 
 #include "types.h"
 #include "monitor.h"
@@ -10,14 +10,14 @@
 #define PHYSICAL_ADDRESS_START 0x00000000001fa000
 #define VIRTUAL_ADDRESS_START 0xffff800000000000
 #define FIX_ADDRESS(a) ((a) - \
-    VIRTUAL_ADDRESS_START + PHYSICAL_ADDRESS_START)
+VIRTUAL_ADDRESS_START + PHYSICAL_ADDRESS_START)
 
 extern "C" IntPtr isr_table[IDT_NUMBER];
 extern "C" void idt_flush(u64int);
 
 
 class IDT{
-
+  
 public:
   
   struct Idtr_pointer
@@ -71,7 +71,7 @@ public:
 private:
   Idtr_pointer idtr;
   Interrupt_gate int_gates[IDT_NUMBER];
-//   Monitor *monitor;
+  //   Monitor *monitor;
   
   void install_idt(u64int idt_ptr) {
     asm volatile("lidt (%0);"::"r"(idt_ptr):"memory");  
@@ -91,44 +91,44 @@ private:
     send_byte(0x21, 0x00); // unmask all ISRs
     send_byte(0xA1, 0x00); // unmask all ISRs
   }
-
+  
 public:
   
-//   void set_monitor(Monitor *monitor){
-//     this->monitor = monitor;
-//   }
-  
-  IDT(){
-    this->irq_remap();
+  //   void set_monitor(Monitor *monitor){
+    //     this->monitor = monitor;
+    //   }
     
-    for(u64int i = 0; i < IDT_NUMBER; i++){
-      this->int_gates[i].set_offsets(FIX_ADDRESS(isr_table[i]));
+    IDT(){
+      this->irq_remap();
+      
+      for(u64int i = 0; i < IDT_NUMBER; i++){
+        this->int_gates[i].set_offsets(FIX_ADDRESS(isr_table[i]));
+      }
+      
+      this->idtr.limit = sizeof(Interrupt_gate) * IDT_NUMBER - 1;
+      this->idtr.base = FIX_ADDRESS((u64int)&this->int_gates);
+      
+      this->install_idt(FIX_ADDRESS((u64int) &this->idtr));
     }
     
-    this->idtr.limit = sizeof(Interrupt_gate) * IDT_NUMBER - 1;
-    this->idtr.base = FIX_ADDRESS((u64int)&this->int_gates);
+    void print_debug_info(Monitor *monitor) {
+      
+      monitor->write_string("\n\nIDT debug information.");
+      monitor->write_string("\n64 bit unsigned zero:  ");
+      monitor->write_hex((u64int) 0);
+      monitor->write_string("\nGates start address:   ");
+      monitor->write_hex((u64int) this->int_gates);
+      monitor->write_string("\nIDTR address:          ");
+      monitor->write_hex((u64int) &this->idtr);
+      monitor->write_string("\nIdtr.limit:            ");
+      monitor->write_hex(this->idtr.limit);
+      monitor->write_string("\nIdtr.base:             ");
+      monitor->write_hex(this->idtr.base);
+      monitor->write_string("\nInterrupt_gate dydis:  ");
+      monitor->write_dec((u32int)sizeof(Interrupt_gate));
+      
+    }
     
-    this->install_idt(FIX_ADDRESS((u64int) &this->idtr));
-  }
-
-  void print_debug_info(Monitor *monitor) {
-
-    monitor->write_string("\n\nIDT debug information.");
-    monitor->write_string("\n64 bit unsigned zero:  ");
-    monitor->write_hex((u64int) 0);
-    monitor->write_string("\nGates start address:   ");
-    monitor->write_hex((u64int) this->int_gates);
-    monitor->write_string("\nIDTR address:          ");
-    monitor->write_hex((u64int) &this->idtr);
-    monitor->write_string("\nIdtr.limit:            ");
-    monitor->write_hex(this->idtr.limit);
-    monitor->write_string("\nIdtr.base:             ");
-    monitor->write_hex(this->idtr.base);
-    monitor->write_string("\nInterrupt_gate dydis:  ");
-    monitor->write_dec((u32int)sizeof(Interrupt_gate));
-
-  }
-
 };
 
 #endif

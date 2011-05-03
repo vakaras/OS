@@ -1,5 +1,5 @@
 #ifndef TYPES_H
-#define TYPES_H
+#define TYPES_H 1
 
 
 #define BYTE_SIZE 8                     // Baito dydis bitais.

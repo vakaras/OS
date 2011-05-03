@@ -9,6 +9,7 @@
 #include "monitor.h"
 //#include "gdt.h"
 #include "idt.h"
+#include "paging.h"
 // #include "pic.h"
 #include "tests/test_monitor.h"
 
@@ -37,6 +38,32 @@ extern "C" void pause2(u64int, u64int);
 
 extern "C" int main() {
 
+  u64int *pml = (u64int *) 0x0000000000103000;
+  u64int *pdp1 = (u64int *) (pml[0] & PTINV);
+  u64int *pd1 = (u64int *) (pdp1[0] & PTINV);
+
+  monitor.clear();
+
+  monitor.write_string("PML[");
+  monitor.write_dec(0);
+  monitor.write_string("] \t= ");
+  monitor.write_hex(pml[0]);
+  monitor.write_string("\n");
+
+  monitor.write_string("PDP[");
+  monitor.write_dec(0);
+  monitor.write_string("] \t= ");
+  monitor.write_hex(pdp1[0]);
+  monitor.write_string("\n");
+
+  for (int i = 0; i < 10; i++) {
+    monitor.write_string("PD[");
+    monitor.write_dec(i);
+    monitor.write_string("] \t= ");
+    monitor.write_hex(pd1[i]);
+    monitor.write_string("\n");
+    }
+  initialise_paging();
 
   //u64int *pml = (u64int *) 0x0000000000103000;
   //u64int *pdp1 = (u64int *) (pml[0] & PTINV);
@@ -80,36 +107,32 @@ extern "C" int main() {
   //pause1((u64int) &idt);
   
   // Atspausdina PML reikšmes.
-  //for (int i = 0; i < 10; i++) {
-    //monitor.write_string("PML4[");
-    //monitor.write_dec(i);
-    //monitor.write_string("] \t= ");
-    //monitor.write_hex(pml4[i]);
-    //monitor.write_string("\n");
-    //}
-  //for (int i = 250; i < 260; i++) {
-    //monitor.write_string("PML4[");
-    //monitor.write_dec(i);
-    //monitor.write_string("] \t= ");
-    //monitor.write_hex(pml4[i]);
-    //monitor.write_string("\n");
-    //}
-
-  //monitor.write_hex((u64int) pml4);
-  //monitor.write_string(" = ");
-  //monitor.write_hex(*pml4);
-
-  //load_pager(0xFFFFFFFFFF103000);
-  //load_pager(0x0000000000103000);
+//   for (int i = 0; i < 10; i++) {
+//     monitor.write_string("PML4[");
+//     monitor.write_dec(i);
+//     monitor.write_string("] \t= ");
+//     monitor.write_hex(pml4[i]);
+//     monitor.write_string("\n");
+//     }
+//   for (int i = 250; i < 260; i++) {
+//     monitor.write_string("PML4[");
+//     monitor.write_dec(i);
+//     monitor.write_string("] \t= ");
+//     monitor.write_hex(pml4[i]);
+//     monitor.write_string("\n");
+//     }
+// 
+//   monitor.write_hex((u64int) pml4);
+//   monitor.write_string(" = ");
+//   monitor.write_hex(*pml4);
+// 
+//   load_pager(0xFFFFFFFFFF103000);
+//   load_pager(0x0000000000103000);
 
   //test_monitor(&monitor);
   //gdt.print_debug_info(&monitor);
 
   //asm volatile ("int $0x3");
-
-  //InitInterrupts();
-  //test_monitor(&monitor);
-  ////gdt.print_debug_info(&monitor);
   
   monitor.write_string("IDT address:         \t");
   monitor.write_hex((u64int) &idt);
@@ -117,6 +140,11 @@ extern "C" int main() {
   monitor.write_hex(FIX_ADDRESS((u64int) &idt));
 
   //gdt.print_debug_info(&monitor);
+  //idt.print_debug_info(&monitor);
+  u64int a, b;
+  a = 23;
+  b = 0;
+  b = a + b + 1;
   idt.print_debug_info(&monitor);
   //u64int a, b;
   //a = 23;

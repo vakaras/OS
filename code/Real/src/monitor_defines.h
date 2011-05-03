@@ -1,5 +1,5 @@
 #ifndef MONITOR_DEFINES_H
-#define MONITOR_DEFINES_H
+#define MONITOR_DEFINES_H 1
 
 
 // Ekrano dydis.

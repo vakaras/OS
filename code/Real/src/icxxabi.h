@@ -3,7 +3,7 @@
  * Remtasi http://wiki.osdev.org/C%2B%2B
  */
 #ifndef _ICXXABI_H
-#define _ICXXABI_H
+#define _ICXXABI_H 1
 
 #define ATEXIT_MAX_FUNCS	128
 

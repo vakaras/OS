@@ -2,7 +2,7 @@
  * Įvairūs primityvai.
  */
 #ifndef PRIMITIVES_H
-#define PRIMITIVES_H
+#define PRIMITIVES_H 1
 
 #include "types.h"
  
