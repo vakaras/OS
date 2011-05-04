@@ -61,7 +61,7 @@ static struct exception
   { "--", "Intel reserved. Do not use.", EXCEPTION_FAULT, false },
 };
 
-class IDT{
+class IDT {
   
 public:
   
@@ -116,6 +116,7 @@ public:
 private:
   Idtr_pointer idtr;
   Interrupt_gate int_gates[IDT_NUMBER];
+  u64int tick;
   
   void install_idt(u64int idt_ptr) {
     asm volatile("lidt (%0);"::"r"(idt_ptr):"memory");  
@@ -123,17 +124,21 @@ private:
   
   void irq_remap()
   {
+    /* Initialization */
     send_byte(0x20, 0x11);
     send_byte(0xA0, 0x11);
+    /* define the new vectors */
     send_byte(0x21, 0x20);
     send_byte(0xA1, 0x28);
+    /* Continue initialization */
     send_byte(0x21, 0x04);
     send_byte(0xA1, 0x02);
+    /* 8086/88 Mode */
     send_byte(0x21, 0x01);
     send_byte(0xA1, 0x01);
-    
-    send_byte(0x21, 0x00); // unmask all ISRs
-    send_byte(0xA1, 0x00); // unmask all ISRs
+    /* Unmask all ISRs */
+    send_byte(0x21, 0x00);
+    send_byte(0xA1, 0x00);
   }
   
   Monitor *monitor;
@@ -152,13 +157,49 @@ public:
       this->idtr.base = FIX_ADDRESS((u64int)&this->int_gates);
       
       this->install_idt(FIX_ADDRESS((u64int) &this->idtr));
+      
+      this->tick = 0;
+    }
+    
+    void set_interrupt_gate(int number, u64int function_handler) {
+      this->int_gates[number].set_offsets(function_handler);
+      this->int_gates[number].set_selector(0x08);
+      this->int_gates[number].set_flags(0x8E);
+    }
+    
+    void set_interrupt_gate(int number, u64int function_handler, 
+                            Byte flags) {
+      this->int_gates[number].set_offsets(function_handler);
+      this->int_gates[number].set_flags(flags);
+      this->int_gates[number].set_selector(0x08);
+    }
+    
+    void set_interrupt_gate(int number, u64int function_handler, 
+                            Byte flags, u16int selector) {
+      this->int_gates[number].set_offsets(function_handler);
+      this->int_gates[number].set_flags(flags);
+      this->int_gates[number].set_selector(selector);
+    }
+    
+    void set_interrupt_gate(int number, u64int function_handler, 
+                            u16int selector) {
+      this->int_gates[number].set_offsets(function_handler);
+      this->int_gates[number].set_flags(0x8E);
+      this->int_gates[number].set_selector(selector);
+    }
+    
+    void process_timer(struct context_s *s) {
+      this->tick++;
+      s->vector = s->vector;     // warrining error wrapper ^^
+      this->monitor->write_string("\nTick: ");
+      this->monitor->write_dec((u32int)this->tick);
     }
     
     void process_interrupt(struct context_s *s)
-    {      
+    {
       if(s->vector < 32)
       {
-        this->monitor->write_string("Interrupt occured: #");
+        this->monitor->write_string("\nInterrupt occured: #");
         this->monitor->write_dec((u32int)s->vector);
         this->monitor->write_string(". Info: ");
         this->monitor->write_string(exception[s->vector].mnemonic);
@@ -166,11 +207,37 @@ public:
         this->monitor->write_string(exception[s->vector].description);
         this->monitor->write_string(".\n");
         asm volatile(" cli; hlt; ");
+        
+      } else if(s->vector < 40) {
+        this->monitor->write_string("\nIRQ occured: #");
+        this->monitor->write_dec((u32int)s->vector - 32);
+        this->monitor->write_string(". Info: Master IRQ.");
+        /* reset Master PIC */
+        send_byte(0x21, 0x20);
+        
+      } else if(s->vector < 48) {
+        this->monitor->write_string("\nIRQ occured: #");
+        this->monitor->write_dec((u32int)s->vector - 32);
+        this->monitor->write_string(". Info: Slave IRQ.");
+        /* reset both PICs */
+        send_byte(0xA0, 0x20);
+        send_byte(0x20, 0x20);
+        
+      } else if(s->vector < 64) {
+        this->monitor->write_string("\nIRQ occured: #");
+        this->monitor->write_dec((u32int)s->vector - 32);
+        this->monitor->write_string(
+          ". Info: non-device interrupt, caused by software.");
+        
+      } else {
+        this->monitor->write_string("\nInterrupt occured: #");
+        this->monitor->write_dec((u32int)s->vector);
+        this->monitor->write_string(
+          ". Info: Not implemented int number. Doing nothing.");
       }
     }
     
     void print_debug_info(Monitor *monitor) {
-      
       monitor->write_string("\n\nIDT debug information.");
       monitor->write_string("\n64 bit unsigned zero:  ");
       monitor->write_hex((u64int) 0);

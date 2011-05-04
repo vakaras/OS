@@ -159,7 +159,7 @@ _dbgwrite_loop:
    inc ebx
    cmp al, 0
    je _dbgwrite_ret
-   out 0E9h, al
+   ;out 0E9h, al
    jmp _dbgwrite_loop
 _dbgwrite_ret:
    pop eax
