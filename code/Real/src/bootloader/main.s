@@ -10,7 +10,7 @@ extern MoveMultiboot
 
 %define ALIGN (01b) ; We need the modules aligned
 %define MEMINFO (010b) ; We need memory info
-%define VIDINFO (0100b) ; We need video info
+%define VIDINFO (0000b) ; We need video info
 %define FLAGS (ALIGN | MEMINFO | VIDINFO) ; Flags passed to multiboot
 %define MAGIC (01BADB002h) ; Multiboot magic number
 %define CHECKSUM -(MAGIC + FLAGS) ; Multiboot Checksum must be 0 when added to magic and flags
