@@ -61,6 +61,60 @@ static struct exception
   { "--", "Intel reserved. Do not use.", EXCEPTION_FAULT, false },
 };
 
+
+//==========================================================================
+// Klaviatūros išdėstymai:
+// - lowercase: paprasti pirminiai simboliai
+// - uppercase: simboliai, gaunami laikant paspaustą LShift arba RShift
+//
+// Šaltiniai:
+// - http://www.win.tue.nl/~aeb/linux/kbd/scancodes-10.html
+// - Mano klaviatūros išdėstymas o.O
+//
+// TODO:
+// - Sutvarkyti escaped chars
+// - Išanalizuoti Enter veikimą (dabar nustatyta Enter = 13, 
+//                               LShift/RShift+Enter = "\n")
+// - Padaryti Caps Lock
+// - Padaryti LEDs veikimą
+//
+// P.S. Sorry už ilgas eilutes
+//==========================================================================
+
+
+
+char lowercase[] =
+{
+  0, 0 /*esc*/, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 8 /*backspace*/,
+  '\t' /*tab*/, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',  13 /*enter*/,
+  0 /*ctrl*/, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0 /*lshift*/, '\\',
+  'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',
+  0 /*rshift*/, 0 /*sysreq*/,  0 /*alt*/, ' ',
+  0 /*capslock*/, 0 /*F1*/,  0 /*F2*/, 0 /*F3*/,
+  0 /*F4*/, 0 /*F5*/, 0 /*F6*/,  0 /*F7*/, 0 /*F8*/,
+  0 /*F9*/,  0 /*F10*/, 0 /*numlock*/, 0 /*scrolllock*/, 
+  0 /*home*/, 0 /*uarrow*/, 0 /*pup*/, 0 /*numminus*/,
+  0 /*larrow*/, 0 /*num5*/, 0 /*rarrow*/, 0 /*numplus*/, 0 /*end*/,
+  0 /*darrow*/, 0 /*pdown*/, 0 /*ins*/, 0 /*del*/, 0, 0, '\\', 
+  0 /*F11*/, 0 /*F12*/
+};
+
+char uppercase[] =
+{
+  0, 0 /*esc*/, '!',  '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 8 /*backspace*/,
+  '\t' /*tab*/, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',
+  0 /*ctrl*/, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0 /*lshift*/, '|',
+  'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?',
+  0 /*rshift*/, 0 /*sysreq*/, 0 /*alt*/, ' ', 
+  0 /*capslock*/, 0 /*F1*/, 0 /*F2*/, 0 /*F3*/,
+  0 /*F4*/, 0 /*F5*/, 0 /*F6*/, 0 /*F7*/, 0 /*F8*/,
+  0 /*F9*/, 0 /*F10*/, 0 /*numlock*/, 0 /*scrolllock*/, 
+  0 /*home*/, 0 /*uarrow*/, 0 /*pup*/, '-' /*numminus*/,
+  0 /*larrow*/, '5' /*num5*/, 0 /*rarrow*/, '+' /*numplus*/, 0 /*end*/,
+  0 /*darrow*/, 0 /*pdown*/, 0 /*ins*/, 0 /*del*/, 0, 0, '|', 
+  0 /*F11*/,0 /*F12*/
+};
+
 class IDT {
   
 public:
@@ -140,7 +194,10 @@ private:
     send_byte(0x21, 0x00);
     send_byte(0xA1, 0x00);
   }
-  
+
+  u8int shift_state;
+  u8int escaped;
+
   Monitor *monitor;
   
 public:
@@ -159,6 +216,35 @@ public:
       this->install_idt(FIX_ADDRESS((u64int) &this->idtr));
       
       this->tick = 0;
+      this->shift_state = 0;
+      this->escaped = 0;
+    }
+    
+    void process_keyboard(struct context_s *s) {
+      if(s->vector == 33) {
+        Byte new_scan_code = get_byte(0x60);
+        if (escaped) 
+        {   
+          //new_scan_code += 256;  // TODO: sutvarkyti "Escaped chars"
+          escaped = 0;
+        }
+        switch(new_scan_code) {
+          case 0x2a: this->shift_state = 1; break; //+LShift (2A)
+          case 0x36: this->shift_state = 1; break; //+RShift (36)
+          case 0xaa: this->shift_state = 0; break; //-LShift (AA)
+          case 0xb6: this->shift_state = 0; break; //-RShift (B6)
+          case 0xe0: this->escaped = 1; break;
+          default:
+            if (new_scan_code & 0x80) {
+              /* Ignore the break code */
+            } else {
+              char new_char =(shift_state ? uppercase:lowercase)[new_scan_code];
+              this->monitor->put_character(new_char);
+            }
+            break;
+        }
+        send_byte(0x20,0x20);
+      }
     }
     
     void set_interrupt_gate(int number, u64int function_handler) {
@@ -190,9 +276,13 @@ public:
     
     void process_timer(struct context_s *s) {
       this->tick++;
-      s->vector = s->vector;     // warrining error wrapper ^^
-      this->monitor->write_string("\nTick: ");
-      this->monitor->write_dec((u32int)this->tick);
+      if (s->vector == 32){
+        if(this->tick < 4){
+          this->monitor->write_string("Tick: ");
+          this->monitor->write_dec((u32int)this->tick);
+          this->monitor->write_string("\n");
+        }
+      }
     }
     
     void process_interrupt(struct context_s *s)

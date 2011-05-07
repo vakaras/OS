@@ -26,6 +26,8 @@ PIT pit(50);
 extern "C" void default_interrupt_handler(struct context_s *s){
   if(s->vector == 32){
     idt.process_timer(s);
+  } else if(s->vector == 33){
+    idt.process_keyboard(s);
   } else {
     idt.process_interrupt(s);
   }
