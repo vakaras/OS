@@ -20,6 +20,10 @@ _start:
                                         ; žinotume, jog šitas kodas buvo
                                         ; įvykdytas.
 
+  mov rsp, 0x00000000010fa000           ; „Pasidedame“ dėklą į mums patogią 
+                                        ; poziciją. (TODO: Išsiaiškinti,
+                                        ; ar to pakanka.)
+
   ; Parodomas derinimo pranešimas.
   mov rdi, msg_starting_cpp
   call debug_string
