@@ -96,6 +96,23 @@ Pastabos
 + 125 puslapyje duota lentelė, kurioje nurodyta į kokią struktūrą kada yra
   kreipiamasi konvertuojant virtualų adresą į realų.
 
+Multiprogramiškumas
+===================
+
+Ką reikia padaryti:
+
+1.  išsikelti dėklą į kokią nors žinomą vietą prieš pereinant į C++ 
+    kodą (tam, kad būtų žinoma tiksli jo vieta);
+2.  ``cr3`` rodo į PML4, norint pakeisti puslapiavimo lentelę pakanka
+    jį perrašyti?
+3.  sukurti ``TSS`` (aprašymas 319 psl.)
+
+
+Pastabos:
+
++   prieš persijungiant į kitą užduotį turi būti ``CR0.TS = 1`` 
+    (aprašymas 77 psl., pavyzdys ``arcticos/Modules/Task/round_robin.c`` 
+    170 eil.);
 
 TODO
 ====
@@ -122,7 +139,7 @@ C funkcijų kvietimas
 Pirmieji šeši skaitiniai argumentai (nepriklausomai nuo tipo, gali būti
 tiek ``char``, tiek ``long``) perduodami pradedant kairiausiu tokia
 tvarka: ``RDI``, ``RSI``, ``RDX``, ``RCX``, ``R8`` ir ``R9``. Kiti 
-argumentai yra perduodami per steką.
+argumentai yra perduodami per dėklą.
 
 Šie registrai, taip pat ir ``RAX``, ``R10`` ir ``R11`` yra pakeičiami
 kviečiant funkciją.
