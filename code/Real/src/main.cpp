@@ -9,6 +9,8 @@
 #include "monitor.h"
 #include "idt.h"
 #include "pit.h"
+#include "timer.h"
+#include "keyboard.h"
 #include "paging.h"
 #include "debug.h"
 #include "tests/test_monitor.h"
@@ -21,13 +23,15 @@
 Monitor monitor;
 IDT idt(&monitor); 
 PIT pit(50);
+Timer timer(&monitor);
+Keyboard kbd(&monitor);
 
 
 extern "C" void default_interrupt_handler(struct context_s *s){
   if(s->vector == 32){
-    idt.process_timer(s);
+    timer.process_timer(s);
   } else if(s->vector == 33){
-    idt.process_keyboard(s);
+    kbd.process_keyboard(s);
   } else {
     idt.process_interrupt(s);
   }
