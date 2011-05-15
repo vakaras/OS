@@ -18,6 +18,8 @@
 #include "tests/test_idt.h"
 #include "tests/test_pit.h"
 
+#define PAGERS 7
+
 
 // Globalūs kintamieji.
 Monitor monitor;
@@ -27,6 +29,7 @@ Timer timer(&monitor);
 Keyboard kbd(&monitor);
 
 KernelPager kernel_pager(0x00000000011fa000, 0x103000);
+ProgramPager pager[PAGERS];
 
 
 extern "C" void default_interrupt_handler(struct context_s *s){
@@ -48,11 +51,25 @@ extern "C" int main() {
   // Aktyvuojam savo puslapiavimą.
   kernel_pager.activate();
 
+  // Inicijuojam kitus puslapiavimo mechanizmus.
+  for (int i = 0; i < PAGERS; i++) {
+    pager[i].init(
+        0x00000000012fa000 + i * 0x100000,
+        0x0000000002000000 + i * 0x1000000,
+        kernel_pager.get_entry(256));
+    //pager[i].clear_lower();
+    //pager[i].create_lower();
+    }
+
   // Testai.
   //test_debug();
   test_monitor(&monitor);
   //test_idt();
   enable_PIT(&pit);
+
+  pager[3].activate();
+  debug_string("\nSveikas pasauli iš kito puslapiavimo!\n");
+  kernel_pager.activate();
 
   return 0xBABADEAD;
   }
