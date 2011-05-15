@@ -331,6 +331,9 @@ int BuildPageTables(MultibootInfo* multiboot, unsigned long long* entrypoint, vo
       return 4;
    *entrypoint = kernel->Entry;
    void* currentKernelBuffer = kernel_buffer;
+   for (unsigned long long i = 0; i < 512; i++) {
+     pt1[i] = PAGE_TABLE_PERM_NOCACHE | (((unsigned long long)currentKernelBuffer) + i * 0x1000);
+     }
    for(int i = 0; i < kernel->NumberProgramHeaderEntry; i++) //Loop through the program headers and do what they say
    {
       ElfProgramHeader* program = (void*)kernel+((long)kernel->ProgramHeaderTableOffset)+(i*((long)kernel->ProgramHeaderEntrySize)); //get the program header

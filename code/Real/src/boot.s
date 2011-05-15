@@ -20,7 +20,8 @@ _start:
                                         ; žinotume, jog šitas kodas buvo
                                         ; įvykdytas.
 
-  mov rsp, 0x00000000010fa000           ; „Pasidedame“ dėklą į mums patogią 
+  mov rbp, 0x0000000000000000
+  mov rsp, 0xffff800000200000           ; „Pasidedame“ dėklą į mums patogią 
                                         ; poziciją. (TODO: Išsiaiškinti,
                                         ; ar to pakanka.)
 
