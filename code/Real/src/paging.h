@@ -2,55 +2,241 @@
 #define PAGING_H 1
 
 #include "types.h"
+#include "memlib.h"
 
-typedef struct page
-{
-   u64int present    : 1;   // Page present in memory
-   u64int rw         : 1;   // Read-only if clear, readwrite if set
-   u64int user       : 1;   // Supervisor level only if clear
-   u64int accessed   : 1;   // Has the page been accessed since last refresh?
-   u64int dirty      : 1;   // Has the page been written to since last refresh?
-   u64int unused     : 7;   // Amalgamation of unused and reserved bits
-   u64int frame      : 20;  // Frame address (shifted right 12 bits)
-} page_t;
 
-typedef struct page_table
-{
-   page_t pages[1024];
-} page_table_t;
+#define PAGE_TABLE_PERM ((1<<0) | (1<<1))
+#define PAGE_TABLE_PERM_NOCACHE (PAGE_TABLE_PERM | (1<<3) | (1<<4))
+#define PAGE_TABLE_LARGE_FLAG (1<<7)
+#define PAGE_TABLE_ADDRESS 0xfffffffffffff000
 
-typedef struct page_directory
-{
-   /**
-      Array of pointers to pagetables.
-   **/
-   page_table_t *tables[1024];
-   /**
-      Array of pointers to the pagetables above, but gives their *physical*
-      location, for loading into the CR3 register.
-   **/
-   u64int tablesPhysical[1024];
-   /**
-      The physical address of tablesPhysical. This comes into play
-      when we get our kernel heap allocated and the directory
-      may be in a different location in virtual memory.
-   **/
-   u64int physicalAddr;
-} page_directory_t;
+#define PHYSICAL_ADDRESS_START 0x00000000001fa000
+#define VIRTUAL_ADDRESS_START 0xffff800000000000
+#define FIX_ADDRESS(a) ((a) - \
+VIRTUAL_ADDRESS_START + PHYSICAL_ADDRESS_START)
 
-void initialise_paging();
+
+/** 
+ * Užtikrina, kad adresas būtų išlygiuotas 4KB.
+ */
+void *align(void *address);
+u64int align(u64int address);
+
+
+class PageDirectory {
+
+private:
+
+  // Atributai.
+
+  u64int *entry;                        // Pirmojo lentelės įrašo adresas.
+  u64int physical_address;              // Kokius fizinius adresus duoti 
+                                        // naujiems įrašams.
+  u64int tables;                        // Kiek puslapių lentelių buvo
+                                        // sukurta šiame kataloge.
+
+public:
+
+  // Metodai.
+
+  /**
+   * Konstruktorius.
+   * @param address – kokiu adresu „padėti“ lentelę.
+   */
+  PageDirectory(u64int table_address, u64int physical_address) {
+    this->entry = (u64int *) align(table_address);
+    this->physical_address = align(physical_address);
+    this->clear();
+    }
+  
+  /**
+   * Išvalo lentelę.
+   */
+  void clear() {
+
+    this->tables = 0;
+
+    for (int i = 0; i < 512; i++) {
+      this->entry[i] = 0;
+      }
+
+    }
+
+  /**
+   * Prideda 2 MB puslapį.
+   */
+  void add_page(u64int number) {
+    // FIXME: Pridėti patikrinimą, kad 0 <= number < 512.
+    this->entry[number] = (
+        PAGE_TABLE_PERM_NOCACHE | 
+        PAGE_TABLE_LARGE_FLAG | 
+        (this->physical_address + 0x200000 * number)
+        );
+    }
+
+  /**
+   * Nukopijuoja egzistuojančią puslapių lentelę iš karto po savo įrašų.
+   */
+  void copy_table(u64int number, u64int *table) {
+
+    u64int *new_table = (u64int *) (
+        this->physical_address + 0x1000 * (this->tables + 1));
+
+    for (int i = 0; i < 512; i++) {
+      new_table[i] = table[i];
+      }
+
+    this->entry[number] = PAGE_TABLE_PERM_NOCACHE | ((u64int) new_table);
+
+    }
+  
+  };
+
 
 /**
- C auses the specified page directory to be loaded into the       *
- CR3 register.
- **/
-void switch_page_directory(page_directory_t *);
+ * Pačio branduolio puslapiavimo mechanizmas.
+ */
+class KernelPager {
 
-/**
- R etrieves a pointer to the page required.                       *
- If make == 1, if the page-table in which this page should
- reside isn't created, create it!
- **/
-page_t *get_page(u64int address, int make, page_directory_t *dir);
+private:
+
+  // Atributai.
+
+  u64int *entry;                        // Pirmojo lentelės įrašo adresas.
+  u64int physical_address;              // Virtualiosios adresų erdvės 
+                                        // viršutinės pusės realusis 
+                                        // adresas.
+
+public:
+
+  // Metodai.
+
+  /**
+   * Konstruktorius.
+   * @param address – kokiu adresu „padėti“ lentelę.
+   * @param pml4_address – iš kur nukopijuoti struktūrą.
+   */
+  KernelPager(u64int table_address, u64int pml4_address) {
+
+    this->entry = (u64int *) align(table_address);
+    memset((u8int *)this->entry, 0, 0x1000);
+                                        // Išvalom paskirties vietą.
+
+    u64int *pml4 = (u64int *)(pml4_address & PAGE_TABLE_ADDRESS);
+
+    // Perkuriame žemesniąją dalį.
+    //  Pasižymime naujosios struktūros vietas.
+    u64int *pdp_l_new = (u64int *)(align(table_address + 0x1000));
+    u64int *pd_l_new = (u64int *)(align(table_address + 0x2000));
+
+    //  Paruošiame atmintį.
+    for (int i = 0; i < 512; i++) {     // Pirmas GB rodo į save.
+      pd_l_new[i] = (
+          PAGE_TABLE_PERM_NOCACHE | PAGE_TABLE_LARGE_FLAG | (0x200000 * i));
+      }
+    memset((u8int *) pdp_l_new, 0, 0x1000);
+
+    //  Susaistome.
+    pdp_l_new[0] = PAGE_TABLE_PERM_NOCACHE | (u64int) pd_l_new;
+    this->entry[0] = ((u64int) pdp_l_new) | PAGE_TABLE_PERM_NOCACHE;
+
+    // Perkuriame aukštesniąją dalį.
+    //  Originali struktūra.
+    u64int *pdp_h = (u64int *)(pml4[256] & PAGE_TABLE_ADDRESS);
+    u64int *pd_h = (u64int *)(pdp_h[0] & PAGE_TABLE_ADDRESS);
+    u64int *pt_h = (u64int *)(pd_h[0] & PAGE_TABLE_ADDRESS);
+
+    this->physical_address = pt_h[0] & PAGE_TABLE_ADDRESS;
+
+    //  Pasižymime naujosios struktūros vietas.
+    u64int *pdp_h_new = (u64int *)(align(table_address + 0x3000));
+    u64int *pd_h_new = (u64int *)(align(table_address + 0x4000));
+    u64int *pt_h_new[8];                // 16 MB
+
+    for (int i = 0; i < 8; i++) {
+      pt_h_new[i] = (u64int *)(align(table_address + 0x5000 + i * 0x1000));
+      }
+    
+    //  Paruošiame atmintį.
+    memset((u8int *) pdp_h_new, 0, 0x1000);
+    memset((u8int *) pd_h_new, 0, 0x1000);
+
+    for (int i = 0; i < 8; i++) {
+      for (int j = 0; j < 512; j++) {
+        pt_h_new[i][j] = (
+          PAGE_TABLE_PERM_NOCACHE | 
+          (this->physical_address + i * 0x200000 + j * 0x1000));
+        }
+      }
+    
+    //  Susaistome.
+    for (int i = 0; i < 8; i++) {
+      pd_h_new[i] = PAGE_TABLE_PERM_NOCACHE | ((u64int) pt_h_new[i]); 
+      }
+    pdp_h_new[0] = PAGE_TABLE_PERM_NOCACHE | (u64int) pd_h_new;
+    this->entry[256] = PAGE_TABLE_PERM_NOCACHE | (u64int) pdp_h_new;
+    }
+
+  /**
+   * Nukopijuoja visą struktūrą.
+   */
+  void copy(u64int pml4_address) {
+
+    u64int table_address = (u64int) this->entry;
+
+    u64int *pml4 = (u64int *)(pml4_address & PAGE_TABLE_ADDRESS);
+
+    // TODO: Vietoje kopijavimo perkurti.
+
+    // Kopijuojame žemesniąją dalį.
+    //  Originali struktūra.
+    u64int *pdp_l = (u64int *)(pml4[0] & PAGE_TABLE_ADDRESS);
+    u64int *pd_l = (u64int *)(pdp_l[0] & PAGE_TABLE_ADDRESS);
+
+    //  Pasižymime naujosios struktūros vietas.
+    u64int *pdp_l_new = (u64int *)(align(table_address + 0x1000));
+    u64int *pd_l_new = (u64int *)(align(table_address + 0x2000));
+
+    //  Paruošiame atmintį.
+    memcpy((u8int *) pd_l_new, (u8int *)pd_l, 0x1000);
+    memset((u8int *) pdp_l_new, 0, 0x1000);
+
+    //  Susaistome.
+    pdp_l_new[0] = PAGE_TABLE_PERM_NOCACHE | (u64int) pd_l_new;
+    this->entry[0] = ((u64int) pdp_l_new) | PAGE_TABLE_PERM_NOCACHE;
+
+    // Kopijuojame aukštesniąją dalį.
+    //  Originali struktūra.
+    u64int *pdp_h = (u64int *)(pml4[256] & PAGE_TABLE_ADDRESS);
+    u64int *pd_h = (u64int *)(pdp_h[0] & PAGE_TABLE_ADDRESS);
+    u64int *pt_h = (u64int *)(pd_h[0] & PAGE_TABLE_ADDRESS);
+
+    //  Pasižymime naujosios struktūros vietas.
+    u64int *pdp_h_new = (u64int *)(align(table_address + 0x3000));
+    u64int *pd_h_new = (u64int *)(align(table_address + 0x4000));
+    u64int *pt_h_new_1 = (u64int *)(align(table_address + 0x5000));
+
+    //  Paruošiame atmintį.
+    memset((u8int *) pdp_h_new, 0, 0x1000);
+    memset((u8int *) pd_h_new, 0, 0x1000);
+    memcpy((u8int *) pt_h_new_1, (u8int *)pt_h, 0x1000);
+
+    //  Susaistome.
+    pd_h_new[0] = PAGE_TABLE_PERM_NOCACHE | (u64int) pt_h_new_1;
+    pdp_h_new[0] = PAGE_TABLE_PERM_NOCACHE | (u64int) pd_h_new;
+    this->entry[256] = PAGE_TABLE_PERM_NOCACHE | (u64int) pdp_h_new;
+
+    }
+
+  /**
+   * Aktyvuoja šį puslapiavimo mechanizmą.
+   */
+  void activate() {
+
+    asm volatile("mov %0, %%cr3" : : "r"((u64int) this->entry));
+
+    }
+  
+  };
 
 #endif

@@ -44,7 +44,7 @@ u64int kmalloc(u64int size)
 
 
 // Nukopijuoja nurodytus len baitų iš src į dest.
-void memcpy(u8int *dest, const u8int *src, u32int length) {
+void memcpy(u8int *dest, const u8int *src, u64int length) {
 
   const u8int *sp = src;
   for(u8int *dp = dest; length != 0; length--) {
@@ -55,7 +55,7 @@ void memcpy(u8int *dest, const u8int *src, u32int length) {
 
 
 // Užpildo nurodytą atmintį reikšme value.
-void memset(u8int *dest, u8int value, u32int length) {
+void memset(u8int *dest, u8int value, u64int length) {
 
   for (u8int *p = dest ; length != 0; length--) {
     *p++ = value;

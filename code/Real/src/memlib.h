@@ -35,10 +35,10 @@ u64int kmalloc(u64int size);
 
 
 // Nukopijuoja nurodytus len baitų iš src į dest.
-extern "C" void memcpy(u8int *dest, const u8int *src, u32int length);
+extern "C" void memcpy(u8int *dest, const u8int *src, u64int length);
 
 
 // Užpildo nurodytą atmintį reikšme value.
-extern "C" void memset(u8int *dest, u8int value, u32int length);
+extern "C" void memset(u8int *dest, u8int value, u64int length);
 
 #endif
