@@ -40,6 +40,21 @@ extern "C" int main() {
   test_debug();
   test_monitor(&monitor);
   //test_idt();
-  enable_PIT(&pit);
+  //enable_PIT(&pit);
+
+  monitor.write_string("\n");
+  u64int cr3 = 0x103000;
+  asm volatile("mov %0, %%cr3" : : "r"(cr3));
+  //asm volatile("mov %%cr3, %0": "=r"(cr3));
+  monitor.write_hex(cr3);
+
+  u64int rsp, rbp;
+  asm volatile("mov %%rsp, %0": "=r"(rsp));
+  asm volatile("mov %%rbp, %0": "=r"(rbp));
+  monitor.write_string("\n");
+  monitor.write_hex(rsp);
+  monitor.write_string("\n");
+  monitor.write_hex(rbp);
+
   return 0xBABADEAD;
   }
