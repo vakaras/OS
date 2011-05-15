@@ -13,6 +13,7 @@
 #include "keyboard.h"
 #include "paging.h"
 #include "debug.h"
+#include "elf64.h"
 #include "tests/test_monitor.h"
 #include "tests/test_debug.h"
 #include "tests/test_idt.h"
@@ -30,6 +31,8 @@ Keyboard kbd(&monitor);
 
 KernelPager kernel_pager(0x00000000011fa000, 0x103000);
 ProgramPager pager[PAGERS];
+
+ProgramManager program_manager(0x400000);
 
 
 extern "C" void default_interrupt_handler(struct context_s *s){
@@ -70,6 +73,8 @@ extern "C" int main() {
   pager[3].activate();
   debug_string("\nSveikas pasauli iš kito puslapiavimo!\n");
   kernel_pager.activate();
+
+  program_manager.debug(&monitor);
 
   return 0xBABADEAD;
   }

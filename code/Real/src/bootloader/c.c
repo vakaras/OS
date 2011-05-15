@@ -308,6 +308,13 @@ void* align(void* addr)
    iaddr += (4096-(iaddr % 4096));
 }
 
+void debug_string(const char *str) {
+  unsigned short int port = 0xe9;
+  for (const unsigned char *i = str; *i; i++) {
+    asm volatile("outb %1, %0" : : "dN" (port), "a" (*i));
+    }
+  }
+
 int BuildPageTables(MultibootInfo* multiboot, unsigned long long* entrypoint, void* kernel_buffer, PML4* pml4, PDP* pdp1, PDP* pdp2, PD* pd1, PD* pd2, PT* pt1)
 {
    pml4[0] = PAGE_TABLE_PERM_NOCACHE | (long)pdp1; //Builds the page table structure
@@ -345,5 +352,50 @@ int BuildPageTables(MultibootInfo* multiboot, unsigned long long* entrypoint, vo
       currentKernelBuffer += program->MemSize; //Increment buffer address
       currentKernelBuffer = align(currentKernelBuffer);
    }
+
+   // Copy other programs to known location.
+   {
+   /*debug_string("\nKopijuoju naudotojo programas.\n");*/
+   /*for (int i = 0; i < multiboot->Modules.Count; i++) {*/
+     /*debug_string("Modulis.\n");*/
+     /*}*/
+
+   /*void *dest = (void *) 0x400000;*/
+
+   unsigned int *p = (unsigned int *) 0x400000;
+   *(p - 1) = 0xbabadead;
+   *(p) = 0xbabadea0;
+   *(p + 1) = 0xbabadea1;
+   *(p + 2) = 0xbabadea2;
+   *(p + 3) = 0xbabadea3;
+   
+   char *names = (char *) 0x401000;
+   void *dest = (void *) 0x403000;
+
+
+   Modules *modules = (Modules *) 0x400000;
+   modules->Count = multiboot->Modules.Count;
+   modules->Address = (Module *) 0x400010;
+
+   for (int i = 0; i < multiboot->Modules.Count; i++) {
+
+     Module *mod = multiboot->Modules.Address + i;
+     unsigned int length = mod->End - mod->Start + 1;
+     unsigned int name_length = strlen(mod->Name) + 1;
+
+     // Kopijuojam modulį.
+     memcpy(dest, mod->Start, length, 1);
+     modules->Address[i].Start = dest;
+     dest += length;
+     modules->Address[i].End = dest;
+     // Kopijuojam modulio pavadinimą.
+     strncpy(names, mod->Name, name_length);
+     modules->Address[i].Name = names;
+     names += name_length;
+     }
+
+   }
+
+
    return 0;
 }
