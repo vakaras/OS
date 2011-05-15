@@ -39,8 +39,11 @@ extern "C" void default_interrupt_handler(struct context_s *s){
   }
 }
 
+extern "C" void load_gdt();
 
 extern "C" int main() {
+
+  load_gdt();
 
   // Aktyvuojam savo puslapiavimą.
   kernel_pager.activate();
