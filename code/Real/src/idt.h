@@ -4,6 +4,7 @@
 #include "types.h"
 #include "monitor.h"
 #include "primitives.h"
+#include "debug.h"
 
 #define IDT_NUMBER 64
 
@@ -148,13 +149,13 @@ public:
       this->irq_remap();
       
       for(u64int i = 0; i < IDT_NUMBER; i++){
-        this->int_gates[i].set_offsets(FIX_ADDRESS(isr_table[i]));
+        this->int_gates[i].set_offsets((isr_table[i]));
       }
       
       this->idtr.limit = sizeof(Interrupt_gate) * IDT_NUMBER - 1;
-      this->idtr.base = FIX_ADDRESS((u64int)&this->int_gates);
+      this->idtr.base = ((u64int)&this->int_gates);
       
-      this->install_idt(FIX_ADDRESS((u64int) &this->idtr));
+      this->install_idt(((u64int) &this->idtr));
     }
     
     void set_interrupt_gate(int number, u64int function_handler) {
@@ -183,12 +184,17 @@ public:
       this->int_gates[number].set_flags(0x8E);
       this->int_gates[number].set_selector(selector);
     }
+
+    void write(const char *msg) {
+      debug_string(msg);
+      this->monitor->write_string(msg);
+      }
     
     void process_interrupt(struct context_s *s)
     {
       if(s->vector < 32)
       {
-        this->monitor->write_string("\nInterrupt occured: #");
+        this->write("\nInterrupt occured: #");
         this->monitor->write_dec((u32int)s->vector);
         this->monitor->write_string(". Info: ");
         this->monitor->write_string(exception[s->vector].mnemonic);
@@ -198,14 +204,14 @@ public:
         asm volatile(" cli; hlt; ");
         
       } else if(s->vector < 40) {
-        this->monitor->write_string("\nIRQ occured: #");
+        this->write("\nIRQ occured: #");
         this->monitor->write_dec((u32int)s->vector - 32);
         this->monitor->write_string(". Info: Master IRQ.");
         /* reset Master PIC */
         send_byte(0x21, 0x20);
         
       } else if(s->vector < 48) {
-        this->monitor->write_string("\nIRQ occured: #");
+        this->write("\nIRQ occured: #");
         this->monitor->write_dec((u32int)s->vector - 32);
         this->monitor->write_string(". Info: Slave IRQ.");
         /* reset both PICs */
@@ -213,13 +219,13 @@ public:
         send_byte(0x20, 0x20);
         
       } else if(s->vector < 64) {
-        this->monitor->write_string("\nIRQ occured: #");
+        this->write("\nIRQ occured: #");
         this->monitor->write_dec((u32int)s->vector - 32);
         this->monitor->write_string(
           ". Info: non-device interrupt, caused by software.");
         
       } else {
-        this->monitor->write_string("\nInterrupt occured: #");
+        this->write("\nInterrupt occured: #");
         this->monitor->write_dec((u32int)s->vector);
         this->monitor->write_string(
           ". Info: Not implemented int number. Doing nothing.");
