@@ -14,6 +14,8 @@
 #include "paging.h"
 #include "debug.h"
 #include "elf64.h"
+#include "processes.h"
+#include "resources.h"
 #include "tests/test_monitor.h"
 #include "tests/test_debug.h"
 #include "tests/test_idt.h"
