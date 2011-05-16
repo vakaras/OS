@@ -36,6 +36,10 @@ ProgramManager program_manager(0x400000);
 
 
 extern "C" void default_interrupt_handler(struct context_s *s){
+  if (s->vector != 32) {
+    debug_string("\nPertraukimas. ");
+    debug_hex(s->vector);
+    }
   kernel_pager.activate();              // FIXME: Padaryti normaliai.
   if(s->vector == 32){
     timer.process_timer(s);

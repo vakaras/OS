@@ -336,6 +336,10 @@ public:
     asm volatile("mov %0, %%cr3" : : "r"((u64int) this->entry));
 
     }
+
+  u64int get_physical_address() {
+    return this->physical_address;
+    }
   
   };
 

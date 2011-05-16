@@ -137,7 +137,7 @@ public:
 
     pager.clear_lower();
     pager.create_lower();
-    //pager.activate();
+    pager.activate();
 
     ElfHeader *header = (ElfHeader *) this->module_list.module[id].start;
 
@@ -181,7 +181,11 @@ public:
     debug_hex(*p);
     debug_string("\n:");
     
-    jump(header->entry);
+    //jump(header->entry); 
+    // Persijungia į kitą procesą. Kadangi pertraukimų mechanizmas dar
+    // nemoka įjungti buvusiojo puslapiavimo mechanizmo, tai OS nebegrįžta
+    // iš pertraukimo ir sminga. Dėl šios priežasties persijungimas
+    // užkomentuotas.
 
     return 0;
     }
