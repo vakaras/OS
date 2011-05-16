@@ -51,11 +51,4 @@ static_ctors_loop:
   mov rdi, msg_returned_main
   call debug_string
 
-  ; Iškviečiami visų globalių ir statinių objektų destruktoriai.
-  ; FIXME: Susitvarkyti su kintamųjų dydžiais.
-  sub esp, 4                            
-  mov [esp], dword 0x0
-  call __cxa_finalize
-  add esp, 4
-
   jmp $
