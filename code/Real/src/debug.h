@@ -14,6 +14,9 @@ extern "C" void pause0();
 extern "C" void pause1(u64int);
 extern "C" void pause2(u64int, u64int);
 
+// Valdymo perdavimas.
+extern "C" void jump(u64int);
+
 // C++ funkcijos.
 
 // Pauzė. 

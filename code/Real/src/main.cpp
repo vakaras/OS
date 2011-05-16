@@ -36,6 +36,7 @@ ProgramManager program_manager(0x400000);
 
 
 extern "C" void default_interrupt_handler(struct context_s *s){
+  kernel_pager.activate();              // FIXME: Padaryti normaliai.
   if(s->vector == 32){
     timer.process_timer(s);
   } else if(s->vector == 33){
@@ -75,6 +76,11 @@ extern "C" int main() {
   kernel_pager.activate();
 
   program_manager.debug(&monitor);
+
+  u64int rez = program_manager.load(1, pager[1]);
+  kernel_pager.activate();
+  monitor.write_string("\nLoaded 1 into pager[1]: ");
+  monitor.write_hex(rez);
 
   return 0xBABADEAD;
   }

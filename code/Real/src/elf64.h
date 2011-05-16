@@ -3,6 +3,8 @@
 
 #include "types.h"
 #include "monitor.h"
+#include "debug.h"
+#include "paging.h"
 
 #define MAX_PROGRAM 10                  // Kiek daugiausiai skirtingų
                                         // programų gali būti.
@@ -21,6 +23,39 @@ struct ModuleList {
   u64int count;
   Module module[MAX_PROGRAM];
   
+  };
+
+
+struct ElfHeader {
+
+  u8int identification[16];
+  u16int type;
+  u16int machine;
+  u32int version;
+  u64int entry;
+  u64int program_header_table_offset;
+  u64int section_header_table_offset;
+  u32int flags;
+  u16int header_size;
+  u16int program_header_entry_size;
+  u16int number_program_header_entry;
+  u16int section_header_entry_size;
+  u16int number_section_header_entry;
+  u16int section_name_table_index;
+
+  };
+
+struct ElfProgramHeader {
+
+  u32int type;
+  u32int flags;
+  u64int offset;
+  u64int virtual_address;
+  u64int physical_address;
+  u64int file_size;
+  u64int memory_size;
+  u64int alignment;
+
   };
 
 
@@ -51,11 +86,11 @@ public:
 
     for (u64int i = 0; i < this->module_list.count; i++) {
       this->module_list.module[i].start = (
-          (void *)((u64int) *(p + (4 * i))));
+          (void *) MAKE_ADDRESS_VIRTUAL((u64int) *(p + (4 * i))));
       this->module_list.module[i].end = (
-          (void *)((u64int) *(p + (4 * i + 1))));
+          (void *) MAKE_ADDRESS_VIRTUAL((u64int) *(p + (4 * i + 1))));
       this->module_list.module[i].name = (
-          (const char *)((u64int) *(p + (4 * i + 2))));
+          (const char *) MAKE_ADDRESS_VIRTUAL((u64int) *(p + (4 * i + 2))));
       }
 
 
@@ -87,6 +122,68 @@ public:
       monitor->write_string(this->module_list.module[i].name);
       }
 
+    }
+
+  /**
+   * Pakrauna nurodytą programą į nurodytą atmintį.
+   * @param id – kokią programą pakrauti;
+   * @param pager – į kokią atmintį pakrauti.
+   */
+  u64int load(u64int id, ProgramPager pager) {
+
+    if (id >= this->get_count()) {
+      return 1;
+      }
+
+    pager.clear_lower();
+    pager.create_lower();
+    //pager.activate();
+
+    ElfHeader *header = (ElfHeader *) this->module_list.module[id].start;
+
+    debug_string("header: ");
+    debug_hex((u64int) header);
+
+    if (header->identification[4] != 2) {
+      // ELF klasė nėra 64 bitų.
+      return 2;
+      }
+    if (header->identification[5] != 1) {
+      // Edianess nėra little.
+      return 3;
+      }
+    if (header->type != 2) {
+      // Failas nėra vykdomasis.
+      return 4;
+      }
+    if (header->number_program_header_entry != 1) {
+      // Tokio ELF nemokame pakrauti.
+      return 5;
+      }
+
+    // header table offset 0x40
+    
+    ElfProgramHeader *program_header = (ElfProgramHeader *)(
+        ((u8int *) this->module_list.module[id].start) +
+        header->program_header_table_offset);
+
+    memcpy(
+        (u8int *) program_header->virtual_address,
+        ((u8int *) this->module_list.module[id].start) + 
+          program_header->offset,
+        program_header->file_size
+        );
+
+    debug_string("\nVirtuali atmintis:  ");
+    debug_hex(program_header->virtual_address);
+    u32int *p = (u32int *) 0x200000;
+    debug_string("\nAtmintis:           ");
+    debug_hex(*p);
+    debug_string("\n:");
+    
+    jump(header->entry);
+
+    return 0;
     }
 
   };

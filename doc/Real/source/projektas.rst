@@ -53,7 +53,7 @@ rėžimą ir yra „šokama“ į programos vykdomojo kodo pradžią. Programos
 vykdymo metu atsiradusius pertraukimus apdoroja procesas ``init``.
 Galimi pertraukimai:
 
-+ ``int 0x80`` – kreipimasis į operacinės sistemos funkcijas, procesas
++ ``int 0x3f`` – kreipimasis į operacinės sistemos funkcijas, procesas
   pereina iš būsenos vykdomas į būseną pasiruošęs arba blokuotas;
 + ``int 0x20`` – laikrodžio pertraukimas, jam įvykus procesas pereina iš
   būsenos vykdomas į būseną pasiruošęs;
@@ -91,7 +91,7 @@ Operacinės sistemos sąsaja
 Naudotojo programa
 ------------------
 
-Naudotojo programa OS funkcijas gali pasiekti per 0x80 pertraukimą. Kokią
+Naudotojo programa OS funkcijas gali pasiekti per 0x3f pertraukimą. Kokią
 funkciją reikia iškviesti nurodo registro ``rax`` reikšmė:
 
 +   ``0`` – naudotojo programa baigė darbą;
