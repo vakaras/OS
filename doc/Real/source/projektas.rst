@@ -101,10 +101,10 @@ funkciją reikia iškviesti nurodo registro ``rax`` reikšmė:
     rašymui (atidaryto failo id būna registre ``rbx``);
 +   ``3`` – uždaryti failą, kurio id yra nurodytas registre ``rbx``;
 +   ``4`` – ištrinti failą, kurio pavadinimas yra registro ``rbx`` reikšmė;
-+   ``5`` – nuskaityti žodį (8 baitus) į ``rax`` iš atidaryto failo, kurio 
++   ``5`` – nuskaityti baitą į ``al`` (``rax`` laisva vieta užpildoma 0) 
+    iš atidaryto failo, kurio id yra nurodytas registre ``rbx``;
++   ``6`` – įrašyti baitą iš ``rdi`` (įrašo žemiausią baitą) į failą, kurio 
     id yra nurodytas registre ``rbx``;
-+   ``6`` – įrašyti žodį (8 baitus) iš ``rdi`` į failą, kurio id yra 
-    nurodytas registre ``rbx``;
 
 Iškvietus OS funkciją su neteisingais parametrais arba sukėlus bet kurį kitą
 pertraukimą, naudotojo programa turėtų būti nužudyta.
