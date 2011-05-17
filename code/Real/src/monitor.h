@@ -2,7 +2,9 @@
 #define MONITOR_H 1
 
 #include "monitor_defines.h"
+#include "memlib.h"
 #include "monitor_screen_character.h"
+#include "debug.h"
 
 
 /**
@@ -19,31 +21,16 @@ private:
                                         // 0x0 iki 0xF.)
   u8int background_color;               // Fono spalva. (Reikšmė nuo
                                         // 0x0 iki 0xF.)
-
+  
   class Cursor {
 
     // Atributai.
     private:
-
     u8int row, col;                     // Žymeklio pozicija.
     Monitor &monitor;                   // Nuoroda į ekrano objektą.
 
     // Metodai.
-
-    // Perkelia žymeklį.
-    void move() {
-      this->normalize();
-
-      u16int offset = this->row * SCREEN_WIDTH + this->col;
-      send_byte(0x3D4, 14);             // Nurodymas, kad siųsime 
-                                        // viršutinį baitą.
-      send_byte(0x3D5, offset >> BYTE_SIZE);
-                                        // Išsiunčiame viršutinį baitą.
-      send_byte(0x3D4, 15);             // Nurodymas, kad siųsime
-                                        // apatinį baitą.
-      send_byte(0x3D5, offset);         // Išsiunčiame apatinį baitą.
-      }
-
+        
     // Pataiso žymeklio poziciją į egzistuojančią.
     void normalize() {
       if (this->col >= SCREEN_WIDTH) {
@@ -57,10 +44,36 @@ private:
       }
     
     public:
-
+      
     Cursor(Monitor &_monitor): monitor(_monitor) {
       }
-
+      
+      // Perkelia žymeklį.
+    void move() {
+      this->normalize();
+      
+      u16int offset = this->row * SCREEN_WIDTH + this->col;
+      send_byte(0x3D4, 14);             // Nurodymas, kad siųsime 
+      // viršutinį baitą.
+      send_byte(0x3D5, offset >> BYTE_SIZE);
+      // Išsiunčiame viršutinį baitą.
+      send_byte(0x3D4, 15);             // Nurodymas, kad siųsime
+      // apatinį baitą.
+      send_byte(0x3D5, offset);         // Išsiunčiame apatinį baitą.
+    }
+      
+    void set_row(u8int row){
+      this->row = row;
+    }
+    void set_col(u8int col){
+      this->col = col;
+    }
+    u8int get_row(){
+      return this->row;
+    }
+    u8int get_col(){
+      return this->col;
+    }
     // Perkelia žymeklį.
     void move(u8int row, u8int col) {
       this->row = row;
@@ -124,20 +137,66 @@ private:
       }
 
     } cursor;
+    
+    class Screen {
+      
+    private:
+      ScreenCharacter video_memory[SCREEN_HEIGHT][SCREEN_WIDTH];
+      u8int cursor_row, cursor_col;
+      
+    public:
+      Screen() {
+        }
+        
+      void save_screen_memory(Array2dPointer<ScreenCharacter> *old_mem){
+        memcpy((u8int*)this->video_memory, (u8int*)old_mem->get_pointer(0,0), SCREEN_HEIGHT*SCREEN_WIDTH*2);
+      }
+      
+      void reset_screen_memory(Array2dPointer<ScreenCharacter> *old_mem){
+        memcpy((u8int*)old_mem->get_pointer(0,0), (u8int*)this->video_memory, SCREEN_HEIGHT*SCREEN_WIDTH*2);
+      }
+      
+      u8int get_cursor_row(){
+        return this->cursor_row;
+      }
+      
+      u8int get_cursor_col(){
+        return this->cursor_col;
+      }
+            
+      void save_screen_cursor(u8int row, u8int col){
+        this->cursor_row = row;
+        this->cursor_col = col;
+      }
+      
+    } screen[6];
 
+
+Screen * active_screen;
 // Metodai.
 
 public:
 
-  Monitor(): 
+  Monitor():
     video_memory((ScreenCharacter *)0xB8000, SCREEN_WIDTH, SCREEN_HEIGHT),
     cursor(*this) {
-
-    this->foreground_color = COLOR_WHITE;
-    this->background_color = COLOR_BLACK;
-
+      
+      this->foreground_color = COLOR_WHITE;
+      this->background_color = COLOR_BLACK;
+      this->active_screen = &screen[4];
+      
     }
 
+  void activate_screen(int no) {
+    this->active_screen->save_screen_memory(&(this->video_memory));
+    this->active_screen->save_screen_cursor(this->cursor.get_row(), this->cursor.get_col());
+    this->active_screen = &screen[no-1];
+    this->active_screen->reset_screen_memory(&this->video_memory);
+    this->cursor.set_row(this->active_screen->get_cursor_row());
+    this->cursor.set_col(this->active_screen->get_cursor_col());
+    this->cursor.move();
+  }
+    
   void set_foreground_color(u8int color) {
     this->foreground_color = color;
     }

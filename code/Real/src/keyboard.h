@@ -30,11 +30,11 @@
 char lowercase[] =
 {
   0, 0 /*esc*/, '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '=', 8 /*backspace*/,
-  '\t' /*tab*/, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',  13 /*enter*/,
+  '\t' /*tab*/, 'q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p', '[', ']',  10 /*enter*/,
   0 /*ctrl*/, 'a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l', ';', '\'', '`', 0 /*lshift*/, '\\',
   'z', 'x', 'c', 'v', 'b', 'n', 'm', ',', '.', '/',
   0 /*rshift*/, 0 /*sysreq*/,  0 /*alt*/, ' ',
-  0 /*capslock*/, 0 /*F1*/,  0 /*F2*/, 0 /*F3*/,
+  0 /*capslock*/,  0/*F1*/,  0 /*F2*/, 0 /*F3*/,
   0 /*F4*/, 0 /*F5*/, 0 /*F6*/,  0 /*F7*/, 0 /*F8*/,
   0 /*F9*/,  0 /*F10*/, 0 /*numlock*/, 0 /*scrolllock*/, 
   0 /*home*/, 0 /*uarrow*/, 0 /*pup*/, 0 /*numminus*/,
@@ -46,7 +46,7 @@ char lowercase[] =
 char uppercase[] =
 {
   0, 0 /*esc*/, '!',  '@', '#', '$', '%', '^', '&', '*', '(', ')', '_', '+', 8 /*backspace*/,
-  '\t' /*tab*/, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', '\n',
+  '\t' /*tab*/, 'Q', 'W', 'E', 'R', 'T', 'Y', 'U', 'I', 'O', 'P', '{', '}', 13,
   0 /*ctrl*/, 'A', 'S', 'D', 'F', 'G', 'H', 'J', 'K', 'L', ':', '"', '~', 0 /*lshift*/, '|',
   'Z', 'X', 'C', 'V', 'B', 'N', 'M', '<', '>', '?',
   0 /*rshift*/, 0 /*sysreq*/, 0 /*alt*/, ' ', 
@@ -88,7 +88,12 @@ public:
         case 0x36: this->shift_state = 1; break; //+RShift (36)
         case 0xaa: this->shift_state = 0; break; //-LShift (AA)
         case 0xb6: this->shift_state = 0; break; //-RShift (B6)
-        case 0xe0: this->escaped = 1; break;
+        case 0x3b: this->monitor->activate_screen(1); break;
+        case 0x3c: this->monitor->activate_screen(2); break;
+        case 0x3d: this->monitor->activate_screen(3); break;
+        case 0x3e: this->monitor->activate_screen(4); break;
+        case 0x3f: this->monitor->activate_screen(5); break;
+        case 0x40: this->monitor->activate_screen(6); break;
         default:
           if (new_scan_code & 0x80) {
             /* Ignore the break code */
