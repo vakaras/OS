@@ -1,0 +1,44 @@
+format 74
+
+classinstance 128002 class_ref 128258 // MessageResourceManager
+  name ""   xyz 3 4 2000 life_line_z 2000
+classinstance 128130 class_ref 128002 // ProcessManager
+  name ""   xyz 549 4 2000 life_line_z 2000
+classinstance 128258 class_ref 128130 // ResourceManager
+  name ""   xyz 323 5 2000 life_line_z 2000
+note 128386 "Įdeda procesą į laukiančių procesų sąrašą ir tada."
+  xyzwh 103 89 2000 157 71
+durationcanvas 128898 classinstance_ref 128002 // :MessageResourceManager
+  xyzwh 84 197 2010 11 84
+end
+durationcanvas 129026 classinstance_ref 128258 // :ResourceManager
+  xyzwh 379 201 2010 11 73
+end
+durationcanvas 129282 classinstance_ref 128130 // :ProcessManager
+  xyzwh 600 207 2010 11 65
+end
+msg 129154 synchronous
+  from durationcanvas_ref 128898
+  to durationcanvas_ref 129026
+  yz 202 2015 msg operation_ref 128898 // "block_process(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 157 187
+msg 129410 synchronous
+  from durationcanvas_ref 129026
+  to durationcanvas_ref 129282
+  yz 212 2015 msg operation_ref 129026 // "block_process(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 416 197
+msg 129538 return
+  from durationcanvas_ref 129282
+  to durationcanvas_ref 129026
+  yz 233 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 129666 return
+  from durationcanvas_ref 129026
+  to durationcanvas_ref 128898
+  yz 252 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+end

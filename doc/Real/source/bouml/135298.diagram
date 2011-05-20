@@ -1,0 +1,110 @@
+format 74
+
+classinstancecanvas 128002 classinstance_ref 135042 // 
+  xyz 58 4 2000 life_line_z 2000
+end
+fragment 128130 "alt"
+  xyzwh 48 81 1995 713 270
+end
+note 128258 "Jei file_descriptor == 0, tai yra jei stdin."
+  xyzwh 104 89 2010 281 35
+classinstancecanvas 128514 classinstance_ref 135170 // 
+  xyz 248 5 2000 life_line_z 2000
+end
+fragment 129922 "alt"
+  xyzwh 45 381 1995 701 317
+end
+note 130050 "Jei file_descriptor >= 2."
+  xyzwh 100 394 2010 215 35
+classinstance 131074 class_ref 135426 // File
+  name ""   xyz 442 4 2000 life_line_z 2000
+durationcanvas 128642 classinstance_ref 128002 // :Process
+  xyzwh 83 146 2010 11 157
+end
+durationcanvas 128770 classinstance_ref 128514 // :FileManager
+  xyzwh 286 145 2010 11 142
+  overlappingdurationcanvas 129026
+    xyzwh 292 183 2020 11 25
+  end
+  overlappingdurationcanvas 129410
+    xyzwh 292 233 2020 11 25
+  end
+end
+durationcanvas 130178 classinstance_ref 128002 // :Process
+  xyzwh 83 466 2010 11 127
+  overlappingdurationcanvas 130690
+    xyzwh 89 561 2020 11 25
+  end
+end
+durationcanvas 130306 classinstance_ref 128514 // :FileManager
+  xyzwh 286 465 2010 11 79
+end
+durationcanvas 131202 classinstance_ref 131074 // :File
+  xyzwh 461 486 2010 11 25
+end
+msg 128898 synchronous
+  from durationcanvas_ref 128642
+  to durationcanvas_ref 128770
+  yz 152 2015 msg operation_ref 139522 // "get_stdin_byte(in screen_id : u64int, in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "screen_id, process_id"
+  label_xy 110 137
+reflexivemsg 129154 synchronous
+  to durationcanvas_ref 129026
+  yz 183 2025 msg operation_ref 137602 // "queue_process_for_byte(in process_id : u64int, in screen_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id, screen_id"
+  label_xy 180 168
+selfreflexivemsg 129282
+  to durationcanvas_ref 129026
+  yz 200 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 129538 synchronous
+  to durationcanvas_ref 129410
+  yz 233 2035 msg operation_ref 137858 // "plan()"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 292 218
+selfreflexivemsg 129666
+  to durationcanvas_ref 129410
+  yz 250 2040 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 129794 return
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 128642
+  yz 266 2045 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 130434 synchronous
+  from durationcanvas_ref 130178
+  to durationcanvas_ref 130306
+  yz 466 2015 msg operation_ref 139778 // "get_file_byte(in file_id : u64int) : char"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "file_id"
+  label_xy 128 451
+msg 130562 return
+  from durationcanvas_ref 130306
+  to durationcanvas_ref 130178
+  yz 532 2015 explicitmsg "symbol"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 167 517
+reflexivemsg 130818 synchronous
+  to durationcanvas_ref 130690
+  yz 561 2025 msg operation_ref 138242 // "set_value(in value : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "symbol"
+  label_xy 60 546
+selfreflexivemsg 130946
+  to durationcanvas_ref 130690
+  yz 578 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 131330 synchronous
+  from durationcanvas_ref 130306
+  to durationcanvas_ref 131202
+  yz 486 2015 msg operation_ref 140034 // "read_byte() : char"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 346 471
+msg 131458 return
+  from durationcanvas_ref 131202
+  to durationcanvas_ref 130306
+  yz 502 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+end

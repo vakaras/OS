@@ -1,0 +1,151 @@
+format 74
+
+fragment 128130 "loop"
+  xyzwh 38 40 0 736 414
+end
+note 128258 "Per visus laisvus failus, kurių kas nors laukia."
+  xyzwh 91 54 2005 301 37
+classinstancecanvas 128514 classinstance_ref 135298 // 
+  xyz 303 4 2000 life_line_z 2000
+end
+classinstancecanvas 128642 classinstance_ref 135170 // 
+  xyz 68 4 2000 life_line_z 2000
+end
+classinstancecanvas 129282 classinstance_ref 128002 // 
+  xyz 417 4 2000 life_line_z 2000
+end
+classinstance 130306 class_ref 135170 // Process
+  name ""   xyz 602 4 2000 life_line_z 2000
+fragment 131202 "alt"
+  xyzwh 47 492 1995 735 311
+end
+note 131330 "Per visus turinčius baitų stdin, kurių laukia."
+  xyzwh 94 515 2005 291 35
+durationcanvas 128770 classinstance_ref 128642 // :FileManager
+  xyzwh 106 112 2010 11 289
+end
+durationcanvas 128898 classinstance_ref 128514 // :File
+  xyzwh 322 111 2010 11 53
+end
+durationcanvas 129410 classinstance_ref 129282 // :ProcessManager
+  xyzwh 468 370 2010 11 52
+end
+durationcanvas 129794 classinstance_ref 129282 // :ProcessManager
+  xyzwh 468 188 2010 11 120
+end
+durationcanvas 130434 classinstance_ref 130306 // :Process
+  xyzwh 627 196 2010 11 43
+end
+durationcanvas 130818 classinstance_ref 130306 // :Process
+  xyzwh 627 250 2010 11 43
+end
+durationcanvas 131458 classinstance_ref 128642 // :FileManager
+  xyzwh 106 582 2010 11 147
+end
+durationcanvas 131586 classinstance_ref 129282 // :ProcessManager
+  xyzwh 468 581 2010 11 57
+end
+durationcanvas 131842 classinstance_ref 130306 // :Process
+  xyzwh 627 595 2010 11 30
+end
+durationcanvas 132354 classinstance_ref 129282 // :ProcessManager
+  xyzwh 468 658 2010 11 25
+end
+msg 129026 synchronous
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 128898
+  yz 112 2015 msg operation_ref 137986 // "get_waiting_process_id() : u64int"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 143 97
+msg 129154 return
+  from durationcanvas_ref 128898
+  to durationcanvas_ref 128770
+  yz 145 2015 explicitmsg "process_id"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 186 130
+msg 129538 synchronous
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 129410
+  yz 370 2015 msg operation_ref 129282 // "activate_process(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 204 355
+msg 129922 synchronous
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 129794
+  yz 192 2015 msg operation_ref 138114 // "give_file(in process_id : u64int, in file_id : u64int, in mode : FileMode) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id, file_id, mode"
+  label_xy 189 177
+msg 130050 return
+  from durationcanvas_ref 129794
+  to durationcanvas_ref 128770
+  yz 297 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 130178 return
+  from durationcanvas_ref 129410
+  to durationcanvas_ref 128770
+  yz 390 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 130562 synchronous
+  from durationcanvas_ref 129794
+  to durationcanvas_ref 130434
+  yz 200 2015 msg operation_ref 137474 // "add_file(in file_id : u64int, in mode : FileMode) : u64int"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "file_id, mode"
+  label_xy 485 186
+msg 130690 return
+  from durationcanvas_ref 130434
+  to durationcanvas_ref 129794
+  yz 222 2020 explicitmsg "file_descriptor"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 509 207
+msg 130946 synchronous
+  from durationcanvas_ref 129794
+  to durationcanvas_ref 130818
+  yz 250 2015 msg operation_ref 138242 // "set_value(in value : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "file_descriptor"
+  label_xy 501 235
+msg 131074 return
+  from durationcanvas_ref 130818
+  to durationcanvas_ref 129794
+  yz 270 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 131714 synchronous
+  from durationcanvas_ref 131458
+  to durationcanvas_ref 131586
+  yz 582 2015 msg operation_ref 139906 // "give_byte(in process_id : u64int, in symbol : char) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id, symbol"
+  label_xy 235 567
+msg 131970 synchronous
+  from durationcanvas_ref 131586
+  to durationcanvas_ref 131842
+  yz 595 2020 msg operation_ref 138242 // "set_value(in value : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "symbol"
+  label_xy 497 580
+msg 132098 return
+  from durationcanvas_ref 131842
+  to durationcanvas_ref 131586
+  yz 614 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 132226 return
+  from durationcanvas_ref 131586
+  to durationcanvas_ref 131458
+  yz 627 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 132482 synchronous
+  from durationcanvas_ref 131458
+  to durationcanvas_ref 132354
+  yz 658 2015 msg operation_ref 129282 // "activate_process(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 204 643
+msg 132610 return
+  from durationcanvas_ref 132354
+  to durationcanvas_ref 131458
+  yz 676 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+end

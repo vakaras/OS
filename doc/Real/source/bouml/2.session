@@ -1,0 +1,29 @@
+window_sizes 1600 1176 456 1138 982 120
+diagrams
+  sequencediagram_ref 128002 // manage_interrupt
+    1185 982 100 0 0 0
+  sequencediagram_ref 128130 // MessageResourceManager<T>::plan()
+    975 785 100 0 0 0
+  classdiagram_ref 128258 // classes
+    975 785 100 0 0 0
+  sequencediagram_ref 134914 // ProcessManager::load_process()
+    969 785 100 4 0 0
+  sequencediagram_ref 135042 // files
+    969 785 100 0 2175 0
+  sequencediagram_ref 135170 // FileManager::plan()
+    910 785 100 4 0 0
+  sequencediagram_ref 135298 // Process::read_byte()
+    910 785 100 4 0 0
+  active  sequencediagram_ref 135426 // Process::write_byte()
+    1138 982 100 4 0 0
+end
+show_stereotypes
+selected operation_ref 140418 // write_byte
+open
+  class_ref 128002 // ProcessManager
+  class_ref 128130 // ResourceManager
+  class_ref 128258 // MessageResourceManager
+  class_ref 135298 // FileManager
+  class_ref 135426 // File
+end
+end

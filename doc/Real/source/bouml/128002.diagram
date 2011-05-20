@@ -1,0 +1,400 @@
+format 74
+
+classinstancecanvas 128002 classinstance_ref 128002 // 
+  xyz 7 75 2005 life_line_z 2000
+end
+classinstancecanvas 128130 classinstance_ref 128130 // 
+  xyz 304 77 2010 life_line_z 2000
+end
+classinstancecanvas 128258 classinstance_ref 128258 // message_waiter_a_manager
+  xyz 397 44 2015 life_line_z 2000
+end
+note 133122 "Procesas waiter_a kuria resursą."
+  xyzwh 79 121 2000 233 37
+note 133250 "Procesas waiter_b prašo resurso."
+  xyzwh 80 442 2000 237 35
+note 133378 "Procesas loader prašo resurso."
+  xyzwh 92 750 2000 221 39
+classinstancecanvas 134402 classinstance_ref 134786 // message_program_load_manager
+  xyz 598 4 2020 life_line_z 2000
+end
+note 135938 "Naudotojas nurodo paleisti programą."
+  xyzwh 73 1038 2010 263 37
+note 137602 "loader gavęs nurodymą atsiblokuoja ir tampa vykdomu – prašo atminties."
+  xyzwh 73 1191 2000 257 57
+classinstancecanvas 138114 classinstance_ref 134914 // memory_resource_manager
+  xyz 798 35 2025 life_line_z 2000
+end
+note 139394 "TODO: Iš kur ateina žinutė?"
+  xyzwh 418 1015 2000 131 55
+note 139650 "Pagavęs nežinomą pertraukimą process_manager žudo procesą ir atlaisvina užimtus resursus."
+  xyzwh 111 1519 2000 239 71
+note 141058 "TODO: Atlaisvinti failus."
+  xyzwh 149 1720 2000 167 37
+note 141570 "Gavęs atminties resursą loader liepia pakrauti programą. "
+  xyzwh 127 1815 2000 223 53
+durationcanvas 128386 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 201 2010 11 212
+  overlappingdurationcanvas 132866
+    xyzwh 64 357 2020 11 25
+  end
+end
+durationcanvas 128514 classinstance_ref 128130 // :ResourceManager
+  xyzwh 360 200 2010 11 223
+end
+durationcanvas 128770 classinstance_ref 128258 // message_waiter_a_manager:MessageResourceManager
+  xyzwh 563 241 2010 11 102
+  overlappingdurationcanvas 129026
+    xyzwh 569 257 2020 11 35
+  end
+end
+durationcanvas 130050 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 510 2010 11 199
+  overlappingdurationcanvas 132610
+    xyzwh 64 678 2020 11 25
+  end
+end
+durationcanvas 130178 classinstance_ref 128130 // :ResourceManager
+  xyzwh 360 510 2010 11 154
+end
+durationcanvas 130434 classinstance_ref 128258 // message_waiter_a_manager:MessageResourceManager
+  xyzwh 563 522 2010 11 128
+  overlappingdurationcanvas 130690
+    xyzwh 569 553 2020 11 26
+  end
+  overlappingdurationcanvas 142338
+    xyzwh 569 605 2020 11 25
+  end
+end
+durationcanvas 134018 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 807 2010 11 209
+  overlappingdurationcanvas 135682
+    xyzwh 64 985 2020 11 25
+  end
+end
+durationcanvas 134146 classinstance_ref 128130 // :ResourceManager
+  xyzwh 360 807 2010 11 163
+end
+durationcanvas 134530 classinstance_ref 134402 // message_program_load_manager:MessageResourceManager
+  xyzwh 780 834 2010 11 123
+  overlappingdurationcanvas 135042
+    xyzwh 786 856 2020 11 25
+  end
+  overlappingdurationcanvas 143106
+    xyzwh 786 901 2020 11 25
+  end
+end
+durationcanvas 136194 classinstance_ref 128130 // :ResourceManager
+  xyzwh 360 1101 2010 11 84
+end
+durationcanvas 136322 classinstance_ref 134402 // message_program_load_manager:MessageResourceManager
+  xyzwh 780 1101 2010 11 74
+  overlappingdurationcanvas 136578
+    xyzwh 786 1115 2020 11 25
+  end
+end
+durationcanvas 137346 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 1161 2010 11 25
+end
+durationcanvas 137730 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 1206 2010 11 291
+  overlappingdurationcanvas 139138
+    xyzwh 64 1467 2020 11 25
+  end
+end
+durationcanvas 137858 classinstance_ref 128130 // :ResourceManager
+  xyzwh 360 1206 2010 11 249
+end
+durationcanvas 138242 classinstance_ref 138114 // memory_resource_manager:ReusableResourceManager
+  xyzwh 965 1219 2010 11 231
+  overlappingdurationcanvas 138498
+    xyzwh 971 1343 2020 11 25
+  end
+  overlappingdurationcanvas 142722
+    xyzwh 971 1396 2020 11 25
+  end
+end
+durationcanvas 139778 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 1619 2010 11 190
+  overlappingdurationcanvas 141314
+    xyzwh 64 1773 2020 11 25
+  end
+end
+durationcanvas 139906 classinstance_ref 128130 // :ResourceManager
+  xyzwh 360 1618 2010 11 96
+end
+durationcanvas 140162 classinstance_ref 138114 // memory_resource_manager:ReusableResourceManager
+  xyzwh 965 1627 2010 11 69
+  overlappingdurationcanvas 140418
+    xyzwh 971 1644 2020 11 25
+  end
+end
+durationcanvas 141698 classinstance_ref 128002 // :ProcessManager
+  xyzwh 58 1930 2010 11 75
+  overlappingdurationcanvas 141954
+    xyzwh 64 1965 2020 11 25
+  end
+end
+msg 128642 synchronous
+  from durationcanvas_ref 128386
+  to durationcanvas_ref 128514
+  yz 227 2015 msg operation_ref 128130 // "create_resource(in resource_type : u64int) : u64int"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "resource_type"
+  label_xy 80 215
+msg 128898 synchronous
+  from durationcanvas_ref 128514
+  to durationcanvas_ref 128770
+  yz 241 2015 msg operation_ref 128386 // "create_resource(in resource : T) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "message_waiter_a_resource"
+  label_xy 375 225
+reflexivemsg 129154 synchronous
+  to durationcanvas_ref 129026
+  yz 257 2025 msg operation_ref 128514 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 607 254
+selfreflexivemsg 129282
+  to durationcanvas_ref 129026
+  yz 284 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 129410 return
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 128514
+  yz 293 2035 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 129922 return
+  from durationcanvas_ref 128514
+  to durationcanvas_ref 128386
+  yz 312 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 130306 synchronous
+  from durationcanvas_ref 130050
+  to durationcanvas_ref 130178
+  yz 513 2015 msg operation_ref 128258 // "get_resource(in resource_type : u64int, in process_id : u64int) : u64int"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "resource_type, process_id"
+  label_xy 81 498
+msg 130562 synchronous
+  from durationcanvas_ref 130178
+  to durationcanvas_ref 130434
+  yz 525 2015 msg operation_ref 128642 // "get_resource(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 379 510
+reflexivemsg 130818 synchronous
+  to durationcanvas_ref 130690
+  yz 553 2025 msg operation_ref 128770 // "add_process_to_waiting_queue(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 534 538
+selfreflexivemsg 131970
+  to durationcanvas_ref 130690
+  yz 571 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 132098 return
+  from durationcanvas_ref 130434
+  to durationcanvas_ref 130178
+  yz 639 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 132226 return
+  from durationcanvas_ref 130178
+  to durationcanvas_ref 130050
+  yz 651 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 132738 asynchronous
+  to durationcanvas_ref 132610
+  yz 679 2025 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 72 664
+reflexivemsg 132994 asynchronous
+  to durationcanvas_ref 132866
+  yz 358 2025 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 82 340
+msg 134274 synchronous
+  from durationcanvas_ref 134018
+  to durationcanvas_ref 134146
+  yz 817 2015 msg operation_ref 128258 // "get_resource(in resource_type : u64int, in process_id : u64int) : u64int"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "resource_type, process_id"
+  label_xy 94 802
+msg 134658 synchronous
+  from durationcanvas_ref 134146
+  to durationcanvas_ref 134530
+  yz 836 2015 msg operation_ref 128642 // "get_resource(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 502 821
+reflexivemsg 135170 synchronous
+  to durationcanvas_ref 135042
+  yz 856 2025 msg operation_ref 128770 // "add_process_to_waiting_queue(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 674 841
+selfreflexivemsg 135298
+  to durationcanvas_ref 135042
+  yz 873 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 135426 return
+  from durationcanvas_ref 134530
+  to durationcanvas_ref 134146
+  yz 945 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 135554 return
+  from durationcanvas_ref 134146
+  to durationcanvas_ref 134018
+  yz 958 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 135810 asynchronous
+  to durationcanvas_ref 135682
+  yz 985 2025 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 68 970
+msg 136450 asynchronous
+  from durationcanvas_ref 136194
+  to durationcanvas_ref 136322
+  yz 1102 2015 msg operation_ref 128386 // "create_resource(in resource : T) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "message_load_program_resource"
+  label_xy 440 1086
+reflexivemsg 136706 synchronous
+  to durationcanvas_ref 136578
+  yz 1115 2025 msg operation_ref 128514 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 780 1100
+selfreflexivemsg 136834
+  to durationcanvas_ref 136578
+  yz 1132 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 136962 return
+  from durationcanvas_ref 136322
+  to durationcanvas_ref 136194
+  yz 1144 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 137474 asynchronous
+  from durationcanvas_ref 136194
+  to durationcanvas_ref 137346
+  yz 1161 2015 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 188 1146
+msg 137986 synchronous
+  from durationcanvas_ref 137730
+  to durationcanvas_ref 137858
+  yz 1285 2015 msg operation_ref 128258 // "get_resource(in resource_type : u64int, in process_id : u64int) : u64int"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "resource_type, process_id"
+  label_xy 84 1270
+msg 138370 synchronous
+  from durationcanvas_ref 137858
+  to durationcanvas_ref 138242
+  yz 1298 2015 msg operation_ref 135810 // "get_resource(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 585 1283
+reflexivemsg 138626 synchronous
+  to durationcanvas_ref 138498
+  yz 1343 2025 msg operation_ref 135938 // "add_process_to_waiting_queue(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 856 1317
+selfreflexivemsg 138754
+  to durationcanvas_ref 138498
+  yz 1360 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 138882 return
+  from durationcanvas_ref 138242
+  to durationcanvas_ref 137858
+  yz 1439 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 139010 return
+  from durationcanvas_ref 137858
+  to durationcanvas_ref 137730
+  yz 1444 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 139266 asynchronous
+  to durationcanvas_ref 139138
+  yz 1468 2025 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 81 1453
+msg 140034 synchronous
+  from durationcanvas_ref 139778
+  to durationcanvas_ref 139906
+  yz 1622 2015 msg operation_ref 136066 // "free_memory_resource(in resource : MemoryResource) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "memory_resource"
+  label_xy 102 1607
+msg 140290 synchronous
+  from durationcanvas_ref 139906
+  to durationcanvas_ref 140162
+  yz 1631 2015 msg operation_ref 136194 // "free_resource(in resource : T) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "resource"
+  label_xy 612 1616
+reflexivemsg 140546 synchronous
+  to durationcanvas_ref 140418
+  yz 1644 2025 msg operation_ref 136322 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 988 1629
+selfreflexivemsg 140674
+  to durationcanvas_ref 140418
+  yz 1661 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 140802 return
+  from durationcanvas_ref 140162
+  to durationcanvas_ref 139906
+  yz 1682 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 140930 return
+  from durationcanvas_ref 139906
+  to durationcanvas_ref 139778
+  yz 1700 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 141442 asynchronous
+  to durationcanvas_ref 141314
+  yz 1774 2025 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 81 1759
+reflexivemsg 141826 synchronous
+  to durationcanvas_ref 141698
+  yz 1930 2015 msg operation_ref 136450 // "load_process(in program_id : u64int, in screen_id : u64int, in memory_resource_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "program_id, screen_id, memory_resource_id"
+  label_xy 49 1911
+reflexivemsg 142082 asynchronous
+  to durationcanvas_ref 141954
+  yz 1966 2025 msg operation_ref 128002 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 81 1951
+reflexivemsg 142466 synchronous
+  to durationcanvas_ref 142338
+  yz 605 2030 msg operation_ref 128514 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 571 590
+selfreflexivemsg 142594
+  to durationcanvas_ref 142338
+  yz 622 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 142850 synchronous
+  to durationcanvas_ref 142722
+  yz 1396 2025 msg operation_ref 136322 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 971 1381
+selfreflexivemsg 142978
+  to durationcanvas_ref 142722
+  yz 1413 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+reflexivemsg 143234 synchronous
+  to durationcanvas_ref 143106
+  yz 901 2025 msg operation_ref 128514 // "plan() : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  label_xy 786 886
+selfreflexivemsg 143362
+  to durationcanvas_ref 143106
+  yz 918 2030 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+line 139522 -_-_ decenter_end 107
+  from ref 139394 z 2011 to ref 136194
+line 141186 -_-_
+  from ref 141058 z 2011 to ref 139778
+end

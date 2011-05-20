@@ -1,0 +1,50 @@
+format 74
+
+classinstancecanvas 128002 classinstance_ref 128130 // 
+  xyz 468 53 2000 life_line_z 2000
+end
+classinstancecanvas 128130 classinstance_ref 128002 // 
+  xyz 813 4 2000 life_line_z 2000
+end
+classinstancecanvas 128258 classinstance_ref 128258 // message_waiter_a_manager
+  xyz 11 6 2000 life_line_z 2000
+end
+fragment 128386 "loop"
+  form "kol yra resursų ir procesų" xyzwh 21 154 2000 1045 466
+end
+note 128642 "Kol yra resursų ir jų laukiančių procesų."
+  xyzwh 28 184 2005 99 91
+durationcanvas 128770 classinstance_ref 128258 // message_waiter_a_manager:MessageResourceManager
+  xyzwh 263 204 2010 11 162
+end
+durationcanvas 128898 classinstance_ref 128002 // :ResourceManager
+  xyzwh 524 204 2010 11 161
+end
+durationcanvas 129154 classinstance_ref 128130 // :ProcessManager
+  xyzwh 864 218 2010 11 67
+end
+msg 129026 synchronous
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 128898
+  yz 205 2015 msg operation_ref 129154 // "activate_process(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 311 190
+msg 129282 synchronous
+  from durationcanvas_ref 128898
+  to durationcanvas_ref 129154
+  yz 219 2015 msg operation_ref 129282 // "activate_process(in process_id : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id"
+  label_xy 611 204
+msg 129410 return
+  from durationcanvas_ref 129154
+  to durationcanvas_ref 128898
+  yz 262 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 129538 return
+  from durationcanvas_ref 128898
+  to durationcanvas_ref 128770
+  yz 282 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+end
