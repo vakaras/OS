@@ -36,6 +36,14 @@ void debug_hex(u64int number) {
   }
 
 
+// Nusiunčia šešioliktainį skaičių su paaiškinimu į Bochs.
+void debug_value(const char *str, u64int number) {
+
+  debug_string(str);
+  debug_hex(number);
+  debug_char('\n');
+  }
+
 // Pauzė. 
 void pausep(u64int *pointer) {
   pause1((u64int) pointer);

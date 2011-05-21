@@ -66,6 +66,7 @@ private:
   // Atributai.
   
   ModuleList module_list;
+  KernelPager *kernel_pager;
   
 public:
 
@@ -76,7 +77,7 @@ public:
    * @param module_list – adresas, kuriuo saugoma informacija apie 
    * GRUB pakrautus modulius.
    */
-  ProgramManager(u64int module_list) {
+  ProgramManager(u64int module_list, KernelPager *kernel_pager) {
 
     u32int *p = (u32int *) module_list;
 
@@ -93,6 +94,7 @@ public:
           (const char *) MAKE_ADDRESS_VIRTUAL((u64int) *(p + (4 * i + 2))));
       }
 
+    this->kernel_pager = kernel_pager;
 
     }
 
@@ -129,15 +131,18 @@ public:
    * @param id – kokią programą pakrauti;
    * @param pager – į kokią atmintį pakrauti.
    */
-  u64int load(u64int id, ProgramPager pager) {
+  u64int load(u64int id, ProgramPager &pager, u64int *entry) {
 
     if (id >= this->get_count()) {
       return 1;
       }
 
+    debug_string("Ruošiamas puslapiavimo mechanizmas programai.");
+    debug_string("Jo adresas: ");
+    debug_hex((u64int) pager.entry);
     pager.clear_lower();
     pager.create_lower();
-    pager.activate();
+    debug_string("Baigta.\n");
 
     ElfHeader *header = (ElfHeader *) this->module_list.module[id].start;
 
@@ -161,18 +166,18 @@ public:
       return 5;
       }
 
-    // header table offset 0x40
-    
     ElfProgramHeader *program_header = (ElfProgramHeader *)(
         ((u8int *) this->module_list.module[id].start) +
         header->program_header_table_offset);
 
+    pager.activate();
     memcpy(
         (u8int *) program_header->virtual_address,
         ((u8int *) this->module_list.module[id].start) + 
           program_header->offset,
         program_header->file_size
         );
+    this->kernel_pager->activate();
 
     debug_string("\nVirtuali atmintis:  ");
     debug_hex(program_header->virtual_address);
@@ -186,6 +191,8 @@ public:
     // nemoka įjungti buvusiojo puslapiavimo mechanizmo, tai OS nebegrįžta
     // iš pertraukimo ir sminga. Dėl šios priežasties persijungimas
     // užkomentuotas.
+    
+    *entry = header->entry;
 
     return 0;
     }

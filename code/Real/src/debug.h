@@ -34,4 +34,7 @@ extern "C" void debug_string(const char *str);
 // Nusiunčia šešioliktainį skaičių į Bochs.
 extern "C" void debug_hex(u64int number);
 
+// Nusiunčia šešioliktainį skaičių su paaiškinimu į Bochs.
+extern "C" void debug_value(const char *str, u64int number);
+
 #endif

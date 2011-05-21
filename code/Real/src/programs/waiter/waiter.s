@@ -7,6 +7,8 @@ dd 0xdeadbab0, 0xdeadbab1, 0xdeadbab2, 0xdeadbab3
 
 _start:
 
-  mov rax, 0
-  int 0x3f
+  mov rax, 0xdeadbaba
+  xchg bx, bx
+  ;mov rax, 0
+  ;int 0x3f
   jmp $
