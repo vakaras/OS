@@ -10,41 +10,114 @@ classinstancecanvas 128258 classinstance_ref 128258 // message_waiter_a_manager
   xyz 11 6 2000 life_line_z 2000
 end
 fragment 128386 "loop"
-  form "kol yra resursų ir procesų" xyzwh 21 154 2000 1045 466
+  form "kol yra resursų ir procesų" xyzwh 21 155 1995 1376 658
 end
 note 128642 "Kol yra resursų ir jų laukiančių procesų."
-  xyzwh 28 184 2005 99 91
+  xyzwh 79 171 2015 277 35
+classinstancecanvas 130178 classinstance_ref 135042 // 
+  xyz 1065 8 2000 life_line_z 2000
+end
+fragment 130946 "alt"
+  xyzwh 50 217 1990 1306 212
+end
+note 131074 "Jei T == MessageLoadProgramResource."
+  xyzwh 107 228 2025 273 35
+fragment 131586 "alt"
+  xyzwh 55 437 2000 1302 151
+end
+note 131714 "Kitu atveju."
+  xyzwh 103 449 2015 183 35
 durationcanvas 128770 classinstance_ref 128258 // message_waiter_a_manager:MessageResourceManager
-  xyzwh 263 204 2010 11 162
+  xyzwh 177 175 2010 11 528
 end
 durationcanvas 128898 classinstance_ref 128002 // :ResourceManager
-  xyzwh 524 204 2010 11 161
+  xyzwh 524 608 2010 11 164
 end
 durationcanvas 129154 classinstance_ref 128130 // :ProcessManager
-  xyzwh 864 218 2010 11 67
+  xyzwh 864 631 2010 11 67
+end
+durationcanvas 129666 classinstance_ref 128002 // :ResourceManager
+  xyzwh 524 290 2010 11 95
+end
+durationcanvas 129922 classinstance_ref 128130 // :ProcessManager
+  xyzwh 864 302 2010 11 65
+end
+durationcanvas 130306 classinstance_ref 130178 // :Process
+  xyzwh 1090 324 2010 11 29
+end
+durationcanvas 131202 classinstance_ref 128002 // :ResourceManager
+  xyzwh 524 526 2010 11 30
 end
 msg 129026 synchronous
   from durationcanvas_ref 128770
   to durationcanvas_ref 128898
-  yz 205 2015 msg operation_ref 129154 // "activate_process(in process_id : u64int) : void"
+  yz 614 2015 msg operation_ref 129154 // "activate_process(in process_id : u64int) : void"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "process_id"
-  label_xy 311 190
+  label_xy 315 599
 msg 129282 synchronous
   from durationcanvas_ref 128898
   to durationcanvas_ref 129154
-  yz 219 2015 msg operation_ref 129282 // "activate_process(in process_id : u64int) : void"
+  yz 632 2015 msg operation_ref 129282 // "activate_process(in process_id : u64int) : void"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "process_id"
-  label_xy 611 204
+  label_xy 612 617
 msg 129410 return
   from durationcanvas_ref 129154
   to durationcanvas_ref 128898
-  yz 262 2020 unspecifiedmsg
+  yz 675 2020 unspecifiedmsg
   show_full_operations_definition default drawing_language default show_context_mode default
 msg 129538 return
   from durationcanvas_ref 128898
   to durationcanvas_ref 128770
-  yz 282 2015 unspecifiedmsg
+  yz 691 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 129794 synchronous
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 129666
+  yz 290 2015 msg operation_ref 149634 // "give_resource(in process_id : u64int, in resource : MessageLoadProgramResource) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id, resource"
+  label_xy 276 275
+msg 130050 synchronous
+  from durationcanvas_ref 129666
+  to durationcanvas_ref 129922
+  yz 305 2015 msg operation_ref 149762 // "give_loader_task(in process_id : u64int, in resource : MessageLoadProgramResource) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id, resource"
+  label_xy 575 290
+msg 130434 synchronous
+  from durationcanvas_ref 129922
+  to durationcanvas_ref 130306
+  yz 325 2015 msg operation_ref 149890 // "set_value(in value_1 : u64int, in value_2 : u64int) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "program_id, screen_id"
+  label_xy 875 310
+msg 130562 return
+  from durationcanvas_ref 130306
+  to durationcanvas_ref 129922
+  yz 342 2020 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 130690 return
+  from durationcanvas_ref 129922
+  to durationcanvas_ref 129666
+  yz 356 2025 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 130818 return
+  from durationcanvas_ref 129666
+  to durationcanvas_ref 128770
+  yz 371 2015 unspecifiedmsg
+  show_full_operations_definition default drawing_language default show_context_mode default
+msg 131330 synchronous
+  from durationcanvas_ref 128770
+  to durationcanvas_ref 131202
+  yz 526 2015 msg operation_ref 150018 // "give_resource(in process_id : u64int, in resource : MessageWaiterAResource) : void"
+  show_full_operations_definition default drawing_language default show_context_mode default
+  args "process_id, resource"
+  label_xy 253 511
+msg 131458 return
+  from durationcanvas_ref 131202
+  to durationcanvas_ref 128770
+  yz 545 2020 unspecifiedmsg
   show_full_operations_definition default drawing_language default show_context_mode default
 end

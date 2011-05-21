@@ -1,6 +1,6 @@
 format 74
 "core" // core
-  revision 2
+  revision 4
   modified_by 2 "vakaras"
   // class settings
   //class diagram settings
@@ -42,9 +42,49 @@ format 74
     //activity diagram settings
     package_name_in_tab default show_context default show_opaque_action_definition default auto_label_position default write_flow_label_horizontally default draw_all_relations default shadow default
     show_infonote default drawing_language default show_stereotype_properties default
+    classdiagram 128258 "classes"
+      draw_all_relations yes hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition yes show_members_visibility yes show_members_stereotype yes show_members_context uml show_members_multiplicity yes show_members_initialization yes show_attribute_modifiers yes member_max_width 0 show_parameter_dir yes show_parameter_name yes package_name_in_tab default class_drawing_mode default drawing_language uml show_context_mode default auto_label_position default show_relation_modifiers yes show_relation_visibility yes show_infonote default shadow default show_stereotype_properties default
+      size A0
+    end
+
     sequencediagram 128002 "manage_interrupt"
       show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
       overlapping_bars size A0
+    end
+
+    sequencediagram 128130 "MessageResourceManager<T>::plan()"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A0
+    end
+
+    sequencediagram 134786 "MessageResourceManager<T>::add_process_to_waiting_queue"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
+    end
+
+    sequencediagram 134914 "ProcessManager::load_process()"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
+    end
+
+    sequencediagram 135042 "files"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A0
+    end
+
+    sequencediagram 135170 "FileManager::plan()"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
+    end
+
+    sequencediagram 135298 "Process::read_byte()"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
+    end
+
+    sequencediagram 135426 "Process::write_byte()"
+      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
+      overlapping_bars size A4
     end
 
     class 128002 "ProcessManager"
@@ -59,6 +99,20 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 137090 "manage_interrupt"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 128002 "plan"
 	public explicit_return_type "void"
 	nparams 0
@@ -89,6 +143,21 @@ ${inlines}
       end
 
       operation 129282 "activate_process"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "process_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 138370 "kill_process"
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "process_id" explicit_type "u64int"
@@ -136,44 +205,15 @@ ${inlines}
 	
       end
 
-      operation 137090 "manage_interrupt"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 138114 "give_file"
 	public explicit_return_type "void"
 	nparams 3
 	  param in name "process_id" explicit_type "u64int"
 	  param in name "file_id" explicit_type "u64int"
-	  param in name "mode" type class_ref 135554 // FileMode
+	  param in name "mode" type class_ref 135554 // FILE_MODE
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}, ${t2} ${p2}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 138370 "kill_process"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "process_id" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -197,6 +237,79 @@ ${inlines}
 	
 	
       end
+
+      operation 149762 "give_loader_task"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" type class_ref 142850 // MessageLoadProgramResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 130434 // resource_manager (<association>)
+	relation 129538 ----
+	  a role_name "resource_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130434 // resource_manager (<association>)
+	  b role_name "process_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 130562 // process_manager (<association>)
+      end
+
+      classrelation 130690 // processes (<composition>)
+	relation 129666 *---
+	  a role_name "processes" multiplicity "0..MAX_PROCESSES" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 130690 // processes (<composition>)
+	  b role_name "process_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 130818 // process_manager (<composition>)
+      end
+
+      attribute 129922 "running_process_id"
+	private explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 131842 // active_process_queue (<composition>)
+	relation 130562 *---
+	  a role_name "active_process_queue" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 131842 // active_process_queue (<composition>)
+	  b role_name "" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 131970 // <composition>
+	  association_explicit_type "u64int"
+      end
+
+      attribute 130050 "program_manager"
+	private type class_ref 143106 // ProgramManager
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     classinstance 128002 ""
@@ -219,6 +332,37 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 150274 "set_process_manager"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "process_manager" type class_ref 128002 // ProcessManager
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128258 "get_resource"
+	public explicit_return_type "u64int"
+	nparams 2
+	  param in name "resource_type" explicit_type "u64int"
+	  param in name "process_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 128130 "create_resource"
 	public explicit_return_type "u64int"
 	nparams 1
@@ -234,11 +378,73 @@ ${inlines}
 	
       end
 
-      operation 128258 "get_resource"
-	public explicit_return_type "u64int"
+      operation 136066 "free_memory_resource"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "resource" type class_ref 134914 // MemoryResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 136578 "get_memory_resource_info"
+	public return_type class_ref 134914 // MemoryResource
+	nparams 1
+	  param in name "memory_resource_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 149634 "give_resource"
+	public explicit_return_type "void"
 	nparams 2
-	  param in name "resource_type" explicit_type "u64int"
 	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" type class_ref 142850 // MessageLoadProgramResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 150018 "give_resource"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" type class_ref 142594 // MessageWaiterAResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 150146 "give_resource"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" type class_ref 142466 // MessageWaiterBResource
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -280,34 +486,60 @@ ${inlines}
 	
       end
 
-      operation 136066 "free_memory_resource"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "resource" type class_ref 134914 // MemoryResource
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+      classrelation 129282 // message_waiter_a_manager (<composition>)
+	relation 128770 *---
+	  a role_name "message_waiter_a_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
+	    classrelation_ref 129282 // message_waiter_a_manager (<composition>)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	
-	
-	
-	
+	    classrelation_ref 129410 // <composition>
+	  association_type class_ref 142594 // MessageWaiterAResource
       end
 
-      operation 136578 "get_memory_resource_info"
-	public return_type class_ref 134914 // MemoryResource
-	nparams 1
-	  param in name "memory_resource_id" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+      classrelation 129538 // message_waiter_b_manager (<composition>)
+	relation 128898 *---
+	  a role_name "message_waiter_b_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
+	    classrelation_ref 129538 // message_waiter_b_manager (<composition>)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	
-	
-	
-	
+	    classrelation_ref 129666 // <composition>
+	  association_type class_ref 142466 // MessageWaiterBResource
+      end
+
+      classrelation 129794 // memory_manager (<composition>)
+	relation 129026 *---
+	  a role_name "memory_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 129794 // memory_manager (<composition>)
+	  b role_name "" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 129922 // <composition>
+	  association_type class_ref 134914 // MemoryResource
+      end
+
+      classrelation 130562 // process_manager (<association>)
+	relation_ref 129538 // <association>
+      end
+
+      classrelation 130946 // message_program_load_manager (<composition>)
+	relation 129794 *---
+	  a role_name "message_program_load_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 130946 // message_program_load_manager (<composition>)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 131074 // <composition>
+	  association_type class_ref 142850 // MessageLoadProgramResource
       end
     end
 
@@ -336,10 +568,40 @@ ${inlines}
       
       ncouples 1
       key "" value ""
+      operation 148226 "MessageResourceManager"
+	public explicit_return_type ""
+	nparams 1
+	  param in name "resource_manager" type class_ref 128130 // ResourceManager
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 128386 "create_resource"
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "resource" explicit_type "T"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 128642 "get_resource"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "process_id" explicit_type "u64int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -365,21 +627,6 @@ ${inlines}
 	
       end
 
-      operation 128642 "get_resource"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "process_id" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
       operation 128770 "add_process_to_waiting_queue"
 	private explicit_return_type "void"
 	nparams 1
@@ -394,6 +641,54 @@ ${inlines}
 	
 	
       end
+
+      classrelation 128002 // process_queue (<composition>)
+	relation 128002 *---
+	  a role_name "process_queue" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128002 // process_queue (<composition>)
+	  b role_name "" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128130 // <composition>
+	  association_explicit_type "u64int"
+      end
+
+      classrelation 128258 // resource_queue (<composition>)
+	relation 128130 *---
+	  a role_name "resource_queue" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128258 // resource_queue (<composition>)
+	  b role_name "" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128386 // <composition>
+	  association_explicit_type "T"
+      end
+
+      classrelation 129410 // <composition>
+	relation_ref 128770 // <composition>
+      end
+
+      classrelation 129666 // <composition>
+	relation_ref 128898 // <composition>
+      end
+
+      attribute 129026 "resource_manager"
+	private type class_ref 128130 // ResourceManager
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 131074 // <composition>
+	relation_ref 129794 // <composition>
+      end
     end
 
     classinstance 128258 "message_waiter_a_manager"
@@ -404,16 +699,6 @@ ${inlines}
         end
     end
 
-    sequencediagram 128130 "MessageResourceManager<T>::plan()"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A0
-    end
-
-    classdiagram 128258 "classes"
-      draw_all_relations yes hide_attributes default hide_operations default hide_getset_operations default show_members_full_definition yes show_members_visibility yes show_members_stereotype yes show_members_context default show_members_multiplicity default show_members_initialization default show_attribute_modifiers default member_max_width 0 show_parameter_dir default show_parameter_name default package_name_in_tab default class_drawing_mode default drawing_language uml show_context_mode default auto_label_position default show_relation_modifiers default show_relation_visibility default show_infonote default shadow default show_stereotype_properties default
-      size A0
-    end
-
     classinstance 134786 "message_program_load_manager"
       type class_ref 128258 // MessageResourceManager
       attributes
@@ -422,13 +707,8 @@ ${inlines}
         end
     end
 
-    sequencediagram 134786 "MessageResourceManager<T>::add_process_to_waiting_queue"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A4
-    end
-
     class 134786 "ReusableResourceManager"
-      visibility package 
+      visibility public 
       nformals 1
       formal name "T" type "class" explicit_default_value ""
         explicit_extends ""
@@ -442,10 +722,10 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-      operation 135810 "get_resource"
+      operation 147458 "create_resource"
 	public explicit_return_type "void"
 	nparams 1
-	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" explicit_type "T"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -457,7 +737,7 @@ ${inlines}
 	
       end
 
-      operation 135938 "add_process_to_waiting_queue"
+      operation 135810 "get_resource"
 	public explicit_return_type "void"
 	nparams 1
 	  param in name "process_id" explicit_type "u64int"
@@ -487,6 +767,21 @@ ${inlines}
 	
       end
 
+      operation 136706 "get_resource_info"
+	public explicit_return_type "T"
+	nparams 1
+	  param in name "resource_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 136322 "plan"
 	public explicit_return_type "void"
 	nparams 0
@@ -501,10 +796,10 @@ ${inlines}
 	
       end
 
-      operation 136706 "get_resource_info"
-	public explicit_return_type "T"
+      operation 135938 "add_process_to_waiting_queue"
+	private explicit_return_type "void"
 	nparams 1
-	  param in name "resource_id" explicit_type "u64int"
+	  param in name "process_id" explicit_type "u64int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
@@ -514,6 +809,33 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 128514 // process_queue (<composition>)
+	relation 128258 *---
+	  a role_name "process_queue" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128514 // process_queue (<composition>)
+	  b role_name "" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 128642 // <composition>
+	  association_explicit_type "u64int"
+      end
+
+      attribute 128898 "resources"
+	private explicit_type "T[MAX_REUSABLE_RESOURCES]"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 129922 // <composition>
+	relation_ref 129026 // <composition>
       end
     end
 
@@ -537,11 +859,39 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
-    end
+      classrelation 128898 // <generalisation>
+	relation 128514 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128898 // <generalisation>
+	  b parent class_ref 142338 // ReusableResource
+      end
 
-    sequencediagram 134914 "ProcessManager::load_process()"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A4
+      classrelation 129026 // pager (<association>)
+	relation 128642 ----
+	  a role_name "pager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129026 // pager (<association>)
+	  b role_name "" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 129154 // <association>
+      end
+
+      operation 148098 "get_pager"
+	public return_type class_ref 135042 // ProgramPager
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     class 135042 "ProgramPager"
@@ -556,6 +906,9 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      classrelation 129154 // <association>
+	relation_ref 128642 // <association>
+      end
     end
 
     class 135170 "Process"
@@ -586,21 +939,18 @@ ${inlines}
 	
       end
 
-      operation 137474 "add_file"
+      operation 148354 "get_id"
 	public explicit_return_type "u64int"
-	nparams 2
-	  param in name "file_id" explicit_type "u64int"
-	  param in name "mode" type class_ref 135554 // FileMode
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
 	
 	
 	
-	comment "Grąžina failo deskriptorių."
       end
 
       operation 138242 "set_value"
@@ -619,19 +969,121 @@ ${inlines}
 	comment "Nustato registro rax reikšmę."
       end
 
-      operation 138626 "opened"
-	public explicit_return_type "bool"
-	nparams 1
-	  param in name "file_descriptor" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+      operation 149890 "set_value"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "value_1" explicit_type "u64int"
+	  param in name "value_2" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
 	
 	
 	
+      end
+
+      operation 148482 "get_state"
+	public return_type class_ref 142722 // PROCESS_STATE
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 148866 "get_screen_id"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 148994 "get_memory_resource"
+	public return_type class_ref 134914 // MemoryResource
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 148610 "block"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 148738 "unblock"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 149122 "is_blocked"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 137474 "add_file"
+	public explicit_return_type "u64int"
+	nparams 2
+	  param in name "file_id" explicit_type "u64int"
+	  param in name "mode" type class_ref 135554 // FILE_MODE
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Grąžina failo deskriptorių."
       end
 
       operation 138754 "remove_file"
@@ -664,8 +1116,8 @@ ${inlines}
 	
       end
 
-      operation 139138 "read_byte"
-	public explicit_return_type "void"
+      operation 138626 "opened"
+	public explicit_return_type "bool"
 	nparams 1
 	  param in name "file_descriptor" explicit_type "u64int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
@@ -683,10 +1135,25 @@ ${inlines}
 	public explicit_return_type "bool"
 	nparams 2
 	  param in name "file_descriptor" explicit_type "u64int"
-	  param in name "mode" type class_ref 135554 // FileMode
+	  param in name "mode" type class_ref 135554 // FILE_MODE
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 139138 "read_byte"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "file_descriptor" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -709,6 +1176,50 @@ ${inlines}
 	
 	
       end
+
+      classrelation 130818 // process_manager (<composition>)
+	relation_ref 129666 // <composition>
+      end
+
+      attribute 129154 "id"
+	private explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129282 "state"
+	private type class_ref 142722 // PROCESS_STATE
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129410 "screen_id"
+	private explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129538 "memory_resource"
+	private type class_ref 134914 // MemoryResource
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
     end
 
     classinstance 135042 ""
@@ -717,11 +1228,6 @@ ${inlines}
         end
       relations
         end
-    end
-
-    sequencediagram 135042 "files"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A0
     end
 
     class 135298 "FileManager"
@@ -929,11 +1435,6 @@ ${inlines}
         end
     end
 
-    sequencediagram 135170 "FileManager::plan()"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A4
-    end
-
     class 135426 "File"
       visibility package 
       cpp_decl "${comment}${template}class ${name}${inherit} {
@@ -998,7 +1499,7 @@ ${inlines}
         end
     end
 
-    class 135554 "FileMode"
+    class 135554 "FILE_MODE"
       visibility package stereotype "enum"
       cpp_decl "${comment}enum ${name} {
 ${items}
@@ -1021,14 +1522,411 @@ ${items}};
       
     end
 
-    sequencediagram 135298 "Process::read_byte()"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A4
+    class 142082 "RotatingQueue"
+      visibility package 
+      nformals 1
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 128002 "nodes"
+	private explicit_type "T[ROTATING_QUEUE_MAX_NODES]"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128130 "begin"
+	private explicit_type "u64int"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128258 "end"
+	private explicit_type "u64int"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+	comment "Pirmas elementas po paskutinio."
+      end
+
+      operation 146946 "get_size"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 147074 "is_empty"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 147202 "push_back"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "element" explicit_type "T"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 147330 "pop_front"
+	public explicit_return_type "T"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 128130 // <composition>
+	relation_ref 128002 // <composition>
+      end
+
+      classrelation 128386 // <composition>
+	relation_ref 128130 // <composition>
+      end
+
+      classrelation 128642 // <composition>
+	relation_ref 128258 // <composition>
+      end
+
+      classrelation 131970 // <composition>
+	relation_ref 130562 // <composition>
+      end
     end
 
-    sequencediagram 135426 "Process::write_byte()"
-      show_full_operations_definition default write_horizontally default class_drawing_mode default drawing_language default draw_all_relations default shadow default show_stereotype_properties default show_class_context_mode default show_msg_context_mode default
-      overlapping_bars size A4
+    class 142210 "Resource"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 142338 "ReusableResource"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 128770 // <generalisation>
+	relation 128386 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 128770 // <generalisation>
+	  b parent class_ref 142210 // Resource
+      end
+
+      attribute 128642 "id"
+	protected explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128514 "exists"
+	protected explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 128770 "free"
+	protected explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 147586 "get_id"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 147842 "is_empty_slot"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 147970 "is_free"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+    end
+
+    class 142466 "MessageWaiterBResource"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 131586 // <generalisation>
+	relation 130306 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131586 // <generalisation>
+	  b parent class_ref 142978 // MessageResource
+      end
+    end
+
+    class 142594 "MessageWaiterAResource"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 131458 // <generalisation>
+	relation 130178 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131458 // <generalisation>
+	  b parent class_ref 142978 // MessageResource
+      end
+    end
+
+    class 142722 "PROCESS_STATE"
+      visibility package stereotype "enum"
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+    end
+
+    class 142850 "MessageLoadProgramResource"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 129666 "program_id"
+	private explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 129794 "screen_id"
+	private explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      operation 149250 "MessageLoadProgramResource"
+	public explicit_return_type ""
+	nparams 2
+	  param in name "program_id" explicit_type "u64int"
+	  param in name "screen_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${inline}${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw};
+"
+	cpp_def "${comment}${inline}${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${volatile}${throw} {
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 149378 "get_program_id"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 149506 "get_screen_id"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 131330 // <generalisation>
+	relation 130050 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131330 // <generalisation>
+	  b parent class_ref 142978 // MessageResource
+      end
+    end
+
+    class 142978 "MessageResource"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      classrelation 131714 // <generalisation>
+	relation 130434 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 131714 // <generalisation>
+	  b parent class_ref 142210 // Resource
+      end
+    end
+
+    class 143106 "ProgramManager"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
     end
   end
 end

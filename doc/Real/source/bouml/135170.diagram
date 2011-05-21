@@ -73,7 +73,7 @@ msg 129538 synchronous
 msg 129922 synchronous
   from durationcanvas_ref 128770
   to durationcanvas_ref 129794
-  yz 192 2015 msg operation_ref 138114 // "give_file(in process_id : u64int, in file_id : u64int, in mode : FileMode) : void"
+  yz 192 2015 msg operation_ref 138114 // "give_file(in process_id : u64int, in file_id : u64int, in mode : FILE_MODE) : void"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "process_id, file_id, mode"
   label_xy 189 177
@@ -90,7 +90,7 @@ msg 130178 return
 msg 130562 synchronous
   from durationcanvas_ref 129794
   to durationcanvas_ref 130434
-  yz 200 2015 msg operation_ref 137474 // "add_file(in file_id : u64int, in mode : FileMode) : u64int"
+  yz 200 2015 msg operation_ref 137474 // "add_file(in file_id : u64int, in mode : FILE_MODE) : u64int"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "file_id, mode"
   label_xy 485 186

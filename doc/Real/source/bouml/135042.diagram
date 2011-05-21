@@ -202,7 +202,7 @@ msg 129922 return
 msg 130306 synchronous
   from durationcanvas_ref 128898
   to durationcanvas_ref 130178
-  yz 1022 2015 msg operation_ref 137474 // "add_file(in file_id : u64int, in mode : FileMode) : u64int"
+  yz 1022 2015 msg operation_ref 137474 // "add_file(in file_id : u64int, in mode : FILE_MODE) : u64int"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "file_id, FILE_MODE_WRITE"
   label_xy 231 1007
@@ -394,7 +394,7 @@ reflexivemsg 140034 asynchronous
 msg 141058 synchronous
   from durationcanvas_ref 140802
   to durationcanvas_ref 140930
-  yz 2209 2015 msg operation_ref 139266 // "opened(in file_descriptor : u64int, in mode : FileMode) : bool"
+  yz 2209 2015 msg operation_ref 139266 // "opened(in file_descriptor : u64int, in mode : FILE_MODE) : bool"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "file_descriptor, FILE_MODE_READ"
   label_xy 174 2195
@@ -433,7 +433,7 @@ reflexivemsg 142722 asynchronous
 msg 143234 synchronous
   from durationcanvas_ref 142978
   to durationcanvas_ref 143106
-  yz 2639 2015 msg operation_ref 139266 // "opened(in file_descriptor : u64int, in mode : FileMode) : bool"
+  yz 2639 2015 msg operation_ref 139266 // "opened(in file_descriptor : u64int, in mode : FILE_MODE) : bool"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "file_descriptor, FILE_MODE_WRITE"
   label_xy 151 2624
