@@ -75,14 +75,13 @@ public:
   }
   
   
-  void process_keyboard(struct context_s *s) {
-    if(s->vector == 33) {
+  void process_keyboard(CPUContext *cpu) {
+    if (cpu->vector == 33) {
       Byte new_scan_code = get_byte(0x60);
-      if (escaped) 
-      {   
+      if (escaped) {   
         //new_scan_code += 256;  // TODO: sutvarkyti "Escaped chars"
         escaped = 0;
-      }
+        }
       switch(new_scan_code) {
         case 0x2a: this->shift_state = 1; break; //+LShift (2A)
         case 0x36: this->shift_state = 1; break; //+RShift (36)
@@ -98,7 +97,8 @@ public:
           if (new_scan_code & 0x80) {
             /* Ignore the break code */
           } else {
-            char new_char =(shift_state ? uppercase:lowercase)[new_scan_code];
+            char new_char = \
+              (shift_state ? uppercase:lowercase)[new_scan_code];
             this->monitor->put_character(new_char);
           }
           break;

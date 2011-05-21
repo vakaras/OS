@@ -26,6 +26,8 @@ private:
   RotatingQueue<u64int> active_process_queue;
                                         // Tikėtina, jog pasiruošusių 
                                         // vykdymui, procesų eilė.
+  u64int kernel_stack;                  // Branduolio dėklo viršūnės 
+                                        // adresas.
 
 public:
 
@@ -36,23 +38,49 @@ public:
 
     this->resource_manager = resource_manager;
     this->program_manager = program_manager;
+    this->running_process_id = 0;       // Požymis, kad dar nei vienas iš 
+                                        // procesų nebuvo vykdomas.
     
     }
 
-  void manage_interrupt() {
+  void menage_interrupt() {
+
     // TODO: Realizuoti.
     // TODO: Jei procesas egzistuoja ir nėra užblokuotas, tai pridėti jį
     // į aktivių procesų sąrašą prieš iškviečiant planuotoją.
+
+    }
+
+  void save_state(CPUContext *context) {
+
+    this->processes[this->running_process_id].save(context);
+
     }
   
   void plan() {
 
+    debug_string("\nVykdomas planuotojas.\n");
+    // Prieš persijungian į kitą procesą yra išsaugomas branduolio dėklo 
+    // viršūnės adresas.
+    asm volatile("mov %%rsp, %0": "=r"(this->kernel_stack));
+
+    // Jei vykdomas procesas neužsiblokavo, tai jis pridedamas į 
+    // aktyvių procesų sąrašą.
+    if (this->processes[this->running_process_id].is_existing() && 
+        !this->processes[this->running_process_id].is_blocked()) {
+      this->active_process_queue.push_back(this->running_process_id);
+      }
+
+    // Surandamas neužblokuotas procesas ir paleidžiamas.
     while (!this->active_process_queue.is_empty()) {
 
       u64int process_id = this->active_process_queue.pop_front();
       if (this->processes[process_id].is_existing() && 
           !this->processes[process_id].is_blocked()) {
 
+        debug_value("Planuotojas perjungia į procesą:", process_id);
+
+        this->running_process_id = process_id;
         this->processes[process_id].run();
         
         }
@@ -60,6 +88,17 @@ public:
       }
 
     // Jei čia pasiekėme turėtų kilti panika.
+    }
+
+  u64int get_kernel_stack(u64int stack) {
+
+    if (this->running_process_id == 0) {
+      return stack;
+      }
+    else {
+      return this->kernel_stack;
+      }
+    
     }
   
   void block_process(u64int process_id) {
@@ -127,12 +166,22 @@ public:
     return entry;
     }
 
-  void save_process_state(CPUContext *context) {
+  void print_process_state(CPUContext *context) {
 
     debug_string("\nCPU būsena.\n");
     debug_value("vector:", context->vector);
-    debug_value("ip:", context->IP);
+    debug_value("di:", context->DI);
+    debug_value("si:", context->SI);
+    debug_value("bp:", context->BP);
+    debug_value("bx:", context->BX);
+    debug_value("dx:", context->DX);
+    debug_value("cx:", context->CX);
     debug_value("ax:", context->AX);
+    debug_value("ip:", context->IP);
+    debug_value("cs:", context->CS);
+    debug_value("flags:", context->FLAGS);
+    debug_value("sp:", context->SP);
+    debug_value("ss:", context->SS);
 
     }
 

@@ -3,6 +3,8 @@
 
 #include "types.h"
 #include "resource_types.h"
+#include "cpu.h"
+#include "memlib.h"
 
 
 enum PROCESS_STATE {PROCESS_ACTIVE, PROCESS_BLOCKED};
@@ -11,15 +13,7 @@ enum PROCESS_STATE {PROCESS_ACTIVE, PROCESS_BLOCKED};
 class ProcessManager;
 
 
-struct CPUContext { 
-  u64int   vector, 
-           R15, R14, R13, R12, 
-           R11, R10, R9, R8, 
-           DI, SI, BP, Temp,
-           BX, DX, CX, AX,
-           error, IP, CS,
-           FLAGS, SP, SS;
-  } __attribute__((packed));
+extern "C" void switch_process(u64int stack_address);
 
 
 class Process {
@@ -36,7 +30,8 @@ private:
   MemoryResource memory_resource;
   ProcessManager *process_manager;
 
-  u64int instruction_pointer;           // TODO: Sutvarkyti.
+  CPUContext cpu;
+  u64int stack;                         // Dėklo viršūnės adresas.
 
 public:
 
@@ -49,8 +44,6 @@ public:
     this->screen_id = 0;
     this->process_manager = 0;
     this->exists = false;
-
-    this->instruction_pointer = 0;      // TODO: Sutvarkyti.
 
     }
 
@@ -68,7 +61,13 @@ public:
     this->process_manager = process_manager;
     this->exists = true;
 
-    this->instruction_pointer = entry;
+    this->stack = entry + 0x100000;     // Pradinė dėklo pozicija.
+
+    this->cpu.IP = entry;
+    this->cpu.CS = 0x8;
+    this->cpu.FLAGS = 0x210292;
+    this->cpu.SP = this->stack;
+    this->cpu.SS = 0x10;
 
     }
 
@@ -125,9 +124,17 @@ public:
     ProgramPager *pager = this->memory_resource.get_pager();
     pager->activate();
 
-    // TODO: Perdaryti.
-    jump(this->instruction_pointer);
-      
+    CPUContext *cpu = (CPUContext *) this->stack;
+    *cpu = this->cpu;
+
+    switch_process(this->stack);
+    }
+
+  void save(CPUContext *context) {
+
+    this->cpu = *context;
+    this->stack = (u64int) context;
+
     }
 
   };

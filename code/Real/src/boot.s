@@ -16,6 +16,8 @@ extern start_ctors, end_ctors, start_dtors, end_dtors
 
 _start:
 
+  ;cli                                   ; Uždraudžiame pertraukimus.
+
   mov rax, 0xbabadeadbabadead           ; Pakeičiam registro reikšmę, kad
                                         ; žinotume, jog šitas kodas buvo
                                         ; įvykdytas.

@@ -18,9 +18,9 @@ public:
     this->tick = 0;
   }
   
-  void process_timer(struct context_s *s) {
+  void process_timer(CPUContext *cpu) {
     this->tick++;
-    if (s->vector == 32){
+    if (cpu->vector == 32){
       if(this->tick < 4){
         this->monitor->write_string("Tick: ");
         this->monitor->write_dec((u32int)this->tick);

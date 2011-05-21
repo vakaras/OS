@@ -1,6 +1,7 @@
 #include "cxx.h"
 #include "icxxabi.h"
 #include "types.h"
+#include "cpu.h"
 #include "primitives.h"
 #include "structures/point.h"
 #include "structures/array2dpointer.h"
@@ -41,22 +42,42 @@ ResourceManager resource_manager;
 ProcessManager process_manager(&resource_manager, &program_manager);
 
 
-extern "C" void default_interrupt_handler(struct context_s *s){
-  if (s->vector != 32) {
+CPUContext cpu;
+u64int kernel_stack;
+
+extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
+
+  cpu = *cpu_pointer;
+
+  if (cpu.vector != 32) {
     debug_string("\nPertraukimas. ");
-    debug_hex(s->vector);
+    debug_hex(cpu.vector);
     }
+  debug_string("veikia1\n");
 
-  kernel_pager.activate();              // FIXME: Padaryti normaliai.
-  //process_manager.save_process_state(s);
+  // Išsaugoma proceso informacija.
+  process_manager.save_state(cpu_pointer);
+  // Atstatomas branduolio dėklas.
+  asm volatile("mov %%rsp, %0": "=r"(kernel_stack));
+  debug_value("\nBranduolio dėklas: ", kernel_stack);
+  kernel_stack = process_manager.get_kernel_stack(kernel_stack);
+  debug_value("\nAtnaujintas branduolio dėklas: ", kernel_stack);
+  asm volatile("mov %0, %%rsp" : : "r"(kernel_stack));
+  debug_ping();
+  // Įjungiamas branduolio puslapiavimas.
+  kernel_pager.activate();
 
-  if(s->vector == 32){
-    timer.process_timer(s);
-  } else if(s->vector == 33){
-    kbd.process_keyboard(s);
+  debug_string("veikia2\n");
+  if (cpu.vector == 32){
+    timer.process_timer(&cpu);
+  } else if (cpu.vector == 33){
+    kbd.process_keyboard(&cpu);
   } else {
-    idt.process_interrupt(s);
+    idt.process_interrupt(&cpu);
   }
+  debug_string("veikia3\n");
+
+  process_manager.plan();
 }
 
 extern "C" void load_gdt();

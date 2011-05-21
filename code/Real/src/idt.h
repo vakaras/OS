@@ -2,6 +2,7 @@
 #define IDT_H 1
 
 #include "types.h"
+#include "cpu.h"
 #include "monitor.h"
 #include "primitives.h"
 #include "debug.h"
@@ -195,47 +196,45 @@ public:
       this->monitor->write_hex(number);
       }
     
-    void process_interrupt(struct context_s *s)
-    {
-      if(s->vector < 32)
-      {
+    void process_interrupt(CPUContext *cpu) {
+      if (cpu->vector < 32) {
         this->write_string("\nInterrupt occured: #");
-        this->write_hex((u32int)s->vector);
+        this->write_hex((u32int)cpu->vector);
         this->write_string(". Info: ");
-        this->write_string(exception[s->vector].mnemonic);
+        this->write_string(exception[cpu->vector].mnemonic);
         this->write_string(" - ");
-        this->write_string(exception[s->vector].description);
+        this->write_string(exception[cpu->vector].description);
         this->write_string(".\n");
         asm volatile(" cli; hlt; ");
-        
-      } else if(s->vector < 40) {
+        } 
+      else if (cpu->vector < 40) {
         this->write_string("\nIRQ occured: #");
-        this->monitor->write_dec((u32int)s->vector - 32);
+        this->monitor->write_dec((u32int)cpu->vector - 32);
         this->monitor->write_string(". Info: Master IRQ.");
         /* reset Master PIC */
         send_byte(0x21, 0x20);
-        
-      } else if(s->vector < 48) {
+        } 
+      else if (cpu->vector < 48) {
         this->write_string("\nIRQ occured: #");
-        this->monitor->write_dec((u32int)s->vector - 32);
+        this->monitor->write_dec((u32int)cpu->vector - 32);
         this->monitor->write_string(". Info: Slave IRQ.");
         /* reset both PICs */
         send_byte(0xA0, 0x20);
         send_byte(0x20, 0x20);
-        
-      } else if(s->vector < 64) {
+        } 
+      else if (cpu->vector < 64) {
         this->write_string("\nIRQ occured: #");
-        this->monitor->write_dec((u32int)s->vector - 32);
+        this->monitor->write_dec((u32int)cpu->vector - 32);
         this->monitor->write_string(
           ". Info: non-device interrupt, caused by software.");
-        
-      } else {
+        } 
+      else {
         this->write_string("\nInterrupt occured: #");
-        this->monitor->write_dec((u32int)s->vector);
+        this->monitor->write_dec((u32int)cpu->vector);
         this->monitor->write_string(
           ". Info: Not implemented int number. Doing nothing.");
+        }
       }
-    }
     
     void print_debug_info(Monitor *monitor) {
       monitor->write_string("\n\nIDT debug information.");
