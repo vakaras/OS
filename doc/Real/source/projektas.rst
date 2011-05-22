@@ -115,19 +115,12 @@ Servisas ``loader``
 Servisas ``loader`` be naudotojo programai pasiekiamų OS funkcijų dar gali 
 prieiti prie tokių:
 
-+   ``10`` – prašyti resurso ``LoadProgram`` (programos identifikatorius
-    perduodamas, kaip registro ``rax`` reikšmė, resursas iš resursų sąrašo
-    ištrinamas);
-+   ``11`` – prašyti resurso ``Memory`` (resurso id perduodamas, kaip
-    ``rbx`` reikšmė, o pml4 adresas perduodamas, kaip registro ``rdi``
-    reikšmė);
-+   ``12`` – prašyti resurso ``Screen`` (resurso id perduodamas, kaip
-    ``rbx`` reikšmė);
-+   ``13`` – sukurti naują procesą (``Memory`` resurso id perduodamas
-    kaip ``rbx`` reikšmė, ``Screen`` resurso id perduodamas, kaip ``rdi``
-    reikšmė, virtualus adresas į kurį reikia „šokti“ yra perduodamas
-    registru ``rsi``, dėklo viršūnės virtualus adresas perduodamas 
-    registru ``rdx``).
++   ``10`` – prašyti resurso ``LoadProgram`` (programos id grąžinamas,
+    kaip ``rax``, ekrano id, kaip ``rbx``);
++   ``11`` – prašyti resurso ``Memory`` (resurso id grąžinamas, kaip
+    ``rax`` reikšmė);
++   ``12`` – sukurti naują procesą (programos id perduodamas, kaip 
+    ``rdi``, ekrano id – ``rsi``, o atminties resurso id – ``rdx``).
 
 Servisas ``waitera``
 --------------------

@@ -1,6 +1,6 @@
 format 74
 "core" // core
-  revision 4
+  revision 5
   modified_by 2 "vakaras"
   // class settings
   //class diagram settings
@@ -310,6 +310,22 @@ ${inlines}
 	python_decl ""
 	idl_decl ""
       end
+
+      operation 157442 "give_loader_memory"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" type class_ref 134914 // MemoryResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
     end
 
     classinstance 128002 ""
@@ -378,6 +394,36 @@ ${inlines}
 	
       end
 
+      operation 156802 "add_resource"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "resource" type class_ref 134914 // MemoryResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 157570 "add_resource"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "resource" type class_ref 142850 // MessageLoadProgramResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 136066 "free_memory_resource"
 	public explicit_return_type "void"
 	nparams 1
@@ -413,6 +459,22 @@ ${inlines}
 	nparams 2
 	  param in name "process_id" explicit_type "u64int"
 	  param in name "resource" type class_ref 142850 // MessageLoadProgramResource
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 157314 "give_resource"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "resource" type class_ref 134914 // MemoryResource
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -518,10 +580,10 @@ ${inlines}
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
 	    classrelation_ref 129794 // memory_manager (<composition>)
-	  b role_name "" multiplicity "1" private
+	  b role_name "resource_manager" multiplicity "1" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
 "
-	    classrelation_ref 129922 // <composition>
+	    classrelation_ref 129922 // resource_manager (<composition>)
 	  association_type class_ref 134914 // MemoryResource
       end
 
@@ -796,6 +858,36 @@ ${inlines}
 	
       end
 
+      operation 157058 "get_available_number"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Nurodo, kiek yra laisvų resursų."
+      end
+
+      operation 157186 "get_resources_number"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+	comment "Nurodo, kiek yra resursų iš viso."
+      end
+
       operation 135938 "add_process_to_waiting_queue"
 	private explicit_return_type "void"
 	nparams 1
@@ -811,6 +903,16 @@ ${inlines}
 	
       end
 
+      attribute 128898 "resources"
+	private explicit_type "T[MAX_REUSABLE_RESOURCES]"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
       classrelation 128514 // process_queue (<composition>)
 	relation 128258 *---
 	  a role_name "process_queue" multiplicity "1" private
@@ -824,22 +926,12 @@ ${inlines}
 	  association_explicit_type "u64int"
       end
 
-      attribute 128898 "resources"
-	private explicit_type "T[MAX_REUSABLE_RESOURCES]"
-	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	java_decl ""
-	php_decl ""
-	python_decl ""
-	idl_decl ""
-      end
-
-      classrelation 129922 // <composition>
+      classrelation 129922 // resource_manager (<composition>)
 	relation_ref 129026 // <composition>
       end
     end
 
-    classinstance 134914 "memory_resource_manager"
+    classinstance 134914 "memory_manager"
       type class_ref 134786 // ReusableResourceManager
       attributes
         end
@@ -1716,6 +1808,21 @@ ${inlines}
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 156930 "set_id"
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "u64int" explicit_type "id"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	

@@ -22,8 +22,8 @@ note 135938 "Naudotojas nurodo paleisti programą."
   xyzwh 73 1038 2010 263 37
 note 137602 "loader gavęs nurodymą atsiblokuoja ir tampa vykdomu – prašo atminties."
   xyzwh 73 1191 2000 257 57
-classinstancecanvas 138114 classinstance_ref 134914 // memory_resource_manager
-  xyz 798 35 2025 life_line_z 2000
+classinstancecanvas 138114 classinstance_ref 134914 // memory_manager
+  xyz 827 35 2025 life_line_z 2000
 end
 note 139394 "TODO: Iš kur ateina žinutė?"
   xyzwh 418 1015 2000 131 55
@@ -105,7 +105,7 @@ end
 durationcanvas 137858 classinstance_ref 128130 // :ResourceManager
   xyzwh 360 1206 2010 11 249
 end
-durationcanvas 138242 classinstance_ref 138114 // memory_resource_manager:ReusableResourceManager
+durationcanvas 138242 classinstance_ref 138114 // memory_manager:ReusableResourceManager
   xyzwh 965 1219 2010 11 231
   overlappingdurationcanvas 138498
     xyzwh 971 1343 2020 11 25
@@ -123,7 +123,7 @@ end
 durationcanvas 139906 classinstance_ref 128130 // :ResourceManager
   xyzwh 360 1618 2010 11 96
 end
-durationcanvas 140162 classinstance_ref 138114 // memory_resource_manager:ReusableResourceManager
+durationcanvas 140162 classinstance_ref 138114 // memory_manager:ReusableResourceManager
   xyzwh 965 1627 2010 11 69
   overlappingdurationcanvas 140418
     xyzwh 971 1644 2020 11 25

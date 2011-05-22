@@ -1,11 +1,11 @@
 window_sizes 1600 1176 456 1138 982 120
 diagrams
   sequencediagram_ref 128002 // manage_interrupt
-    1185 982 100 0 1334 0
+    1185 982 100 0 394 0
   sequencediagram_ref 128130 // MessageResourceManager<T>::plan()
-    975 785 100 0 0 0
+    975 785 100 0 0 90
   active  classdiagram_ref 128258 // classes
-    1138 982 100 0 278 832
+    1138 982 100 0 0 1275
   sequencediagram_ref 134914 // ProcessManager::load_process()
     969 785 100 4 0 0
   sequencediagram_ref 135042 // files
@@ -20,11 +20,10 @@ diagrams
     910 785 100 4 0 0
 end
 show_stereotypes
-selected attribute_ref 130050 // program_manager
+selected operation_ref 149762 // give_loader_task
 open
   operation_ref 129026 // block_process
   operation_ref 138370 // kill_process
-  operation_ref 149762 // give_loader_task
   operation_ref 150274 // set_process_manager
   operation_ref 128258 // get_resource
   operation_ref 136066 // free_memory_resource
@@ -32,21 +31,10 @@ open
   operation_ref 149634 // give_resource
   operation_ref 150018 // give_resource
   operation_ref 150146 // give_resource
-  classinstance_ref 128258 // message_waiter_a_manager
-  operation_ref 148354 // get_id
-  operation_ref 138242 // set_value
-  operation_ref 149890 // set_value
-  operation_ref 148482 // get_state
-  operation_ref 148866 // get_screen_id
-  operation_ref 148994 // get_memory_resource
-  operation_ref 148610 // block
-  operation_ref 149122 // is_blocked
-  operation_ref 138754 // remove_file
-  operation_ref 138882 // get_file_id
-  operation_ref 139266 // opened
-  classinstance_ref 135298 // 
+  classrelation_ref 130946 // message_program_load_manager (<composition>)
+  operation_ref 135938 // add_process_to_waiting_queue
+  attribute_ref 128898 // resources
   class_ref 142210 // Resource
-  class_ref 142338 // ReusableResource
   class_ref 142850 // MessageLoadProgramResource
 end
 end
