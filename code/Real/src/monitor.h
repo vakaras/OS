@@ -12,8 +12,9 @@
  */
 class Monitor {
 
-// Atributai.
 private:
+
+// Atributai.
 
   Array2dPointer<ScreenCharacter> video_memory;
                                         // Video atminties blokas.
@@ -21,7 +22,8 @@ private:
                                         // 0x0 iki 0xF.)
   u8int background_color;               // Fono spalva. (Reikšmė nuo
                                         // 0x0 iki 0xF.)
-  
+// Vidinės klasės.
+
   class Cursor {
 
     // Atributai.
@@ -141,38 +143,59 @@ private:
     class Screen {
       
     private:
+
+      // Atributai.
+
       ScreenCharacter video_memory[SCREEN_HEIGHT][SCREEN_WIDTH];
-      u8int cursor_row, cursor_col;
+      u8int cursor_row; 
+      u8int cursor_col;
       
     public:
+
+      // Metodai.
+      
       Screen() {
         }
         
-      void save_screen_memory(Array2dPointer<ScreenCharacter> *old_mem){
-        memcpy((u8int*)this->video_memory, (u8int*)old_mem->get_pointer(0,0), SCREEN_HEIGHT*SCREEN_WIDTH*2);
-      }
+      void save_screen_memory(Array2dPointer<ScreenCharacter> *old_mem) {
+
+        memcpy(
+            (u8int*) this->video_memory, 
+            (u8int*) old_mem->get_pointer(0, 0),
+            SCREEN_HEIGHT * SCREEN_WIDTH * 2);
+
+        }
       
-      void reset_screen_memory(Array2dPointer<ScreenCharacter> *old_mem){
-        memcpy((u8int*)old_mem->get_pointer(0,0), (u8int*)this->video_memory, SCREEN_HEIGHT*SCREEN_WIDTH*2);
-      }
+      void reset_screen_memory(Array2dPointer<ScreenCharacter> *old_mem) {
+
+        memcpy(
+            (u8int*) old_mem->get_pointer(0, 0),
+            (u8int*) this->video_memory,
+            SCREEN_HEIGHT * SCREEN_WIDTH * 2);
+
+        }
       
-      u8int get_cursor_row(){
+      u8int get_cursor_row() {
         return this->cursor_row;
-      }
+        }
       
-      u8int get_cursor_col(){
+      u8int get_cursor_col() {
         return this->cursor_col;
-      }
+        }
             
-      void save_screen_cursor(u8int row, u8int col){
+      void save_screen_cursor(u8int row, u8int col) {
+
         this->cursor_row = row;
         this->cursor_col = col;
-      }
+
+        }
       
     } screen[6];
 
+// Atributai.
+  
+  Screen *active_screen;                // Nuoroda į aktyvų ekraną.
 
-Screen * active_screen;
 // Metodai.
 
 public:
@@ -188,14 +211,17 @@ public:
     }
 
   void activate_screen(int no) {
+
     this->active_screen->save_screen_memory(&(this->video_memory));
-    this->active_screen->save_screen_cursor(this->cursor.get_row(), this->cursor.get_col());
+    this->active_screen->save_screen_cursor(
+        this->cursor.get_row(), this->cursor.get_col());
     this->active_screen = &screen[no-1];
     this->active_screen->reset_screen_memory(&this->video_memory);
     this->cursor.set_row(this->active_screen->get_cursor_row());
     this->cursor.set_col(this->active_screen->get_cursor_col());
     this->cursor.move();
-  }
+
+    }
     
   void set_foreground_color(u8int color) {
     this->foreground_color = color;

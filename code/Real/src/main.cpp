@@ -108,8 +108,10 @@ extern "C" int main() {
 
   // Testai.
   //test_debug();
-  test_monitor(&monitor);
+  //test_monitor(&monitor);
   //test_idt();
+
+  monitor.write_string("Penktas ekranas -- derinimo.\n");
   
   // Persijungiam į kitą procesą.
   process_manager.plan();
