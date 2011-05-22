@@ -64,16 +64,22 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
   kernel_pager.activate();
 
   debug_string("veikia2\n");
-  if (cpu.vector == 32){
+  if (cpu.vector == 32) {
     timer.process_timer(&cpu);
-  } else if (cpu.vector == 33){
+    }
+  else if (cpu.vector == 33) {
     kbd.process_keyboard(&cpu);
-  } else {
+    }
+  else if (cpu.vector == 0x3f) {
+    process_manager.manage_interrupt(&cpu);
+    }
+  else {
     idt.process_interrupt(&cpu);
-  }
+    }
   debug_string("veikia3\n");
 
   process_manager.plan();
+  monitor.write_string("\n\nPlanuotojo klaida!\n");
 }
 
 extern "C" void load_gdt();

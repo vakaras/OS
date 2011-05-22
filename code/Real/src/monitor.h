@@ -4,6 +4,7 @@
 #include "monitor_defines.h"
 #include "memlib.h"
 #include "monitor_screen_character.h"
+#include "structures/array2dpointer.h"
 #include "debug.h"
 
 

@@ -2,6 +2,7 @@
 #define RESOURCES_H 1
 
 #include "types.h"
+#include "debug.h"
 #include "resource_types.h"
 #include "message_resource_manager.h"
 
@@ -75,12 +76,12 @@ public:
     switch (resource_type) {
       case RESOURCE_MWA: {
         MessageWaiterAResource resource;
-        message_waiter_a_manager.create_resource(resource);
+        this->message_waiter_a_manager.create_resource(resource);
         break;
         }
       case RESOURCE_MWB: {
         MessageWaiterBResource resource;
-        message_waiter_b_manager.create_resource(resource);
+        this->message_waiter_b_manager.create_resource(resource);
         break;
         }
       // TODO: Realizuoti ir kitus.

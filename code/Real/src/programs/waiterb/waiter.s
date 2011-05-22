@@ -16,12 +16,12 @@ _start:
   mov al, 'b'
   out 0xe9, al
 
-  ; Prašo resurso.
-  ;mov rax, 31
-  ;int 0x3f
-
   ; Kuria resursą.
-  ;mov rax, 30
-  ;int 0x3f
+  mov rax, 30
+  int 0x3f
+
+  ; Prašo resurso.
+  mov rax, 31
+  int 0x3f
 
   jmp .loop

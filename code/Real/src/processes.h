@@ -10,6 +10,12 @@
 
 #define MAX_PROCESSES 0x10
 
+#define CREATE_RESOURCE_MWA 20
+#define CREATE_RESOURCE_MWB 30
+
+#define GET_RESOURCE_MWA 31
+#define GET_RESOURCE_MWB 21
+
 
 class ProcessManager {
 
@@ -43,11 +49,42 @@ public:
     
     }
 
-  void menage_interrupt() {
+  void manage_interrupt(CPUContext *context) {
 
-    // TODO: Realizuoti.
-    // TODO: Jei procesas egzistuoja ir nėra užblokuotas, tai pridėti jį
-    // į aktivių procesų sąrašą prieš iškviečiant planuotoją.
+    switch (context->AX) {
+      case CREATE_RESOURCE_MWA:
+        debug_value(
+            "create_resource_a, process_id:", 
+            this->running_process_id);
+        this->resource_manager->create_resource(RESOURCE_MWA);
+        break;
+      case CREATE_RESOURCE_MWB:
+        debug_value(
+            "create_resource_b, process_id:", 
+            this->running_process_id);
+        this->resource_manager->create_resource(RESOURCE_MWB);
+        break;
+      case GET_RESOURCE_MWA:
+        debug_value(
+            "get_resource_a, process_id:", 
+            this->running_process_id);
+        this->resource_manager->get_resource(
+            RESOURCE_MWA, this->running_process_id);
+        break;
+      case GET_RESOURCE_MWB:
+        debug_value(
+            "get_resource_b, process_id:", 
+            this->running_process_id);
+        this->resource_manager->get_resource(
+            RESOURCE_MWB, this->running_process_id);
+        break;
+      default:
+        debug_value(
+            "Turėtų būti išjungtas:", 
+            this->running_process_id);
+        // Išjungti pertraukimą sukėlusį procesą.
+        break;
+      }
 
     }
 
@@ -80,6 +117,24 @@ public:
         !this->processes[this->running_process_id].is_blocked()) {
       this->active_process_queue.push_back(this->running_process_id);
       }
+
+    debug_string("Procesų sąrašas:\n");
+    for (int i = 0; i < 5; i++) {
+      if (this->processes[i].is_existing()) {
+        if (this->processes[i].is_blocked()) {
+          debug_value("-\tblokuotas:     ----", i);
+          }
+        else {
+          debug_value("+\taktyvus:       ++++", i);
+          }
+        }
+      else {
+        debug_value(" \tneegzistuojantis:  ", i);
+        }
+      }
+    debug_value(
+        "  Iš viso eilėje yra: ", 
+        this->active_process_queue.get_size());
 
     // Surandamas neužblokuotas procesas ir paleidžiamas.
     while (!this->active_process_queue.is_empty()) {
@@ -128,6 +183,7 @@ public:
     // užblokuotas.
 
     this->processes[process_id].unblock();
+    this->active_process_queue.push_back(process_id);
 
     }
 
