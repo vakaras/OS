@@ -74,7 +74,7 @@ public:
    */
   void plan() {
 
-    debug_string("Vykdomas resursų planuotojas.\n");
+    debug_string("Vykdomas žinučių planuotojas.\n");
 
     while ((!this->resource_queue.is_empty()) 
         && (!this->process_queue.is_empty())) {
