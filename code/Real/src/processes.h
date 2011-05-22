@@ -56,13 +56,23 @@ public:
     this->processes[this->running_process_id].save(context);
 
     }
-  
+
   void plan() {
 
-    debug_string("\nVykdomas planuotojas.\n");
+    debug_string("\nVykdomas planuotojas. ");
+
     // Prieš persijungian į kitą procesą yra išsaugomas branduolio dėklo 
     // viršūnės adresas.
     asm volatile("mov %%rsp, %0": "=r"(this->kernel_stack));
+    this->kernel_stack += 0x20;         // Kadangi planuotojo kvietimas 
+                                        // neturi būti įsimintas… 
+                                        // (Reikšmė nustatyta bandymų būdu.)
+
+    this->_plan();
+
+    }
+  
+  void _plan() {
 
     // Jei vykdomas procesas neužsiblokavo, tai jis pridedamas į 
     // aktyvių procesų sąrašą.
@@ -86,6 +96,8 @@ public:
         }
 
       }
+
+    debug_string("Procesų sąrašas tuščias – OS dar nestartavo?\n");
 
     // Jei čia pasiekėme turėtų kilti panika.
     }

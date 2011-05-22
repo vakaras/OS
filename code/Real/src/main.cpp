@@ -49,11 +49,7 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   cpu = *cpu_pointer;
 
-  if (cpu.vector != 32) {
-    debug_string("\nPertraukimas. ");
-    debug_hex(cpu.vector);
-    }
-  debug_string("veikia1\n");
+  debug_value("\nPertraukimas:", cpu.vector);
 
   // Išsaugoma proceso informacija.
   process_manager.save_state(cpu_pointer);
