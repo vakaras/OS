@@ -42,6 +42,10 @@ ResourceManager resource_manager;
 ProcessManager process_manager(&resource_manager, &program_manager);
 
 
+bool multiprogramming_enabled;          // Ar jau OS pilnai startavo ir
+                                        // galima persijunginėti į kitus 
+                                        // procesus.
+
 CPUContext cpu;
 u64int kernel_stack;
 
@@ -51,17 +55,19 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   debug_value("\nPertraukimas:", cpu.vector);
 
-  // Išsaugoma proceso informacija.
-  process_manager.save_state(cpu_pointer);
-  // Atstatomas branduolio dėklas.
-  asm volatile("mov %%rsp, %0": "=r"(kernel_stack));
-  debug_value("\nBranduolio dėklas: ", kernel_stack);
-  kernel_stack = process_manager.get_kernel_stack(kernel_stack);
-  debug_value("\nAtnaujintas branduolio dėklas: ", kernel_stack);
-  asm volatile("mov %0, %%rsp" : : "r"(kernel_stack));
-  debug_ping();
-  // Įjungiamas branduolio puslapiavimas.
-  kernel_pager.activate();
+  if (multiprogramming_enabled) {
+    // Išsaugoma proceso informacija.
+    process_manager.save_state(cpu_pointer);
+    // Atstatomas branduolio dėklas.
+    asm volatile("mov %%rsp, %0": "=r"(kernel_stack));
+    debug_value("\nBranduolio dėklas: ", kernel_stack);
+    kernel_stack = process_manager.get_kernel_stack(kernel_stack);
+    debug_value("\nAtnaujintas branduolio dėklas: ", kernel_stack);
+    asm volatile("mov %0, %%rsp" : : "r"(kernel_stack));
+    debug_ping();
+    // Įjungiamas branduolio puslapiavimas.
+    kernel_pager.activate();
+    }
 
   debug_string("veikia2\n");
   if (cpu.vector == 32) {
@@ -78,13 +84,18 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
     }
   debug_string("veikia3\n");
 
-  process_manager.plan();
-  monitor.write_string("\n\nPlanuotojo klaida!\n");
-}
+  if (multiprogramming_enabled) {
+    process_manager.plan();
+    monitor.write_string("\n\nPlanuotojo klaida!\n");
+    }
+  
+  }
 
 extern "C" void load_gdt();
 
 extern "C" int main() {
+
+  multiprogramming_enabled = false;
 
   load_gdt();
 
@@ -108,11 +119,16 @@ extern "C" int main() {
   resource_manager.init_memory_resource_manager(pager, PAGERS);
   debug_string("\nResourceManager inicializuotas.\n");
 
-  // Pakraunamas procesas waitera.
+  // Pakraunami servisai.
   process_manager.load_process(1, 5, 1);
   debug_string("\nProcesas waitera pakrautas.\n");
   process_manager.load_process(2, 5, 2);
   debug_string("\nProcesas waiterb pakrautas.\n");
+
+
+  // Pakraunami bandyminiai procesai.
+  //process_manager.load_process(3, 1, 3);
+  //debug_string("\nPrograma hello pakrauta.\n");
 
   // Testai.
   //test_debug();
@@ -120,7 +136,9 @@ extern "C" int main() {
   //test_idt();
 
   monitor.write_string("Penktas ekranas -- derinimo.\n");
-  
+
+  multiprogramming_enabled = true;
+
   // Persijungiam į kitą procesą.
   process_manager.plan();
 
