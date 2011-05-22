@@ -32,7 +32,7 @@ public:
     }
 
   u64int get_size() const {
-    if (this->begin < this->end) {
+    if (this->begin <= this->end) {
       return this->end - this->begin;
       }
     else {
