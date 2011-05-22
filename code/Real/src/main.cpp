@@ -55,7 +55,7 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   debug_value("\nPertraukimas:", cpu.vector);
 
-  if (multiprogramming_enabled) {
+  if (!IS_HIGHER_HALF(cpu.IP)) {
     // Išsaugoma proceso informacija.
     process_manager.save_state(cpu_pointer);
     // Atstatomas branduolio dėklas.
@@ -84,11 +84,11 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
     }
   debug_string("veikia3\n");
 
-  if (multiprogramming_enabled) {
+  if (!IS_HIGHER_HALF(cpu.IP)) {
     process_manager.plan();
     monitor.write_string("\n\nPlanuotojo klaida!\n");
     }
-  
+
   }
 
 extern "C" void load_gdt();
