@@ -5,7 +5,7 @@ LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
 
 update: clean program
-	mv program ../../../data/supergrub-src/menus/waiter
+	mv program ../../../data/supergrub-src/menus/waitera
 	rm -f $(CLEAN)
 
 clean:

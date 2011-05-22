@@ -129,12 +129,21 @@ prieiti prie tokių:
     registru ``rsi``, dėklo viršūnės virtualus adresas perduodamas 
     registru ``rdx``).
 
+Servisas ``waitera``
+--------------------
 
-Servisai ``waitera`` ir ``waiterb``
------------------------------------
+Servisas ``waitera`` gali pasiekti tokias OS funkcijas:
 
-Gal juos pakeisti vienu procesu ``waiter``, kuris su resursais nedirba? 
-Bus lengviau realizuoti.
++   ``20`` – kurti resursą ``MessageWaiterAResource``;
++   ``21`` – prašyti resurso ``MessageWaiterBResource``.
+
+Servisas ``waiterb``
+--------------------
+
+Servisas ``waiterb`` gali pasiekti tokias OS funkcijas:
+
++   ``30`` – kurti resursą ``MessageWaiterBResource``;
++   ``31`` – prašyti resurso ``MessageWaiterAResource``.
 
 Išdėstymo atmintyje planas
 ==========================

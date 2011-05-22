@@ -105,6 +105,8 @@ extern "C" int main() {
   // Pakraunamas procesas waitera.
   process_manager.load_process(1, 5, 1);
   debug_string("\nProcesas waitera pakrautas.\n");
+  process_manager.load_process(2, 5, 2);
+  debug_string("\nProcesas waiterb pakrautas.\n");
 
   // Testai.
   //test_debug();
