@@ -5,6 +5,7 @@
 #include "debug.h"
 #include "resource_types.h"
 #include "message_resource_manager.h"
+#include "reusable_resource_manager.h"
 
 #define RESOURCE_MWA 1
 #define RESOURCE_MWB 2
@@ -27,12 +28,9 @@ private:
   // TODO: Atkomentuoti.
   //MessageResourceManager<MessageLoadProgramResource> 
     //message_program_load_manager;
-  //ReusableResourceManager<MemoryResource> memory_manager;
+  ReusableResourceManager<MemoryResource> memory_manager;
 
   ProcessManager *process_manager;
-
-  // TODO: Iškelti ir sutvarkyti.
-  MemoryResource memory_resource[10];
 
 public:
 
@@ -40,7 +38,8 @@ public:
 
   ResourceManager(): 
     message_waiter_a_manager(this), 
-    message_waiter_b_manager(this) 
+    message_waiter_b_manager(this),
+    memory_manager(this)
     // TODO: Reikia inicializuoti ir kitus.
     {
 
@@ -92,6 +91,18 @@ public:
     return RETURN_CODE_OK;
     }
 
+  void add_memory_resource(MemoryResource memory_resource) {
+
+    this->memory_manager.create_resource(memory_resource);
+
+    }
+
+  void free_memory_resource(MemoryResource memory_resource) {
+
+    this->memory_manager.free_resource(memory_resource);
+
+    }
+
 #pragma GCC diagnostic ignored "-Wunused-parameter"
   void give_resource(u64int process_id, MessageWaiterAResource resource) {
     // Ši funkcija nieko nedaro, kadangi ši žinutė procesui nieko 
@@ -106,27 +117,13 @@ public:
     }
 #pragma GCC diagnostic error "-Wunused-parameter"
 
+  void give_resource(u64int process_id, MemoryResource resource);
   void block_process(u64int process_id);
   void activate_process(u64int process_id);
 
-  void init_memory_resource_manager(ProgramPager pager[], u64int number) {
-    // TODO: Iškelti šitą funkciją į MemoryManager.
-
-    for (u64int i = 0; i < number; i++) {
-
-      debug_string("Puslapiavimo adresas (init_memory_resource_manager): ");
-      debug_hex(pager[i].get_entry_address());
-      debug_string("\n");
-
-      this->memory_resource[i] = MemoryResource(i, &pager[i]);
-      }
-    
-    }
-
   MemoryResource get_memory_resource_info(u64int memory_resource_id) {
-    // TODO: Perdaryti normaliai.
 
-    return this->memory_resource[memory_resource_id];
+    return this->memory_manager.get_resource_info(memory_resource_id);
 
     }
 

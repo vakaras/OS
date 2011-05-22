@@ -79,13 +79,14 @@ public:
     return this->exists;
     }
   
-  //void set_value(u64int value) {
-    //// TODO: Realizuoti.
-    //}
+  void set_value(u64int value) {
+    this->cpu.AX = value;
+    }
   
-  //void set_value(u64int value1, u64int value2) {
-    //// TODO: Realizuoti.
-    //}
+  void set_value(u64int value1, u64int value2) {
+    this->cpu.AX = value1;
+    this->cpu.BX = value2;
+    }
   
   PROCESS_STATE get_state() {
     return this->state;

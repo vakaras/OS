@@ -129,7 +129,18 @@ extern "C" int main() {
     }
 
   resource_manager.set_process_manager(&process_manager);
-  resource_manager.init_memory_resource_manager(pager, PAGERS);
+  resource_manager.add_memory_resource(MemoryResource(0, &pager[0], false));
+                                        // loader
+  resource_manager.add_memory_resource(MemoryResource(1, &pager[1], false));
+                                        // waitera
+  resource_manager.add_memory_resource(MemoryResource(2, &pager[2], false));
+                                        // waiterb
+  resource_manager.add_memory_resource(MemoryResource(3, &pager[3], false));
+                                        // hello
+  resource_manager.add_memory_resource(MemoryResource(4, &pager[4]));
+  resource_manager.add_memory_resource(MemoryResource(5, &pager[5]));
+  resource_manager.add_memory_resource(MemoryResource(6, &pager[6]));
+
   debug_string("\nResourceManager inicializuotas.\n");
 
   // Pakraunami bandyminiai procesai.

@@ -80,10 +80,9 @@ public:
         break;
       default:
         debug_value(
-            "Turėtų būti išjungtas:", 
+            "Žudomas procesas: ", 
             this->running_process_id);
-        this->block_process(this->running_process_id);
-        // TODO: Išjungti pertraukimą sukėlusį procesą.
+        this->kill_process(this->running_process_id);
         break;
       }
 
@@ -188,6 +187,17 @@ public:
 
     }
 
+  void kill_process(u64int process_id) {
+
+    MemoryResource memory_resource = \
+      this->processes[process_id].get_memory_resource();
+
+    this->processes[process_id] = Process();
+
+    this->resource_manager->free_memory_resource(memory_resource);
+
+    }
+
   void load_process(
       u64int program_id, u64int screen_id, u64int memory_resource_id) {
 
@@ -252,6 +262,12 @@ public:
     debug_value("sp:", context->SP);
     debug_value("ss:", context->SS);
 
+    }
+
+  void give_loader_memory(u64int process_id, MemoryResource resource) {
+
+    this->processes[process_id].set_value(resource.get_id());
+    
     }
 
   };

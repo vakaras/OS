@@ -27,7 +27,9 @@ protected:
 
   // Atributai.
   
-  u64int id;
+  s64int id;                            // Jei -1 – tai reiškia, kad 
+                                        // resursas dar neperduotas 
+                                        // tvarkyklei.
   bool exists;
   bool free;
 
@@ -37,7 +39,7 @@ public:
 
   ReusableResource() {
 
-    this->id = 0;
+    this->id = -1;
     this->exists = false;
     this->free = false;
 
@@ -45,6 +47,14 @@ public:
 
   u64int get_id() {
     return this->id;
+    }
+
+  void set_free(bool free) {
+    this->free = free;
+    }
+
+  void set_id(u64int id) {
+    this->id = id;
     }
   
   bool is_empty_slot() {
@@ -58,7 +68,7 @@ public:
   };
 
 
-class MemoryResource: ReusableResource {
+class MemoryResource: public ReusableResource {
 
 private:
 
@@ -73,12 +83,12 @@ public:
   MemoryResource(): ReusableResource() {
     }
 
-  MemoryResource(u64int id, ProgramPager *pager) {
+  MemoryResource(u64int id, ProgramPager *pager, bool free=true) {
 
     this->id = id;
     this->pager = pager;
     this->exists = true;
-    this->free = true;
+    this->free = free;
 
     }
   
