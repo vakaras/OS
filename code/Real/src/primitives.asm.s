@@ -4,7 +4,7 @@ switch_process:
 
   mov rsp, rdi
 
-  ;xchg bx, bx
+  xchg bx, bx
 
   add rsp, 8                            ; Išmetam pertraukimo numerį.
 

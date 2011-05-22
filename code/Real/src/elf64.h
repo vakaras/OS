@@ -177,14 +177,11 @@ public:
           program_header->offset,
         program_header->file_size
         );
-    this->kernel_pager->activate();
 
-    debug_string("\nVirtuali atmintis:  ");
-    debug_hex(program_header->virtual_address);
+    debug_value("\nVirtuali atmintis:  ", program_header->virtual_address);
     u32int *p = (u32int *) 0x200000;
-    debug_string("\nAtmintis:           ");
-    debug_hex(*p);
-    debug_string("\n:");
+    debug_value("\nAtmintis:           ", *p);
+    this->kernel_pager->activate();
     
     //jump(header->entry); 
     // Persijungia į kitą procesą. Kadangi pertraukimų mechanizmas dar

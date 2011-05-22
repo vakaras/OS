@@ -119,16 +119,19 @@ extern "C" int main() {
   resource_manager.init_memory_resource_manager(pager, PAGERS);
   debug_string("\nResourceManager inicializuotas.\n");
 
+  // Pakraunami bandyminiai procesai.
+  process_manager.load_process(3, 1, 3);
+  debug_string("\nPrograma hello pakrauta.\n");
+
+  pause();
+
   // Pakraunami servisai.
   process_manager.load_process(1, 5, 1);
   debug_string("\nProcesas waitera pakrautas.\n");
   process_manager.load_process(2, 5, 2);
   debug_string("\nProcesas waiterb pakrautas.\n");
 
-
-  // Pakraunami bandyminiai procesai.
-  //process_manager.load_process(3, 1, 3);
-  //debug_string("\nPrograma hello pakrauta.\n");
+  pause();
 
   // Testai.
   //test_debug();

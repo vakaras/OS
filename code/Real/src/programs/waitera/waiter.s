@@ -1,13 +1,13 @@
 [GLOBAL msg]
 
 msg:
-dd 0xdeadbab0, 0xdeadbab1, 0xdeadbab2, 0xdeadbab3
+dd 0xdeadaaa0, 0xdeadaaa1, 0xdeadaaa2, 0xdeadaaa3
 
 [GLOBAL _start]
 
 _start:
 
-  mov rbx, 0xdead000a
+  mov rbx, 0xdeadaaaa
   xchg bx, bx
 
 .loop:
