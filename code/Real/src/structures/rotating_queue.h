@@ -5,8 +5,7 @@
 #include "../types.h"
 #include "../debug.h"
 
-//#define ROTATING_QUEUE_MAX_NODES 1024
-#define ROTATING_QUEUE_MAX_NODES 8
+#define ROTATING_QUEUE_MAX_NODES 1024
 
 
 template <class T> class RotatingQueue {

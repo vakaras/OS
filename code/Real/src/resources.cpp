@@ -3,6 +3,13 @@
 
 
 void ResourceManager::give_resource(
+    u64int process_id, MessageLoadProgramResource resource) {
+
+  this->process_manager->give_loader_task(process_id, resource);
+
+  }
+
+void ResourceManager::give_resource(
     u64int process_id, MemoryResource resource) {
 
   this->process_manager->give_loader_memory(process_id, resource);

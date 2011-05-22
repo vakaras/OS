@@ -7,8 +7,10 @@
 #include "message_resource_manager.h"
 #include "reusable_resource_manager.h"
 
-#define RESOURCE_MWA 1
-#define RESOURCE_MWB 2
+#define RESOURCE_MWA  1
+#define RESOURCE_MWB  2
+#define RESOURCE_LP   3
+#define RESOURCE_MEM  4
 
 #define RETURN_CODE_OK 0
 #define RETURN_CODE_UKNOWN_RESOURCE_TYPE 1
@@ -25,9 +27,8 @@ private:
 
   MessageResourceManager<MessageWaiterAResource> message_waiter_a_manager;
   MessageResourceManager<MessageWaiterBResource> message_waiter_b_manager;
-  // TODO: Atkomentuoti.
-  //MessageResourceManager<MessageLoadProgramResource> 
-    //message_program_load_manager;
+  MessageResourceManager<MessageLoadProgramResource> 
+    message_program_load_manager;
   ReusableResourceManager<MemoryResource> memory_manager;
 
   ProcessManager *process_manager;
@@ -39,6 +40,7 @@ public:
   ResourceManager(): 
     message_waiter_a_manager(this), 
     message_waiter_b_manager(this),
+    message_program_load_manager(this),
     memory_manager(this)
     // TODO: Reikia inicializuoti ir kitus.
     {
@@ -56,12 +58,17 @@ public:
     // FIXME: Šlapias kodas.
     switch (resource_type) {
       case RESOURCE_MWA:
-        message_waiter_a_manager.get_resource(process_id);
+        this->message_waiter_a_manager.get_resource(process_id);
         break;
       case RESOURCE_MWB:
-        message_waiter_b_manager.get_resource(process_id);
+        this->message_waiter_b_manager.get_resource(process_id);
         break;
-      // TODO: Realizuoti ir kitus.
+      case RESOURCE_LP:
+        this->message_program_load_manager.get_resource(process_id);
+        break;
+      case RESOURCE_MEM:
+        this->memory_manager.get_resource(process_id);
+        break;
       default:
         return RETURN_CODE_UKNOWN_RESOURCE_TYPE;
       }
@@ -91,9 +98,15 @@ public:
     return RETURN_CODE_OK;
     }
 
-  void add_memory_resource(MemoryResource memory_resource) {
+  void add_resource(MemoryResource memory_resource) {
 
     this->memory_manager.create_resource(memory_resource);
+
+    }
+
+  void add_resource(MessageLoadProgramResource resource) {
+
+    this->message_program_load_manager.create_resource(resource);
 
     }
 
@@ -118,6 +131,8 @@ public:
 #pragma GCC diagnostic error "-Wunused-parameter"
 
   void give_resource(u64int process_id, MemoryResource resource);
+  void give_resource(
+      u64int process_id, MessageLoadProgramResource resource);
   void block_process(u64int process_id);
   void activate_process(u64int process_id);
 

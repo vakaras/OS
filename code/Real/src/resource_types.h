@@ -21,6 +21,41 @@ class MessageWaiterBResource: MessageResource {
   };
 
 
+class MessageLoadProgramResource: MessageResource {
+
+protected:
+
+  // Atributai.
+  
+  u64int program_id;
+  u64int screen_id;
+
+public:
+
+  // Metodai.
+  MessageLoadProgramResource() {
+    this->program_id = INFINITY;
+    this->screen_id = INFINITY;
+    }
+
+  MessageLoadProgramResource(u64int program_id, u64int screen_id) {
+
+    this->program_id = program_id;
+    this->screen_id = screen_id;
+
+    }
+  
+  u64int get_program_id() {
+    return this->program_id;
+    }
+  
+  u64int get_screen_id() {
+    return this->screen_id;
+    }
+
+  };
+
+
 class ReusableResource: Resource {
 
 protected:

@@ -58,6 +58,10 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   debug_value("\nPertraukimas:", cpu.vector);
 
+  if (cpu.vector == 0xe) {
+    debug_value("active_pager=", active_pager);
+    }
+
   if (!IS_HIGHER_HALF(cpu.IP)) {
     // Išsaugoma proceso informacija.
     process_manager.save_state(cpu_pointer);
@@ -74,6 +78,7 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
   if (active_pager != -1) {
     // Įjungiamas branduolio puslapiavimas.
     kernel_pager.activate();
+    debug_value("Įjungtas branduolio puslapiavimas. Senas: ", old_pager);
     }
 
   debug_string("veikia2\n");
@@ -99,6 +104,7 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
   if (old_pager != -1) {
     // Įjungiamas senas puslapiavimas.
     pager[old_pager].activate();
+    debug_value("Įjungtas puslapiavimas: ", active_pager);
     }
 
   }
@@ -123,33 +129,30 @@ extern "C" int main() {
         0x00000000012fa000 + i * 0x100000,
         0x0000000002000000 + i * 0x1000000,
         kernel_pager.get_entry(256),
-        &active_pager);
+        &active_pager,
+        i);
     //pager[i].clear_lower();
     //pager[i].create_lower();
     }
 
   resource_manager.set_process_manager(&process_manager);
-  resource_manager.add_memory_resource(MemoryResource(0, &pager[0], false));
+  resource_manager.add_resource(MemoryResource(0, &pager[0], false));
                                         // loader
-  resource_manager.add_memory_resource(MemoryResource(1, &pager[1], false));
+  resource_manager.add_resource(MemoryResource(1, &pager[1], false));
                                         // waitera
-  resource_manager.add_memory_resource(MemoryResource(2, &pager[2], false));
+  resource_manager.add_resource(MemoryResource(2, &pager[2], false));
                                         // waiterb
-  resource_manager.add_memory_resource(MemoryResource(3, &pager[3], false));
+  resource_manager.add_resource(MemoryResource(3, &pager[3], false));
                                         // hello
-  resource_manager.add_memory_resource(MemoryResource(4, &pager[4]));
-  resource_manager.add_memory_resource(MemoryResource(5, &pager[5]));
-  resource_manager.add_memory_resource(MemoryResource(6, &pager[6]));
+  resource_manager.add_resource(MemoryResource(4, &pager[4]));
+  resource_manager.add_resource(MemoryResource(5, &pager[5]));
+  resource_manager.add_resource(MemoryResource(6, &pager[6]));
 
   debug_string("\nResourceManager inicializuotas.\n");
 
-  // Pakraunami bandyminiai procesai.
-  process_manager.load_process(3, 1, 3);
-  debug_string("\nPrograma hello pakrauta.\n");
-
-  pause();
-
   // Pakraunami servisai.
+  process_manager.load_process(3, 5, 0);
+  debug_string("\nProcesas loader pakrautas.\n");
   process_manager.load_process(1, 5, 1);
   debug_string("\nProcesas waitera pakrautas.\n");
   process_manager.load_process(2, 5, 2);
@@ -157,10 +160,18 @@ extern "C" int main() {
 
   pause();
 
+  // Pakraunami bandyminiai procesai.
+  process_manager.load_process(4, 1, 3);
+  debug_string("\nPrograma hello pakrauta.\n");
+  pause();
+
   // Testai.
   //test_debug();
   //test_monitor(&monitor);
   //test_idt();
+
+  MessageLoadProgramResource resource(4, 2);
+  resource_manager.add_resource(resource);
 
   monitor.write_string("Penktas ekranas -- derinimo.\n");
 

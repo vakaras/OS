@@ -15,6 +15,10 @@
 
 #define GET_RESOURCE_MWA 31
 #define GET_RESOURCE_MWB 21
+#define GET_RESOURCE_LP 10
+#define GET_RESOURCE_MEM 11
+
+#define LOAD_PROCESS 12
 
 
 class ProcessManager {
@@ -49,9 +53,9 @@ public:
     
     }
 
-  void manage_interrupt(CPUContext *context) {
+  void manage_interrupt(CPUContext *cpu) {
 
-    switch (context->AX) {
+    switch (cpu->AX) {
       case CREATE_RESOURCE_MWA:
         debug_value(
             "create_resource_a, process_id:", 
@@ -77,6 +81,26 @@ public:
             this->running_process_id);
         this->resource_manager->get_resource(
             RESOURCE_MWB, this->running_process_id);
+        break;
+      case GET_RESOURCE_LP:
+        debug_value(
+            "get_resource_lp, process_id:", 
+            this->running_process_id);
+        this->resource_manager->get_resource(
+            RESOURCE_LP, this->running_process_id);
+        break;
+      case GET_RESOURCE_MEM:
+        debug_value(
+            "get_resource_mem, process_id:", 
+            this->running_process_id);
+        this->resource_manager->get_resource(
+            RESOURCE_MEM, this->running_process_id);
+        break;
+      case LOAD_PROCESS:
+        debug_value(
+            "loading_process, process_id:", 
+            this->running_process_id);
+        this->load_process(cpu->DI, cpu->SI, cpu->DX);
         break;
       default:
         debug_value(
@@ -119,7 +143,7 @@ public:
       }
 
     debug_string("Procesų sąrašas:\n");
-    for (int i = 0; i < 5; i++) {
+    for (int i = 0; i < 8; i++) {
       if (this->processes[i].is_existing()) {
         if (this->processes[i].is_blocked()) {
           debug_value("-\tblokuotas:     ----", i);
@@ -267,6 +291,14 @@ public:
   void give_loader_memory(u64int process_id, MemoryResource resource) {
 
     this->processes[process_id].set_value(resource.get_id());
+    
+    }
+
+  void give_loader_task(
+      u64int process_id, MessageLoadProgramResource resource) {
+
+    this->processes[process_id].set_value(
+        resource.get_program_id(), resource.get_screen_id());
     
     }
 

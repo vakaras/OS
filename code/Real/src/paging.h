@@ -272,6 +272,7 @@ private:
                                         // adresas.
   s64int *active_pager;                 // Koks puslapiavimo mechanizmas
                                         // dabar yra aktyvus.
+  u64int id;                            // Šio puslapiavimo id.
 
 public:
 
@@ -289,9 +290,11 @@ public:
   void init(
       u64int table_address, u64int physical_address, 
       u64int higher_half_pdp_address,
-      s64int *active_pager) {
+      s64int *active_pager,
+      u64int id) {
 
     this->active_pager = active_pager;
+    this->id = id;
 
     this->physical_address = align(physical_address);
     this->entry = (u64int *) align(table_address);
@@ -348,7 +351,7 @@ public:
   void activate() {
 
     asm volatile("mov %0, %%cr3" : : "r"((u64int) this->entry));
-    *(this->active_pager) = 1;        // Pradžiai gal užteks tiek?
+    *(this->active_pager) = this->id;
 
     }
 
