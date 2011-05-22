@@ -82,7 +82,8 @@ public:
         debug_value(
             "Turėtų būti išjungtas:", 
             this->running_process_id);
-        // Išjungti pertraukimą sukėlusį procesą.
+        this->block_process(this->running_process_id);
+        // TODO: Išjungti pertraukimą sukėlusį procesą.
         break;
       }
 
