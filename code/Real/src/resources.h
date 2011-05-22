@@ -115,7 +115,7 @@ public:
     for (u64int i = 0; i < number; i++) {
 
       debug_string("Puslapiavimo adresas (init_memory_resource_manager): ");
-      debug_hex((u64int) pager[i].entry);
+      debug_hex(pager[i].get_entry_address());
       debug_string("\n");
 
       this->memory_resource[i] = MemoryResource(i, &pager[i]);

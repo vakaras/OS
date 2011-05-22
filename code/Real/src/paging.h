@@ -110,6 +110,8 @@ private:
   u64int physical_address;              // Virtualiosios adresų erdvės 
                                         // viršutinės pusės realusis 
                                         // adresas.
+  s64int *active_pager;                 // Koks puslapiavimo mechanizmas
+                                        // dabar yra aktyvus.
 
 public:
 
@@ -120,7 +122,10 @@ public:
    * @param address – kokiu adresu „padėti“ lentelę.
    * @param pml4_address – iš kur nukopijuoti struktūrą.
    */
-  KernelPager(u64int table_address, u64int pml4_address) {
+  KernelPager(
+      u64int table_address, u64int pml4_address, s64int *active_pager) {
+
+    this->active_pager = active_pager;
 
     this->entry = (u64int *) align(table_address);
     memset((u8int *)this->entry, 0, 0x1000);
@@ -238,6 +243,7 @@ public:
   void activate() {
 
     asm volatile("mov %0, %%cr3" : : "r"((u64int) this->entry));
+    *(this->active_pager) = -1;
 
     }
 
@@ -260,11 +266,14 @@ private:
 
   // Atributai.
 
-public:
   u64int *entry;
   u64int physical_address;              // Virtualiosios adresų erdvės
                                         // apatinės pusės realusis
                                         // adresas.
+  s64int *active_pager;                 // Koks puslapiavimo mechanizmas
+                                        // dabar yra aktyvus.
+
+public:
 
   ProgramPager(): entry(0), physical_address(0) {
     }
@@ -279,7 +288,10 @@ public:
    */
   void init(
       u64int table_address, u64int physical_address, 
-      u64int higher_half_pdp_address) {
+      u64int higher_half_pdp_address,
+      s64int *active_pager) {
+
+    this->active_pager = active_pager;
 
     this->physical_address = align(physical_address);
     this->entry = (u64int *) align(table_address);
@@ -336,11 +348,16 @@ public:
   void activate() {
 
     asm volatile("mov %0, %%cr3" : : "r"((u64int) this->entry));
+    *(this->active_pager) = 1;        // Pradžiai gal užteks tiek?
 
     }
 
   u64int get_physical_address() {
     return this->physical_address;
+    }
+
+  u64int get_entry_address() {
+    return (u64int) this->entry;
     }
   
   };

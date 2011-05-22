@@ -34,7 +34,10 @@ PIT pit(50);
 Timer timer(&monitor);
 Keyboard kbd(&monitor);
 
-KernelPager kernel_pager(0x00000000011fa000, 0x103000);
+s64int active_pager;                    // Kuris puslapiavimo mechanizmas
+                                        // yra dabar aktyvus.
+                                        // (-1 – branduolio.)
+KernelPager kernel_pager(0x00000000011fa000, 0x103000, &active_pager);
 ProgramPager pager[PAGERS];
 
 ProgramManager program_manager(0x400000, &kernel_pager);
@@ -65,6 +68,10 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
     debug_value("\nAtnaujintas branduolio dėklas: ", kernel_stack);
     asm volatile("mov %0, %%rsp" : : "r"(kernel_stack));
     debug_ping();
+    }
+
+  s64int old_pager = active_pager;
+  if (active_pager != -1) {
     // Įjungiamas branduolio puslapiavimas.
     kernel_pager.activate();
     }
@@ -89,6 +96,11 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
     monitor.write_string("\n\nPlanuotojo klaida!\n");
     }
 
+  if (old_pager != -1) {
+    // Įjungiamas senas puslapiavimas.
+    pager[old_pager].activate();
+    }
+
   }
 
 extern "C" void load_gdt();
@@ -110,7 +122,8 @@ extern "C" int main() {
     pager[i].init(
         0x00000000012fa000 + i * 0x100000,
         0x0000000002000000 + i * 0x1000000,
-        kernel_pager.get_entry(256));
+        kernel_pager.get_entry(256),
+        &active_pager);
     //pager[i].clear_lower();
     //pager[i].create_lower();
     }

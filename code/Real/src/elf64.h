@@ -139,7 +139,7 @@ public:
 
     debug_string("Ruošiamas puslapiavimo mechanizmas programai.");
     debug_string("Jo adresas: ");
-    debug_hex((u64int) pager.entry);
+    debug_hex(pager.get_entry_address());
     pager.clear_lower();
     pager.create_lower();
     debug_string("Baigta.\n");

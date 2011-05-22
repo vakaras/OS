@@ -199,7 +199,7 @@ public:
     ProgramPager *pager = memory_resource.get_pager();
 
     debug_string("Puslapiavimo adresas (load_process): ");
-    debug_hex((u64int) pager->entry);
+    debug_hex(pager->get_entry_address());
     debug_string("\n");
 
     debug_string("Puslapiavimas gautas.\n");
