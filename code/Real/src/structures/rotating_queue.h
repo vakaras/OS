@@ -3,6 +3,7 @@
 
 
 #include "../types.h"
+#include "../debug.h"
 
 //#define ROTATING_QUEUE_MAX_NODES 1024
 #define ROTATING_QUEUE_MAX_NODES 8
@@ -49,11 +50,13 @@ public:
 
     // FIXME: Pridėti patikrinimą, ar nebuvo perpildyta eilė.
 
-    if (this->end == ROTATING_QUEUE_MAX_NODES) {
+    u64int old_id = this->end;
+
+    if (++(this->end) == ROTATING_QUEUE_MAX_NODES) {
       this->end = 0;
       }
     
-    this->nodes[this->end++] = element;
+    this->nodes[old_id] = element;
 
     }
   
