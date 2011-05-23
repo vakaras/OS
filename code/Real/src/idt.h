@@ -208,11 +208,21 @@ public:
         asm volatile(" cli; hlt; ");
         } 
       else if (cpu->vector < 40) {
-        this->write_string("\nIRQ occured: #");
-        this->monitor->write_dec((u32int)cpu->vector - 32);
-        this->monitor->write_string(". Info: Master IRQ.");
-        /* reset Master PIC */
-        send_byte(0x21, 0x20);
+        int fake_int = 0;
+        if(cpu->vector == 39){  // Test is Fake IRQ #7 occured
+          send_byte(0x20, 0x0B);
+          u8int irr = get_byte(0x20);
+          if(!(irr & 0x80)){
+            fake_int = -1;
+          };
+        };
+        if (!(fake_int)){
+          this->write_string("\nIRQ occured: #");
+          this->monitor->write_dec((u32int)cpu->vector - 32);
+          this->monitor->write_string(". Info: Master IRQ.");
+          /* reset Master PIC */
+          send_byte(0x21, 0x20);
+        };
         } 
       else if (cpu->vector < 48) {
         this->write_string("\nIRQ occured: #");
