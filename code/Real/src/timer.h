@@ -22,9 +22,9 @@ public:
     this->tick++;
     if (cpu->vector == 32){
       if(this->tick < 4){
-        this->monitor->write_string("Tick: ");
-        this->monitor->write_dec((u32int)this->tick);
-        this->monitor->write_string("\n");
+//         this->monitor->write_string("Tick: ");
+//         this->monitor->write_dec((u32int)this->tick);
+//         this->monitor->write_string("\n");
       }
     }
   }

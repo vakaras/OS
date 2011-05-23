@@ -4,6 +4,11 @@
 #include "types.h"
 #include "monitor.h"
 #include "primitives.h"
+#include "elf64.h"
+#include "processes.h"
+#include "resources.h"
+
+
 
 //==========================================================================
 // Klaviatūros išdėstymai:
@@ -65,21 +70,63 @@ private:
   u8int escaped;
   
   Monitor *monitor;
+  ProcessManager *proc_m;
+  ProgramManager *prog_m;
+  ResourceManager *reso_m;
+  
+  char komanda[8];
+  int einamas;
   
 public:
   
-  Keyboard(Monitor *monitor) {
+  Keyboard(Monitor *monitor, ProcessManager *proc_m, ProgramManager *prog_m, ResourceManager *reso_m) {
     this->monitor = monitor;
+    this->proc_m = proc_m;
+    this->prog_m = prog_m;
+    this->reso_m = reso_m;
     this->shift_state = 0;
     this->escaped = 0;
+    this->einamas = 0;
+    reset_komanda();
   }
   
+  void reset_komanda(){
+    for(int i = 0; i<8;i++){
+      this->komanda[i] = 0;
+    }
+  }
+  
+  void test_komanda(){/*
+    if((this->komanda[0]=='') && (this->komanda[1]=='') 
+        && (this->komanda[2]=='') && (this->komanda[3]==' ')){
+      
+    };*/
+    // tasks - show modules
+    if((this->komanda[0]=='t') && (this->komanda[1]=='a') 
+      && (this->komanda[2]=='s') && (this->komanda[3]=='k')
+      && (this->komanda[4]=='s')){
+        this->prog_m->debug(this->monitor);
+    };
+    // run X Y - run process id X on screen Y
+    if((this->komanda[0]=='r') && (this->komanda[1]=='u') 
+      && (this->komanda[2]=='n') && (this->komanda[3]==' ')){
+        MessageLoadProgramResource resource(this->komanda[4]-'0', this->komanda[6]-'0');
+        this->reso_m->add_resource(resource);
+      };
+    // kill X - kill process id X
+    if((this->komanda[0]=='k') && (this->komanda[1]=='i') 
+      && (this->komanda[2]=='l') && (this->komanda[3]=='l')
+      && (this->komanda[4]==' ')){
+      this->proc_m->kill_process(this->komanda[4]-'0');
+      };
+    this->monitor->put_character('\n');
+    
+  }
   
   void process_keyboard(CPUContext *cpu) {
     if (cpu->vector == 33) {
       Byte new_scan_code = get_byte(0x60);
       if (escaped) {   
-        //new_scan_code += 256;  // TODO: sutvarkyti "Escaped chars"
         escaped = 0;
         }
       switch(new_scan_code) {
@@ -99,6 +146,18 @@ public:
           } else {
             char new_char = \
               (shift_state ? uppercase:lowercase)[new_scan_code];
+            if(this->einamas < 8){
+              this->komanda[this->einamas++] = new_char;
+            };
+            if(new_char==13){
+              this->einamas = 0;
+              test_komanda();
+              reset_komanda();
+            };
+            if(new_char==10){
+              this->einamas = 0;
+              reset_komanda();
+            };
             this->monitor->put_character(new_char);
           }
           break;

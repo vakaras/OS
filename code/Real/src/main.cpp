@@ -32,7 +32,6 @@ Monitor monitor;
 IDT idt(&monitor); 
 PIT pit(50);
 Timer timer(&monitor);
-Keyboard kbd(&monitor);
 
 s64int active_pager;                    // Kuris puslapiavimo mechanizmas
                                         // yra dabar aktyvus.
@@ -43,6 +42,8 @@ ProgramPager pager[PAGERS];
 ProgramManager program_manager(0x400000, &kernel_pager);
 ResourceManager resource_manager;
 ProcessManager process_manager(&resource_manager, &program_manager);
+Keyboard kbd(&monitor,&process_manager, &program_manager, &resource_manager);
+
 
 
 bool multiprogramming_enabled;          // Ar jau OS pilnai startavo ir
@@ -87,6 +88,9 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
     }
   else if (cpu.vector == 33) {
     kbd.process_keyboard(&cpu);
+    }
+  else if (cpu.vector == 0x3e) {
+    monitor.write_string("\nKLAVA!\n");
     }
   else if (cpu.vector == 0x3f) {
     process_manager.manage_interrupt(&cpu);
