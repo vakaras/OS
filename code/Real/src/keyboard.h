@@ -79,7 +79,8 @@ private:
   
 public:
   
-  Keyboard(Monitor *monitor, ProcessManager *proc_m, ProgramManager *prog_m, ResourceManager *reso_m) {
+  Keyboard(Monitor *monitor, ProcessManager *proc_m, ProgramManager *prog_m,
+           ResourceManager *reso_m) {
     this->monitor = monitor;
     this->proc_m = proc_m;
     this->prog_m = prog_m;
@@ -116,7 +117,8 @@ public:
     if((this->komanda[0]=='r') && (this->komanda[1]=='u') 
       && (this->komanda[2]=='n') && (this->komanda[3]==' ')){
         if(this->monitor->active_screen_id < 5){
-          MessageLoadProgramResource resource(this->komanda[4]-'0', this->monitor->active_screen_id);
+          MessageLoadProgramResource resource(this->komanda[4]-'0', 
+                                        this->monitor->active_screen_id);
           this->monitor->write_string("\nStarting process #");
           this->monitor->write_dec(this->komanda[4]-'0');
           this->reso_m->add_resource(resource);
@@ -175,6 +177,11 @@ public:
               reset_komanda();
             } else if(this->einamas<8){
               this->komanda[this->einamas++] = new_char;
+            };
+            if((this->monitor->active_screen_id < 5) 
+                && (this->monitor->get_active_screen_type())) {
+//               this->proc_m->char_entered(this->monitor->active_screen_id, 
+//                   new_char);
             };
             this->monitor->put_character(new_char);
           }

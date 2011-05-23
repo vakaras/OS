@@ -148,14 +148,49 @@ private:
       // Atributai.
 
       ScreenCharacter video_memory[SCREEN_HEIGHT][SCREEN_WIDTH];
-      u8int cursor_row; 
-      u8int cursor_col;
+      u8int row; 
+      u8int col;
+      bool type;
       
     public:
+      
+      // Perkelia žymeklį į naują eilutę.
+      void newline() {
+        this->col = 0;
+        this->row++;
+      }
+      
+      // Užrašo simbolį ir paslenka žymeklį.
+      void put(char character, int color) {
+        
+        if (character == '\b' && this->col) {
+          this->col--;
+        }
+        else if (character == '\t') {
+          this->col = (this->col + 8) & (~(8 - 1));
+        }
+        else if (character == '\r') {
+          this->col = 0;
+        }
+        else if (character == '\n') {
+          this->newline();
+        }
+        else if (character >= ' ') {      // Visi kiti nematomi simboliai yra
+          // ignoruojami.
+          this->set_character(character, color);
+          this->col++;
+        }
+      }
+      
+      void set_character(char value, int color) {
+        this->video_memory[row][col] = ScreenCharacter(
+          value, color, COLOR_BLACK);
+      }
 
       // Metodai.
       
       Screen() {
+        this->type = false;
         }
         
       void save_screen_memory(Array2dPointer<ScreenCharacter> *old_mem) {
@@ -177,19 +212,25 @@ private:
         }
       
       u8int get_cursor_row() {
-        return this->cursor_row;
+        return this->row;
         }
       
       u8int get_cursor_col() {
-        return this->cursor_col;
+        return this->col;
         }
             
       void save_screen_cursor(u8int row, u8int col) {
-
-        this->cursor_row = row;
-        this->cursor_col = col;
-
+        this->row = row;
+        this->col = col;
         }
+      
+      void set_type(bool type) {
+        this->type = type;
+      }
+      
+      bool get_type() {
+        return this->type;
+      }
       
     } screen[6];
 
@@ -212,6 +253,18 @@ public:
       this->active_screen_id = 5;
       
     }
+  
+  void set_screen_type(int screen_id, bool type) {
+    screen[screen_id].set_type(type);
+  }
+  
+  bool get_screen_type(int screen_id) {
+    return screen[screen_id].get_type();
+  }
+  
+  bool get_active_screen_type() {
+    return screen[this->active_screen_id].get_type();
+  }
 
   void activate_screen(int no) {
 
@@ -241,6 +294,98 @@ public:
         row, col, ScreenCharacter(
           value, this->foreground_color, this->background_color));
     }
+    
+  void print_service_message(int screen_id, char text) {
+    this->print_char_message(screen_id, text, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, char text) {
+    this->print_char_message(screen_id, text, COLOR_GREEN);
+  }
+    
+  void print_char_message(int screen_id, char text, u8int COLOR) {
+    if(screen_id != this->active_screen_id){
+      screen[screen_id-1].put(text, COLOR);
+    } else {
+      this->foreground_color = COLOR;
+      this->put_character(text);
+      this->foreground_color = COLOR_WHITE;
+    }
+  }
+  
+  void print_service_message(int screen_id, const char * text) {
+    this->print_string_message(screen_id, text, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, const char * text) {
+    this->print_string_message(screen_id, text, COLOR_GREEN);
+  }
+  
+  void print_string_message(int screen_id, const char * text, u8int COLOR) {
+    if(screen_id != this->active_screen_id){
+      for (const char *c = text; *c; c++) {
+        screen[screen_id-1].put(*c, COLOR);
+      }
+    } else {
+      this->foreground_color = COLOR;
+      this->write_string(text);
+      this->foreground_color = COLOR_WHITE;
+    }
+  }
+  
+  void print_service_message(int screen_id, u64int number, u8int size) {
+    this->print_hex_message(screen_id, number, size, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, u64int number, u8int size) {
+    this->print_hex_message(screen_id, number, size, COLOR_GREEN);
+  }
+  
+  void print_hex_message(int screen_id, u64int number, u8int size, u8int COLOR) {
+    if(screen_id != this->active_screen_id){
+      for (int i = size - 4; i >= 0; i -= 4) {
+        u8int digit = (number >> i) & 0xF;
+        if (digit >= 10) {
+          screen[screen_id-1].put(digit - 10 + 'A', COLOR);
+        }
+        else {
+          screen[screen_id-1].put(digit + '0', COLOR);
+        }
+      }
+    } else {
+      this->foreground_color = COLOR;
+      this->write_hex(number, size);
+      this->foreground_color = COLOR_WHITE;
+    }
+  }
+  
+  void print_service_message(int screen_id, u64int number) {
+    this->print_dec_message(screen_id, number, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, u64int number) {
+    this->print_dec_message(screen_id, number, COLOR_GREEN);
+  }
+  
+  void print_dec_message(int screen_id, u64int number, u8int COLOR) {
+    if(screen_id != this->active_screen_id){
+      int length = 1;
+      for (int i = number; i; i /= 10) {
+        length *= 10;
+      }
+      if (length > 1) {
+        length /= 10;
+      }
+      for (; length; length /= 10) {
+        screen[screen_id-1].put('0' + ((number) / length) % 10, COLOR);
+      }
+    } else {
+      this->foreground_color = COLOR;
+      this->write_dec((u32int)number);
+      this->foreground_color = COLOR_WHITE;
+      
+    }
+  }
 
   // Nurodytam „langeliui“ priskiria simbolį ir spalvą.
   void set_character(int row, int col, ScreenCharacter value) {
@@ -303,6 +448,7 @@ public:
   void put_character(char value) {
     this->cursor.put(value);
     }
+    
 
   /// Išveda „null-terminated“ simbolių eilutę.
   void write_string(const char *value) {

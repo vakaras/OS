@@ -180,7 +180,10 @@ extern "C" int main() {
   monitor.write_string("Penktas ekranas -- derinimo.\n");
 
   multiprogramming_enabled = true;
-
+  monitor.print_service_message(2, "labas pasauli nr2.\n");
+  monitor.print_program_message(2, "as irgi cia\n\n");
+  monitor.print_service_message(5, "labas pasauli nr5.\n");
+  monitor.print_program_message(5, "as irgi cia5\n\n");
   // Persijungiam į kitą procesą.
   process_manager.plan();
 
