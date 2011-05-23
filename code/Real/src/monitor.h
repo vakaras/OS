@@ -200,7 +200,8 @@ private:
 // Metodai.
 
 public:
-
+  u8int active_screen_id;
+  
   Monitor():
     video_memory((ScreenCharacter *)0xB8000, SCREEN_WIDTH, SCREEN_HEIGHT),
     cursor(*this) {
@@ -208,6 +209,7 @@ public:
       this->foreground_color = COLOR_WHITE;
       this->background_color = COLOR_BLACK;
       this->active_screen = &screen[4];
+      this->active_screen_id = 5;
       
     }
 
@@ -217,6 +219,7 @@ public:
     this->active_screen->save_screen_cursor(
         this->cursor.get_row(), this->cursor.get_col());
     this->active_screen = &screen[no-1];
+    this->active_screen_id = no;
     this->active_screen->reset_screen_memory(&this->video_memory);
     this->cursor.set_row(this->active_screen->get_cursor_row());
     this->cursor.set_col(this->active_screen->get_cursor_col());

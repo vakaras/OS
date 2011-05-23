@@ -111,6 +111,10 @@ public:
       }
 
     }
+  
+  void kill_process_by_screen_id(u8int screen_id){
+    screen_id = screen_id;
+  }
 
   void save_state(CPUContext *context) {
 

@@ -101,24 +101,37 @@ public:
         && (this->komanda[2]=='') && (this->komanda[3]==' ')){
       
     };*/
+    this->monitor->write_string("\nYou entered: \"");
+    this->monitor->write_string((const char*)this->komanda);
+    this->monitor->write_string("\"\n");
+    
     // tasks - show modules
     if((this->komanda[0]=='t') && (this->komanda[1]=='a') 
       && (this->komanda[2]=='s') && (this->komanda[3]=='k')
       && (this->komanda[4]=='s')){
         this->prog_m->debug(this->monitor);
     };
-    // run X Y - run process id X on screen Y
+    
+    // run X - run process id X
     if((this->komanda[0]=='r') && (this->komanda[1]=='u') 
       && (this->komanda[2]=='n') && (this->komanda[3]==' ')){
-        MessageLoadProgramResource resource(this->komanda[4]-'0', this->komanda[6]-'0');
-        this->reso_m->add_resource(resource);
+        if(this->monitor->active_screen_id < 5){
+          MessageLoadProgramResource resource(this->komanda[4]-'0', this->monitor->active_screen_id);
+          this->monitor->write_string("\nStarting process #");
+          this->monitor->write_dec(this->komanda[4]-'0');
+          this->reso_m->add_resource(resource);
+        }
       };
+    
     // kill X - kill process id X
     if((this->komanda[0]=='k') && (this->komanda[1]=='i') 
       && (this->komanda[2]=='l') && (this->komanda[3]=='l')
       && (this->komanda[4]==' ')){
-      this->proc_m->kill_process(this->komanda[4]-'0');
+        this->proc_m->kill_process(this->komanda[4]-'0');
+        this->monitor->write_string("\nKilling process #");
+        this->monitor->write_dec(this->komanda[4]-'0');
       };
+    
     this->monitor->put_character('\n');
     
   }
@@ -140,23 +153,28 @@ public:
         case 0x3e: this->monitor->activate_screen(4); break;
         case 0x3f: this->monitor->activate_screen(5); break;
         case 0x40: this->monitor->activate_screen(6); break;
+        case 0x1d:  //+LCtrl (1D)
+          if(this->monitor->active_screen_id < 5){
+            this->proc_m->kill_process_by_screen_id(
+                this->monitor->active_screen_id);
+            this->monitor->write_string("\nKilling this process!");
+          }
+          break;
         default:
           if (new_scan_code & 0x80) {
             /* Ignore the break code */
           } else {
             char new_char = \
               (shift_state ? uppercase:lowercase)[new_scan_code];
-            if(this->einamas < 8){
-              this->komanda[this->einamas++] = new_char;
-            };
             if(new_char==13){
               this->einamas = 0;
               test_komanda();
               reset_komanda();
-            };
-            if(new_char==10){
+            } else if(new_char==10){
               this->einamas = 0;
               reset_komanda();
+            } else if(this->einamas<8){
+              this->komanda[this->einamas++] = new_char;
             };
             this->monitor->put_character(new_char);
           }
