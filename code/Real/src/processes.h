@@ -95,6 +95,7 @@ public:
             this->running_process_id);
         this->resource_manager->get_resource(
             RESOURCE_MEM, this->running_process_id);
+        pause();
         break;
       case LOAD_PROCESS:
         debug_value(
@@ -113,8 +114,19 @@ public:
     }
   
   void kill_process_by_screen_id(u8int screen_id){
-    screen_id = screen_id;
-  }
+    
+    for (u64int i = 0; i < MAX_PROCESSES; i++) {
+
+      if (this->processes[i].is_existing() &&
+          this->processes[i].get_screen_id() == screen_id) {
+
+        this->kill_process(i);
+
+        }
+
+      }
+    
+    }
 
   void save_state(CPUContext *context) {
 

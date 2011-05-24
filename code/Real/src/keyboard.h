@@ -116,11 +116,12 @@ public:
     // run X - run process id X
     if((this->komanda[0]=='r') && (this->komanda[1]=='u') 
       && (this->komanda[2]=='n') && (this->komanda[3]==' ')){
-        if(this->monitor->active_screen_id < 5){
-          MessageLoadProgramResource resource(this->komanda[4]-'0', 
+        u32int command = this->komanda[4]-'0';
+        if(this->monitor->active_screen_id < 5 && 0 < command ){
+          MessageLoadProgramResource resource(command,
                                         this->monitor->active_screen_id);
           this->monitor->write_string("\nStarting process #");
-          this->monitor->write_dec(this->komanda[4]-'0');
+          this->monitor->write_dec(command);
           this->reso_m->add_resource(resource);
         }
       };
