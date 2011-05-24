@@ -95,6 +95,7 @@ public:
             this->running_process_id);
         this->resource_manager->get_resource(
             RESOURCE_MEM, this->running_process_id);
+        pause();
         break;
       case LOAD_PROCESS:
         debug_value(

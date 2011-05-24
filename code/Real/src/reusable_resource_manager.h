@@ -109,6 +109,8 @@ public:
           debug_value("\tAtiduotas procesui: ", process_id);
 
           found = true;
+          
+          break;
           }
 
         }
