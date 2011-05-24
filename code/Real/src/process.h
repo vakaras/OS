@@ -5,6 +5,7 @@
 #include "resource_types.h"
 #include "cpu.h"
 #include "memlib.h"
+#include "file_manager.h"
 
 
 enum PROCESS_STATE {PROCESS_ACTIVE, PROCESS_BLOCKED};
@@ -29,6 +30,7 @@ private:
   u64int screen_id;
   MemoryResource memory_resource;
   ProcessManager *process_manager;
+  FileManager *file_manager;
 
   CPUContext cpu;
   u64int stack;                         // Dėklo viršūnės adresas.
@@ -44,6 +46,7 @@ public:
     this->screen_id = 0;
     this->process_manager = 0;
     this->exists = false;
+    this->file_manager = 0;
 
     }
 
@@ -52,13 +55,15 @@ public:
       u64int process_id,
       u64int screen_id, 
       MemoryResource memory_resource,
-      u64int entry) {
+      u64int entry,
+      FileManager *file_manager) {
 
     this->id = process_id;
     this->state = PROCESS_ACTIVE;
     this->screen_id = screen_id;
     this->memory_resource = memory_resource;
     this->process_manager = process_manager;
+    this->file_manager = file_manager;
     this->exists = true;
 
     this->stack = entry + 0x100000;     // Pradinė dėklo pozicija.
@@ -137,6 +142,30 @@ public:
     this->stack = (u64int) context;
 
     }
+
+  bool opened(u64int file_descriptor, FILE_MODE mode) {
+
+    if (file_descriptor == 0 && mode == FILE_MODE_READ) {
+      return true;
+      }
+    else {
+      return false;
+      }
+
+    // TODO: Realizuoti.
+    }
+
+  void read_byte(u64int file_descriptor) {
+
+    if (file_descriptor == 0) {
+      this->file_manager->get_stdin_byte(this->screen_id, this->id);
+      }
+    else {
+      // TODO: Realizuoti.
+      }
+    
+    }
+  
 
   };
 

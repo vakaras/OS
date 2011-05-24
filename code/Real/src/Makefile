@@ -2,7 +2,7 @@ CLEAN = *.o *~ kernel
 
 SOURCES = boot.o main.o icxxabi.o primitives.o \
 					isr.o paging.o memlib.o debug.o debug.asm.o gdt.o \
-					primitives.asm.o resources.o
+					primitives.asm.o resources.o file_manager.o
 LDFLAGS = -nostdlib -nodefaultlibs -Tlink.ld
 ASFLAGS = -felf64
 CPPFLAGS = -m64 -mcmodel=large \

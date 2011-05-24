@@ -41,8 +41,11 @@ ProgramPager pager[PAGERS];
 
 ProgramManager program_manager(0x400000, &kernel_pager);
 ResourceManager resource_manager;
-ProcessManager process_manager(&resource_manager, &program_manager);
-Keyboard kbd(&monitor,&process_manager, &program_manager, &resource_manager);
+FileManager file_manager;
+ProcessManager process_manager(
+    &resource_manager, &program_manager, &file_manager);
+Keyboard kbd(
+    &monitor,&process_manager, &program_manager, &resource_manager);
 
 
 
@@ -185,6 +188,10 @@ extern "C" int main() {
   resource_manager.add_resource(MemoryResource(6, &pager[6]));
 
   debug_string("\nResourceManager inicializuotas.\n");
+
+  file_manager.set_process_manager(&process_manager);
+
+  debug_string("\nFileManager inicializuotas.\n");
 
   // Pakraunami servisai.
   process_manager.load_process(3, 5, 0);
