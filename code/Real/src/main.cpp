@@ -112,6 +112,38 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
     }
 
   }
+  
+  void print_service_message(int screen_id, char text) {
+    monitor.print_char_message(screen_id, text, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, char text) {
+    monitor.print_char_message(screen_id, text, COLOR_GREEN);
+  }
+  
+  void print_service_message(int screen_id, const char * text) {
+    monitor.print_string_message(screen_id, text, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, const char * text) {
+    monitor.print_string_message(screen_id, text, COLOR_GREEN);
+  }
+  
+  void print_service_message(int screen_id, u64int number, u8int size) {
+    monitor.print_hex_message(screen_id, number, size, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, u64int number, u8int size) {
+    monitor.print_hex_message(screen_id, number, size, COLOR_GREEN);
+  }
+  
+  void print_service_message(int screen_id, u64int number) {
+    monitor.print_dec_message(screen_id, number, COLOR_WHITE);
+  }
+  
+  void print_program_message(int screen_id, u64int number) {
+    monitor.print_dec_message(screen_id, number, COLOR_GREEN);
+  }
 
 extern "C" void load_gdt();
 
@@ -180,10 +212,10 @@ extern "C" int main() {
   monitor.write_string("Penktas ekranas -- derinimo.\n");
 
   multiprogramming_enabled = true;
-  monitor.print_service_message(2, "labas pasauli nr2.\n");
-  monitor.print_program_message(2, "as irgi cia\n\n");
-  monitor.print_service_message(5, "labas pasauli nr5.\n");
-  monitor.print_program_message(5, "as irgi cia5\n\n");
+  print_service_message(2, "labas pasauli nr2.\n");
+  print_program_message(2, "as irgi cia\n\n");
+  print_service_message(5, "labas pasauli nr5.\n");
+  print_program_message(5, "as irgi cia5\n\n");
   // Persijungiam į kitą procesą.
   process_manager.plan();
 

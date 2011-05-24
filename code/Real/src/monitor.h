@@ -295,14 +295,6 @@ public:
           value, this->foreground_color, this->background_color));
     }
     
-  void print_service_message(int screen_id, char text) {
-    this->print_char_message(screen_id, text, COLOR_WHITE);
-  }
-  
-  void print_program_message(int screen_id, char text) {
-    this->print_char_message(screen_id, text, COLOR_GREEN);
-  }
-    
   void print_char_message(int screen_id, char text, u8int COLOR) {
     if(screen_id != this->active_screen_id){
       screen[screen_id-1].put(text, COLOR);
@@ -311,14 +303,6 @@ public:
       this->put_character(text);
       this->foreground_color = COLOR_WHITE;
     }
-  }
-  
-  void print_service_message(int screen_id, const char * text) {
-    this->print_string_message(screen_id, text, COLOR_WHITE);
-  }
-  
-  void print_program_message(int screen_id, const char * text) {
-    this->print_string_message(screen_id, text, COLOR_GREEN);
   }
   
   void print_string_message(int screen_id, const char * text, u8int COLOR) {
@@ -331,14 +315,6 @@ public:
       this->write_string(text);
       this->foreground_color = COLOR_WHITE;
     }
-  }
-  
-  void print_service_message(int screen_id, u64int number, u8int size) {
-    this->print_hex_message(screen_id, number, size, COLOR_WHITE);
-  }
-  
-  void print_program_message(int screen_id, u64int number, u8int size) {
-    this->print_hex_message(screen_id, number, size, COLOR_GREEN);
   }
   
   void print_hex_message(int screen_id, u64int number, u8int size, u8int COLOR) {
@@ -357,14 +333,6 @@ public:
       this->write_hex(number, size);
       this->foreground_color = COLOR_WHITE;
     }
-  }
-  
-  void print_service_message(int screen_id, u64int number) {
-    this->print_dec_message(screen_id, number, COLOR_WHITE);
-  }
-  
-  void print_program_message(int screen_id, u64int number) {
-    this->print_dec_message(screen_id, number, COLOR_GREEN);
   }
   
   void print_dec_message(int screen_id, u64int number, u8int COLOR) {
