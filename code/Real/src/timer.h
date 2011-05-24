@@ -22,7 +22,7 @@ public:
     
     if (cpu->vector == 32) {
       this->tick++;
-      if(this->tick > 100) {
+      if(this->tick > 5) {
         this->tick = 0;
         this->monitor->update_htop();
       }

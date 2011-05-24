@@ -38,20 +38,21 @@ private:
 
   // Atributai.
 
-  Process processes[MAX_PROCESSES];
   ResourceManager *resource_manager;
   ProgramManager *program_manager;
   FileManager *file_manager;
 
   u64int running_process_id;            // Kuris procesas yra šiuo metu 
                                         // vykdomas?
-  RotatingQueue<u64int> active_process_queue;
                                         // Tikėtina, jog pasiruošusių 
                                         // vykdymui, procesų eilė.
   u64int kernel_stack;                  // Branduolio dėklo viršūnės 
                                         // adresas.
 
 public:
+  Process processes[MAX_PROCESSES];
+  RotatingQueue<u64int> active_process_queue;
+  
 
   // Metodai.
 

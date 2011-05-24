@@ -160,6 +160,8 @@ extern "C" void activate_kernel_pager() {
 
 extern "C" int main() {
 
+  //monitor.set_proc_m(&process_manager);
+  
   multiprogramming_enabled = false;
 
   load_gdt();
@@ -248,4 +250,28 @@ extern "C" int main() {
   //monitor.write_hex(rez);
 
   return 0xBABADEAD;
+  }
+  
+  void update_processes_info(){
+    monitor.clear();
+    monitor.write_string("Procesu sarasas:\n");
+    for (int i = 0; i < 8; i++) {
+      if (process_manager.processes[i].is_existing()) {
+        if (process_manager.processes[i].is_blocked()) {
+          monitor.write_string("\n-\tblokuotas:     ----");
+          monitor.write_hex(i);
+        }
+        else {
+          monitor.write_string("\n+\taktyvus:       ++++");
+          monitor.write_hex(i);
+        }
+      }
+      else {
+        monitor.write_string("\n \tneegzistuojantis:  ");
+        monitor.write_hex(i);
+      }
+    }
+    monitor.write_string("\n  Is viso eileje yra: ");
+    monitor.write_hex(process_manager.active_process_queue.get_size());
+    
   }
