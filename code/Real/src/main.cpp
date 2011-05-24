@@ -157,7 +157,7 @@ extern "C" int main() {
   kernel_pager.activate();
 
   // Įjungiam laikroduką.
-  enable_PIT(&pit);
+  pit.init_pit();
 
   // Inicijuojam kitus puslapiavimo mechanizmus.
   for (int i = 0; i < PAGERS; i++) {
