@@ -148,6 +148,9 @@ public:
     if (file_descriptor == 0 && mode == FILE_MODE_READ) {
       return true;
       }
+    else if ((file_descriptor == 1 && mode == FILE_MODE_WRITE)) {
+      return true;
+      }
     else {
       return false;
       }
@@ -165,7 +168,17 @@ public:
       }
     
     }
-  
+
+  void write_byte(u64int file_descriptor, char symbol) {
+
+    if (file_descriptor == 1) {
+      this->file_manager->write_stdout_byte(this->screen_id, symbol);
+      }
+    else {
+      // TODO: Realizuoti.
+      }
+    
+    }
 
   };
 

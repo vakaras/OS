@@ -15,6 +15,12 @@ enum FILE_MODE {FILE_MODE_READ, FILE_MODE_WRITE};
 class ProcessManager;
 
 
+void print_program_message(int screen_id, char text);
+void print_program_message(int screen_id, const char * text);
+void print_program_message(int screen_id, u64int number, u8int size);
+void print_program_message(int screen_id, u64int number);
+
+
 class FileManager {
 
 private:
@@ -22,8 +28,8 @@ private:
   // Atributai.
 
   ProcessManager *process_manager;
-  RotatingQueue<u64int> screen_process_queue[SCREEN_NUMBER];
-  RotatingQueue<char> screen_buffer_queue[SCREEN_NUMBER];
+  RotatingQueue<u64int> screen_process_queue[SCREEN_NUMBER+1];
+  RotatingQueue<char> screen_buffer_queue[SCREEN_NUMBER+1];
   
   // Metodai.
 
@@ -42,6 +48,17 @@ public:
   void get_stdin_byte(u64int screen_id, u64int process_id) {
     this->queue_process_for_byte(process_id, screen_id);
     this->plan();
+    }
+
+  void give_stdin_byte(u64int screen_id, char symbol) {
+    this->screen_buffer_queue[screen_id].push_back(symbol);
+    this->plan();
+    }
+  
+  void write_stdout_byte(u64int screen_id, char symbol) {
+
+    print_program_message(screen_id, symbol);
+
     }
 
   void plan();

@@ -25,6 +25,13 @@
 #define PUT_BYTE 6
 
 
+void print_service_message(int screen_id, char text);
+void print_service_message(int screen_id, const char * text);
+void print_service_message(int screen_id, u64int number, u8int size);
+void print_service_message(int screen_id, u64int number);
+void set_screen_type(u64int screen_id, bool type);
+
+
 class ProcessManager {
 
 private:
@@ -117,6 +124,20 @@ public:
               file_descriptor, FILE_MODE_READ)) {
           this->processes[this->running_process_id].read_byte(
               file_descriptor);
+          }
+        else {
+          debug_value("Žudomas procesas: ", this->running_process_id);
+          this->kill_process(this->running_process_id);
+          }
+        }
+        break;
+      case PUT_BYTE: {
+        debug_value("put_byte, process_id:", this->running_process_id);
+        u64int file_descriptor = cpu->BX;
+        if (this->processes[this->running_process_id].opened(
+              file_descriptor, FILE_MODE_WRITE)) {
+          this->processes[this->running_process_id].write_byte(
+              file_descriptor, (char) cpu->DI);
           }
         else {
           debug_value("Žudomas procesas: ", this->running_process_id);
@@ -275,12 +296,19 @@ public:
       debug_string("\n");
       PANIC("Blogas proceso ID.");
     }
+
     MemoryResource memory_resource = \
       this->processes[process_id].get_memory_resource();
+    u64int screen_id = this->processes[process_id].get_screen_id();
 
     this->processes[process_id] = Process();
 
     this->resource_manager->free_memory_resource(memory_resource);
+    
+    if (screen_id < 5) {
+      set_screen_type(screen_id, false);
+      print_service_message(screen_id, "Process ended.\n");
+      }
 
     }
 
@@ -319,6 +347,10 @@ public:
 
     this->active_process_queue.push_back(process_id);
 
+    if (screen_id < 5) {
+      set_screen_type(screen_id, true);
+      print_service_message(screen_id, "Process started.\n");
+      }
     debug_string("Sukurtas procesas.\n");
 
     }
@@ -371,6 +403,12 @@ public:
 
     this->processes[process_id].set_value(resource.get_id());
     
+    }
+
+  void char_entered(u64int screen_id, char symbol) {
+
+    this->file_manager->give_stdin_byte(screen_id, symbol);
+
     }
 
   };

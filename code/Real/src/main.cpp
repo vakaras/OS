@@ -116,43 +116,47 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   }
   
-  void print_service_message(int screen_id, char text) {
-    monitor.print_char_message(screen_id, text, COLOR_WHITE);
+void print_service_message(int screen_id, char text) {
+  monitor.print_char_message(screen_id, text, COLOR_WHITE);
   }
-  
-  void print_program_message(int screen_id, char text) {
-    monitor.print_char_message(screen_id, text, COLOR_GREEN);
+
+void print_program_message(int screen_id, char text) {
+  monitor.print_char_message(screen_id, text, COLOR_GREEN);
   }
-  
-  void print_service_message(int screen_id, const char * text) {
-    monitor.print_string_message(screen_id, text, COLOR_WHITE);
+
+void print_service_message(int screen_id, const char * text) {
+  monitor.print_string_message(screen_id, text, COLOR_WHITE);
   }
-  
-  void print_program_message(int screen_id, const char * text) {
-    monitor.print_string_message(screen_id, text, COLOR_GREEN);
+
+void print_program_message(int screen_id, const char * text) {
+  monitor.print_string_message(screen_id, text, COLOR_GREEN);
   }
-  
-  void print_service_message(int screen_id, u64int number, u8int size) {
-    monitor.print_hex_message(screen_id, number, size, COLOR_WHITE);
+
+void print_service_message(int screen_id, u64int number, u8int size) {
+  monitor.print_hex_message(screen_id, number, size, COLOR_WHITE);
   }
-  
-  void print_program_message(int screen_id, u64int number, u8int size) {
-    monitor.print_hex_message(screen_id, number, size, COLOR_GREEN);
+
+void print_program_message(int screen_id, u64int number, u8int size) {
+  monitor.print_hex_message(screen_id, number, size, COLOR_GREEN);
   }
-  
-  void print_service_message(int screen_id, u64int number) {
-    monitor.print_dec_message(screen_id, number, COLOR_WHITE);
+
+void print_service_message(int screen_id, u64int number) {
+  monitor.print_dec_message(screen_id, number, COLOR_WHITE);
   }
-  
-  void print_program_message(int screen_id, u64int number) {
-    monitor.print_dec_message(screen_id, number, COLOR_GREEN);
+
+void print_program_message(int screen_id, u64int number) {
+  monitor.print_dec_message(screen_id, number, COLOR_GREEN);
+  }
+
+void set_screen_type(u64int screen_id, bool type) {
+  monitor.set_screen_type((u32int) screen_id, type);
   }
 
 extern "C" void load_gdt();
 
 extern "C" void activate_kernel_pager() {
   kernel_pager.activate();
-}
+  }
 
 extern "C" int main() {
 

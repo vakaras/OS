@@ -10,6 +10,15 @@ _start:
   mov rbx, 0xdead1111
   xchg bx, bx
 
-  ; Paprašo, kad išjungtų.
-  mov rax, 0
+.loop:
+
+  mov rbx, 0
+  mov rax, 5
   int 0x3f
+
+  mov rdi, rax
+  mov rbx, 1
+  mov rax, 6
+  int 0x3f
+
+  jmp .loop

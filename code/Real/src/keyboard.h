@@ -181,8 +181,8 @@ public:
             };
             if((this->monitor->active_screen_id < 5) 
                 && (this->monitor->get_active_screen_type())) {
-//               this->proc_m->char_entered(this->monitor->active_screen_id, 
-//                   new_char);
+              this->proc_m->char_entered(this->monitor->active_screen_id, 
+                  new_char);
             };
             this->monitor->put_character(new_char);
           }
