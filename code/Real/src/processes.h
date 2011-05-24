@@ -6,6 +6,7 @@
 #include "structures/rotating_queue.h"
 #include "resources.h"
 #include "process.h"
+#include "file_manager.h"
 #include "elf64.h"
 
 #define MAX_PROCESSES 0x10
@@ -20,6 +21,9 @@
 
 #define LOAD_PROCESS 12
 
+#define GET_BYTE 5
+#define PUT_BYTE 6
+
 
 class ProcessManager {
 
@@ -30,6 +34,7 @@ private:
   Process processes[MAX_PROCESSES];
   ResourceManager *resource_manager;
   ProgramManager *program_manager;
+  FileManager *file_manager;
 
   u64int running_process_id;            // Kuris procesas yra šiuo metu 
                                         // vykdomas?
@@ -44,10 +49,12 @@ public:
   // Metodai.
 
   ProcessManager(
-      ResourceManager *resource_manager, ProgramManager *program_manager) {
+      ResourceManager *resource_manager, ProgramManager *program_manager,
+      FileManager *file_manager) {
 
     this->resource_manager = resource_manager;
     this->program_manager = program_manager;
+    this->file_manager = file_manager;
     this->running_process_id = 0;       // Požymis, kad dar nei vienas iš 
                                         // procesų nebuvo vykdomas.
     
@@ -103,10 +110,22 @@ public:
             this->running_process_id);
         this->load_process(cpu->DI, cpu->SI, cpu->DX);
         break;
+      case GET_BYTE: {
+        debug_value("get_byte, process_id:", this->running_process_id);
+        u64int file_descriptor = cpu->BX;
+        if (this->processes[this->running_process_id].opened(
+              file_descriptor, FILE_MODE_READ)) {
+          this->processes[this->running_process_id].read_byte(
+              file_descriptor);
+          }
+        else {
+          debug_value("Žudomas procesas: ", this->running_process_id);
+          this->kill_process(this->running_process_id);
+          }
+        }
+        break;
       default:
-        debug_value(
-            "Žudomas procesas: ", 
-            this->running_process_id);
+        debug_value("Žudomas procesas: ", this->running_process_id);
         this->kill_process(this->running_process_id);
         break;
       }
@@ -295,7 +314,8 @@ public:
         this->processes[process_id].is_existing(); process_id++);
 
     this->processes[process_id] = Process(
-        this, process_id, screen_id, memory_resource, entry);
+        this, process_id, screen_id, memory_resource, entry, 
+        this->file_manager);
 
     this->active_process_queue.push_back(process_id);
 
@@ -331,9 +351,11 @@ public:
 
     }
 
-  void give_loader_memory(u64int process_id, MemoryResource resource) {
+  void give_byte(u64int process_id, char symbol) {
 
-    this->processes[process_id].set_value(resource.get_id());
+    if (this->processes[process_id].is_existing()) {
+      this->processes[process_id].set_value((u64int) symbol);
+      }
     
     }
 
@@ -342,6 +364,12 @@ public:
 
     this->processes[process_id].set_value(
         resource.get_program_id(), resource.get_screen_id());
+    
+    }
+
+  void give_loader_memory(u64int process_id, MemoryResource resource) {
+
+    this->processes[process_id].set_value(resource.get_id());
     
     }
 
