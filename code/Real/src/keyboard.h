@@ -129,9 +129,9 @@ public:
     if((this->komanda[0]=='k') && (this->komanda[1]=='i') 
       && (this->komanda[2]=='l') && (this->komanda[3]=='l')
       && (this->komanda[4]==' ')){
-        this->proc_m->kill_process(this->komanda[4]-'0');
+        this->proc_m->kill_process(this->komanda[5]-'0');
         this->monitor->write_string("\nKilling process #");
-        this->monitor->write_dec(this->komanda[4]-'0');
+        this->monitor->write_dec(this->komanda[5]-'0');
       };
     
     this->monitor->put_character('\n');
