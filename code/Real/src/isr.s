@@ -42,10 +42,7 @@ isr %+ n :              ; defines symbols isr0, isr1 etc.
     push rcx
     push rdx
     push rbx
-  .cia:                  ; FIXME: vykdant komandas su qword [Temp] 
-                         ; linker failina
-    ;push qword [Temp]
-    ;push rax
+  .cia:       
     
     push rbp
     push rsi
@@ -73,10 +70,7 @@ isr %+ n :              ; defines symbols isr0, isr1 etc.
     mov dx, 0x20
     mov ax, 0x20
     out dx, al
-                        ; FIXME: Meginant pasiekti interrupt_handlers
-                        ; adresa taip pat failina linker
 
-;     mov rax, default_interrupt_handler
     call default_interrupt_handler
 
     add rsp, 8      ; Pop(qword n)

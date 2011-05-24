@@ -3,6 +3,7 @@
 
 #include "types.h"
 #include "memlib.h"
+#include "debug.h"
 
 
 #define PAGE_TABLE_PERM ((1<<0) | (1<<1))
@@ -70,13 +71,16 @@ public:
    * Prideda 2 MB puslapį.
    */
   void add_page(u64int number) {
-    // FIXME: Pridėti patikrinimą, kad 0 <= number < 512.
-    this->entry[number] = (
-        PAGE_TABLE_PERM_NOCACHE | 
-        PAGE_TABLE_LARGE_FLAG | 
-        (this->physical_address + 0x200000 * number)
-        );
+    if(number<512){
+      this->entry[number] = (
+          PAGE_TABLE_PERM_NOCACHE | 
+          PAGE_TABLE_LARGE_FLAG | 
+          (this->physical_address + 0x200000 * number)
+          );
+    } else {
+      PANIC("Number nera 0<= X <512");
     }
+  }
 
   /**
    * Nukopijuoja egzistuojančią puslapių lentelę iš karto po savo įrašų.

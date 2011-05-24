@@ -210,17 +210,34 @@ public:
   
   void block_process(u64int process_id) {
 
-    // FIXME: Patikrinti ar procesas su tokiu process_id egzistuoja ir nėra
-    // užblokuotas.
-
+    if((process_id > 0)&&(process_id < MAX_PROCESSES)){
+      if(!(this->processes[process_id].is_existing())){
+        PANIC("Procesas neegzistuoja");
+      } else if(this->processes[process_id].is_blocked()) {
+        PANIC("Procesas jau yra blokuotas");
+      }
+    } else {
+      debug_dec(process_id);
+      debug_string("\n");
+      PANIC("Blogas proceso ID.");
+    }
     this->processes[process_id].block();
 
     }
   
   void activate_process(u64int process_id) {
 
-    // FIXME: Patikrinti ar procesas su tokiu process_id egzistuoja ir yra
-    // užblokuotas.
+    if((process_id > 0)&&(process_id < MAX_PROCESSES)){
+      if(!(this->processes[process_id].is_existing())){
+        PANIC("Procesas neegzistuoja");
+      } else if(!(this->processes[process_id].is_blocked())) {
+        PANIC("Procesas nebuvo blokuotas");
+      }
+    } else {
+      debug_dec(process_id);
+      debug_string("\n");
+      PANIC("Blogas proceso ID.");
+    }
 
     this->processes[process_id].unblock();
     this->active_process_queue.push_back(process_id);
@@ -229,6 +246,16 @@ public:
 
   void kill_process(u64int process_id) {
 
+    if((process_id > 0)&&(process_id < MAX_PROCESSES)){
+      if(!(this->processes[process_id].is_existing())){
+        PANIC("Procesas neegzistuoja");
+      };
+    } else {
+      debug_string("proceso id: ");
+      debug_dec(process_id);
+      debug_string("\n");
+      PANIC("Blogas proceso ID.");
+    }
     MemoryResource memory_resource = \
       this->processes[process_id].get_memory_resource();
 

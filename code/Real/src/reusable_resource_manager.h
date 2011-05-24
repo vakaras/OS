@@ -2,6 +2,7 @@
 #define REUSABLE_RESOURCE_MANAGER_H 1
 
 #include "types.h"
+#include "debug.h"
 #include "structures/rotating_queue.h"
 
 #define MAX_REUSABLE_RESOURCES 10
@@ -49,8 +50,7 @@ public:
       
       }
 
-    // FIXME: Jei pasiekėme čia, tai turėtų mesti klaidą.
-
+    PANIC("Nepavyko sukurti resurso");
     }
 
   void get_resource(u64int process_id) {
@@ -70,8 +70,10 @@ public:
 
     u64int id = resource.get_id();
     
-    // FIXME: Reikėtų patikrinti ar id geras.
-
+    if(id >= MAX_REUSABLE_RESOURCES) {
+      PANIC("Meginama atlaisvniti negzistuojanti resursa");
+    }
+    
     this->resources[id].set_free(true);
 
     this->plan();
@@ -80,8 +82,10 @@ public:
 
   T get_resource_info(u64int resource_id) {
 
-    // FIXME: Reikėtų patikrinti ar id geras.
-
+    if(resource_id >= MAX_REUSABLE_RESOURCES) {
+      PANIC("Meginama gauti negzistuojancio resurso info");
+    }
+    
     return this->resources[resource_id];
     }
 

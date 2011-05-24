@@ -279,6 +279,12 @@ public:
     this->cursor.move();
 
     }
+  
+  void update_htop() {
+    if(this->active_screen_id == 6) {
+      
+    }
+  }
     
   void set_foreground_color(u8int color) {
     this->foreground_color = color;

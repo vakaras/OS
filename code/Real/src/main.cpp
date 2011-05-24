@@ -102,7 +102,7 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   if (!IS_HIGHER_HALF(cpu.IP)) {
     process_manager.plan();
-    monitor.write_string("\n\nPlanuotojo klaida!\n");
+    PANIC("Planuotojo klaida: Nera vykdymui skirto proceso!");
     }
 
   if (old_pager != -1) {
@@ -222,7 +222,6 @@ extern "C" int main() {
   print_program_message(2, "as irgi cia\n\n");
   print_service_message(5, "labas pasauli nr5.\n");
   print_program_message(5, "as irgi cia5\n\n");
-  PANIC("panic text!");
   // Persijungiam į kitą procesą.
   process_manager.plan();
 

@@ -22,8 +22,7 @@ int __cxa_atexit(void (*f)(void *), void *objptr, void *dso)
 void __cxa_finalize(void *f)
 {
 	//uarch_t i = __atexit_func_count;
-	int i = __atexit_func_count;          // FIXME: Susitvarkyti su kintamųjų
-                                        // tipais.
+	int i = __atexit_func_count;         
 
 	if (!f)
 	{

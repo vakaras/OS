@@ -19,12 +19,12 @@ public:
   }
   
   void process_timer(CPUContext *cpu) {
-    this->tick++;
-    if (cpu->vector == 32){
-      if(this->tick < 4){
-//         this->monitor->write_string("Tick: ");
-//         this->monitor->write_dec((u32int)this->tick);
-//         this->monitor->write_string("\n");
+    
+    if (cpu->vector == 32) {
+      this->tick++;
+      if(this->tick > 100) {
+        this->tick = 0;
+        this->monitor->update_htop();
       }
     }
   }

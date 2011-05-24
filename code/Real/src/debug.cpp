@@ -142,6 +142,7 @@ void debug_hex(u64int number) {
     memcpy((u8int*)0xB8000, (u8int*)memory, SCREEN_WIDTH*8*2) ;
     
     pause();
+    asm volatile(" cli; hlt; ");
   }
 
 // Nusiunčia šešioliktainį skaičių su paaiškinimu į Bochs.

@@ -47,7 +47,9 @@ public:
 
   void push_back(T element) {
 
-    // FIXME: Pridėti patikrinimą, ar nebuvo perpildyta eilė.
+    if(this->get_size() >= ROTATING_QUEUE_MAX_NODES) {
+      PANIC("Rotating queue is full on push_back()");
+    }
 
     u64int old_id = this->end;
 
@@ -61,7 +63,9 @@ public:
   
   T pop_front() {
 
-    // FIXME: Pridėti patikrinimą, ar yra ką gražinti.
+    if(this->is_empty()){
+      PANIC("Rotating queue is emppty on pop_front()");
+    }
 
     u64int old_id = this->begin;
     this->begin++;
