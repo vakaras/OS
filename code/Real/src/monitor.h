@@ -7,6 +7,7 @@
 #include "structures/array2dpointer.h"
 #include "debug.h"
 
+void update_processes_info();
 
 /**
  * Ekrano valdymo klasė.
@@ -235,9 +236,7 @@ private:
     } screen[6];
 
 // Atributai.
-  
   Screen *active_screen;                // Nuoroda į aktyvų ekraną.
-
 // Metodai.
 
 public:
@@ -282,7 +281,7 @@ public:
   
   void update_htop() {
     if(this->active_screen_id == 6) {
-      
+      update_processes_info();
     }
   }
     
