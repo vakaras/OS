@@ -150,6 +150,10 @@ extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
 extern "C" void load_gdt();
 
+extern "C" void activate_kernel_pager() {
+  kernel_pager.activate();
+}
+
 extern "C" int main() {
 
   multiprogramming_enabled = false;
@@ -173,6 +177,8 @@ extern "C" int main() {
     //pager[i].clear_lower();
     //pager[i].create_lower();
     }
+    
+  monitor.write_string(__FILE__);
 
   resource_manager.set_process_manager(&process_manager);
   resource_manager.add_resource(MemoryResource(0, &pager[0], false));
@@ -223,6 +229,7 @@ extern "C" int main() {
   print_program_message(2, "as irgi cia\n\n");
   print_service_message(5, "labas pasauli nr5.\n");
   print_program_message(5, "as irgi cia5\n\n");
+  PANIC("panic text!");
   // Persijungiam į kitą procesą.
   process_manager.plan();
 
