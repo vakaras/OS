@@ -47,7 +47,7 @@ public:
 
   void push_back(T element) {
 
-    if(this->get_size() >= ROTATING_QUEUE_MAX_NODES) {
+    if(this->get_size() == ROTATING_QUEUE_MAX_NODES - 1) {
       PANIC("Rotating queue is full on push_back()");
     }
 
