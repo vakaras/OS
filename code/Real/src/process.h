@@ -64,6 +64,7 @@ public:
     this->memory_resource = memory_resource;
     this->process_manager = process_manager;
     this->file_manager = file_manager;
+    this->file_manager->reset_stdin(this->screen_id);
     this->exists = true;
 
     this->stack = entry + 0x100000;     // Pradinė dėklo pozicija.

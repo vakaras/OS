@@ -77,6 +77,45 @@ public:
     return this->nodes[old_id];
     }
 
+  /**
+   * Išvalo eilę.
+   */
+  void clear() {
+    this->begin = 0;
+    this->end = 0;
+    }
+
+  /**
+   * Visus įrašus turinčius reiškmę a pakeičia turinčiais reikšmę b
+   */
+  void replace(T a, T b) {
+
+    if (this->end < this->begin) {
+
+      for (u64int i = this->begin; i < ROTATING_QUEUE_MAX_NODES; i++) {
+        if (this->nodes[i] == a) {
+          this->nodes[i] = b;
+          }
+        }
+      for (u64int i = 0; i < this->end; i++) {
+        if (this->nodes[i] == a) {
+          this->nodes[i] = b;
+          }
+        }
+
+      }
+    else {
+
+      for (u64int i = this->begin; i < this->end; i++) {
+        if (this->nodes[i] == a) {
+          this->nodes[i] = b;
+          }
+        }
+
+      }
+
+    }
+
   };
 
 

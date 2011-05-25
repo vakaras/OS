@@ -268,17 +268,19 @@ public:
   
   void activate_process(u64int process_id) {
 
-    if((process_id > 0)&&(process_id < MAX_PROCESSES)){
-      if(!(this->processes[process_id].is_existing())){
+    if ((process_id > 0) && (process_id < MAX_PROCESSES)) {
+      if (!this->processes[process_id].is_existing()) {
         PANIC("Procesas neegzistuoja");
-      } else if(!(this->processes[process_id].is_blocked())) {
+        } 
+      else if (!this->processes[process_id].is_blocked()) {
         PANIC("Procesas nebuvo blokuotas");
-      }
-    } else {
+        }
+      } 
+    else {
       debug_dec(process_id);
       debug_string("\n");
       PANIC("Blogas proceso ID.");
-    }
+      }
 
     this->processes[process_id].unblock();
     this->active_process_queue.push_back(process_id);
@@ -305,8 +307,10 @@ public:
     this->processes[process_id] = Process();
 
     this->resource_manager->free_memory_resource(memory_resource);
+    this->resource_manager->process_killed(process_id);
     
     if (screen_id < 5) {
+      this->file_manager->reset_stdin(screen_id);
       set_screen_type(screen_id, false);
       print_service_message(screen_id, "Process ended.\n");
       }

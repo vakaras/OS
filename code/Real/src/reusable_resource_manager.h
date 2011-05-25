@@ -103,6 +103,9 @@ public:
             !this->resources[i].is_empty_slot()) {
 
           u64int process_id = this->process_queue.pop_front();
+          if (process_id == 0) {
+            debug_string("\tProcesas jau nebegyvas.\n");
+            }
           this->resources[i].set_free(false);
 
           this->resource_manager->give_resource(
@@ -152,6 +155,12 @@ public:
       }
 
     return number;
+    }
+
+  void process_killed(u64int process_id) {
+
+    this->process_queue.replace(process_id, 0);
+
     }
 
   };

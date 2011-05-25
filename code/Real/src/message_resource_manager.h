@@ -79,19 +79,28 @@ public:
     while ((!this->resource_queue.is_empty()) 
         && (!this->process_queue.is_empty())) {
 
-      T resource = this->resource_queue.pop_front();
       u64int process_id = this->process_queue.pop_front();
 
-      this->resource_manager->give_resource(process_id, resource);
-      this->resource_manager->activate_process(process_id);
-
-      debug_value("\tŽinutė atiduota procesui: ", process_id);
+      if (process_id == 0) {
+        debug_string("\tProcesas jau nebegyvas.\n");
+        }
+      else {
+        T resource = this->resource_queue.pop_front();
+        debug_value("\tŽinutė atiduodama procesui: ", process_id);
+        this->resource_manager->give_resource(process_id, resource);
+        this->resource_manager->activate_process(process_id);
+        }
 
       }
     
 
     }
-  
+
+  void process_killed(u64int process_id) {
+
+    this->process_queue.replace(process_id, 0);
+
+    }
   
   };
 

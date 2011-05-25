@@ -142,6 +142,15 @@ public:
 
     }
 
+  void process_killed(u64int process_id) {
+
+    this->message_waiter_a_manager.process_killed(process_id);
+    this->message_waiter_b_manager.process_killed(process_id);
+    this->message_program_load_manager.process_killed(process_id);
+    this->memory_manager.process_killed(process_id);
+    
+    }
+
   };
 
 #endif

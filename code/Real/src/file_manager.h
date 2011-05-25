@@ -50,6 +50,11 @@ public:
     this->plan();
     }
 
+  void reset_stdin(u64int screen_id) {
+    this->screen_buffer_queue[screen_id].clear();
+    this->screen_process_queue[screen_id].clear();
+    }
+
   void give_stdin_byte(u64int screen_id, char symbol) {
     this->screen_buffer_queue[screen_id].push_back(symbol);
     this->plan();
