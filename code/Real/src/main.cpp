@@ -274,4 +274,23 @@ extern "C" int main() {
     monitor.write_string("\n  Is viso eileje yra: ");
     monitor.write_hex(process_manager.active_process_queue.get_size());
     
+    monitor.write_string("\n\nProcesoriaus busena:\n");
+    monitor.write_value("rax: ",cpu.AX);
+    monitor.write_value(" rbx: ",cpu.BX);
+    monitor.write_value(" rcx: ",cpu.CX);
+    monitor.write_value("\nrdx: ",cpu.DX);
+    monitor.write_value(" rsp: ",cpu.SP);
+    monitor.write_value(" rbp: ",cpu.BP);
+    monitor.write_value("\nrsi: ",cpu.SI);
+    monitor.write_value(" rdi: ",cpu.DI);
+    monitor.write_value(" rip: ",cpu.IP);
+    monitor.write_value("\nr8 : ",cpu.R8);
+    monitor.write_value(" r9 : ",cpu.R9);
+    monitor.write_value(" r10: ",cpu.R10);
+    monitor.write_value("\nr11: ",cpu.R11);
+    monitor.write_value(" r12: ",cpu.R12);
+    monitor.write_value(" r13: ",cpu.R13);
+    monitor.write_value("\nr14: ",cpu.R14);
+    monitor.write_value(" r15: ",cpu.R15);
+//     monitor.write_string(" r10: ",cpu.R10);
   }

@@ -449,6 +449,11 @@ public:
       }
 
     }
+    
+  void write_value(const char * text, u64int number) {
+    this->write_string(text);
+    this->write_hex(number);
+  }
 
   /// Išveda skaičių šešioliktainiu formatu.
   void write_hex(u32int number) {
