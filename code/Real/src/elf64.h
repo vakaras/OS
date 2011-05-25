@@ -119,10 +119,13 @@ public:
     monitor->write_string("\nAdresas:  ");
     monitor->write_hex((u64int) this->module_list.module);
 
-    for (u64int i = 0; i < this->get_count(); i++) {
-      monitor->write_string("\n\tPavadinimas: ");
+    for (u32int i = 0; i < this->get_count(); i++) {
+      monitor->write_string("\n\t");
+      monitor->write_dec(i);
+      monitor->write_string("\tPavadinimas: ");
       monitor->write_string(this->module_list.module[i].name);
       }
+    monitor->write_string("\n");
 
     }
 
