@@ -9,7 +9,7 @@ end
 fragment 128258 "alt"
   xyzwh 35 92 1995 682 165
 end
-note 128386 "Jei file_descriptor == 2, tai yra jei naudojamas stdout."
+note 128386 "Jei file_descriptor == 1, tai yra jei naudojamas stdout."
   xyzwh 85 110 2005 367 35
 fragment 129026 "alt"
   xyzwh 32 284 1995 670 225

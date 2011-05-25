@@ -49,7 +49,7 @@ note 138242 "Jei atidarytas."
 note 140162 "TODO: Programa bando ištrinti failą."
   xyzwh 110 2060 2000 249 47
 note 140290 "Programa bando nuskaityti baitą iš failo."
-  xyzwh 104 2135 2000 281 37
+  xyzwh 90 2139 2000 281 37
 fragment 141314 "alt"
   xyzwh 35 2247.5 1995 488 123
 end
@@ -455,9 +455,9 @@ selfreflexivemsg 144002
 msg 144514 synchronous
   from durationcanvas_ref 142978
   to durationcanvas_ref 144386
-  yz 2867 2015 msg operation_ref 139394 // "write_byte(in file_descriptor : u64int) : void"
+  yz 2867 2015 msg operation_ref 139394 // "write_byte(in file_descriptor : u64int, in symbol : char) : void"
   show_full_operations_definition default drawing_language default show_context_mode default
-  args "file_descriptor"
+  args "file_descriptor, symbol"
   label_xy 203 2852
 msg 144642 return
   from durationcanvas_ref 144386

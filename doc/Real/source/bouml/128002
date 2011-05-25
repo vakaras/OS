@@ -1,6 +1,6 @@
 format 74
 "core" // core
-  revision 5
+  revision 6
   modified_by 2 "vakaras"
   // class settings
   //class diagram settings
@@ -325,6 +325,10 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 138882 // process_manager (<association>)
+	relation_ref 137218 // <association>
       end
     end
 
@@ -1256,11 +1260,12 @@ ${inlines}
 
       operation 139394 "write_byte"
 	public explicit_return_type "void"
-	nparams 1
+	nparams 2
 	  param in name "file_descriptor" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "symbol" explicit_type "char"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1311,6 +1316,18 @@ ${inlines}
 	php_decl ""
 	python_decl ""
 	idl_decl ""
+      end
+
+      classrelation 139010 // file_manager (<association>)
+	relation 137346 ----
+	  a role_name "file_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 139010 // file_manager (<association>)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 139138 // <association>
       end
     end
 
@@ -1366,7 +1383,7 @@ ${inlines}
       end
 
       operation 137602 "queue_process_for_byte"
-	public explicit_return_type "void"
+	private explicit_return_type "void"
 	nparams 2
 	  param in name "process_id" explicit_type "u64int"
 	  param in name "screen_id" explicit_type "u64int"
@@ -1517,6 +1534,34 @@ ${inlines}
 	
 	
       end
+
+      classrelation 138498 // files (<composition>)
+	relation 137090 *---
+	  a role_name "files" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 138498 // files (<composition>)
+	  b role_name "file_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 138626 // file_manager (<composition>)
+      end
+
+      classrelation 138754 // resource_manager (<association>)
+	relation 137218 ----
+	  a role_name "resource_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 138754 // resource_manager (<association>)
+	  b role_name "process_manager" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
+"
+	    classrelation_ref 138882 // process_manager (<association>)
+      end
+
+      classrelation 139138 // <association>
+	relation_ref 137346 // <association>
+      end
     end
 
     classinstance 135170 ""
@@ -1580,6 +1625,10 @@ ${inlines}
 	
 	
 	
+      end
+
+      classrelation 138626 // file_manager (<composition>)
+	relation_ref 137090 // <composition>
       end
     end
 

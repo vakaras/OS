@@ -16,7 +16,7 @@ classinstancecanvas 129282 classinstance_ref 128002 //
 end
 classinstance 130306 class_ref 135170 // Process
   name ""   xyz 602 4 2000 life_line_z 2000
-fragment 131202 "alt"
+fragment 131202 "loop"
   xyzwh 47 492 1995 735 311
 end
 note 131330 "Per visus turinčius baitų stdin, kurių laukia."
