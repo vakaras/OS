@@ -1,6 +1,6 @@
 format 74
 "core" // core
-  revision 6
+  revision 7
   modified_by 2 "vakaras"
   // class settings
   //class diagram settings
@@ -327,7 +327,7 @@ ${inlines}
 	
       end
 
-      classrelation 138882 // process_manager (<association>)
+      classrelation 138882 // <association>
 	relation_ref 137218 // <association>
       end
     end
@@ -1329,6 +1329,18 @@ ${inlines}
 "
 	    classrelation_ref 139138 // <association>
       end
+
+      classrelation 146178 // files (<composition>)
+	relation 144258 *---
+	  a role_name "files" multiplicity "*" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 146178 // files (<composition>)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 146306 // <composition>
+      end
     end
 
     classinstance 135042 ""
@@ -1351,6 +1363,22 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 137602 "queue_process_for_byte"
+	private explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "screen_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 137218 "exists"
 	public explicit_return_type "bool"
 	nparams 1
@@ -1382,43 +1410,14 @@ ${inlines}
 	comment "Grąžina sukurto failo id."
       end
 
-      operation 137602 "queue_process_for_byte"
-	private explicit_return_type "void"
+      operation 137730 "get_file_write"
+	public explicit_return_type "void"
 	nparams 2
+	  param in name "file_name" explicit_type "u64int"
 	  param in name "process_id" explicit_type "u64int"
-	  param in name "screen_id" explicit_type "u64int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 137730 "get_file_write"
-	public explicit_return_type "void"
-	nparams 1
-	  param in name "file_name" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 137858 "plan"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1461,22 +1460,6 @@ ${inlines}
 	nparams 2
 	  param in name "screen_id" explicit_type "u64int"
 	  param in name "process_id" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
-"
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
-  ${body}}
-"
-	
-	
-	
-	
-      end
-
-      operation 139650 "queue_process_for_file"
-	public explicit_return_type "void"
-	nparams 2
-	  param in name "process_id" explicit_type "u64int"
-	  param in name "file_id" explicit_type "u64int"
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
 	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
@@ -1535,6 +1518,20 @@ ${inlines}
 	
       end
 
+      operation 137858 "plan"
+	public explicit_return_type ""
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       classrelation 138498 // files (<composition>)
 	relation 137090 *---
 	  a role_name "files" multiplicity "*" private
@@ -1556,7 +1553,7 @@ ${inlines}
 	  b role_name "process_manager" multiplicity "1" private
 	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} * ${name}${value};
 "
-	    classrelation_ref 138882 // process_manager (<association>)
+	    classrelation_ref 138882 // <association>
       end
 
       classrelation 139138 // <association>
@@ -1584,8 +1581,69 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+      operation 164098 "set_byte"
+	protected explicit_return_type "void"
+	nparams 2
+	  param in name "offset" explicit_type "u64int"
+	  param in name "byte" explicit_type "u8int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 164226 "get_byte"
+	protected explicit_return_type "u8int"
+	nparams 1
+	  param in name "offset" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
       operation 137986 "get_waiting_process_id"
 	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 164482 "add_process_to_waiting_queue"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "process_id" explicit_type "u64int"
+	  param in name "mode" type class_ref 135554 // FILE_MODE
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, ${t1} ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 164610 "plan"
+	public explicit_return_type "void"
 	nparams 0
 	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
 "
@@ -1629,6 +1687,57 @@ ${inlines}
 
       classrelation 138626 // file_manager (<composition>)
 	relation_ref 137090 // <composition>
+      end
+
+      attribute 136962 "file_name"
+	protected explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137090 "address"
+	protected explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137218 "offset"
+	protected explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 145666 // process_queue (<composition>)
+	relation 143874 *---
+	  a role_name "process_queue" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 145666 // process_queue (<composition>)
+	  b role_name "" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 145794 // <composition>
+	  association_type class_ref 149634 // ProcessContainer
+      end
+
+      classrelation 146050 // <generalisation>
+	relation 144130 ---|>
+	  a public
+	    cpp default "${type}"
+	    classrelation_ref 146050 // <generalisation>
+	  b parent class_ref 142338 // ReusableResource
       end
     end
 
@@ -1783,6 +1892,10 @@ ${inlines}
       classrelation 131970 // <composition>
 	relation_ref 130562 // <composition>
       end
+
+      classrelation 145794 // <composition>
+	relation_ref 143874 // <composition>
+      end
     end
 
     class 142210 "Resource"
@@ -1907,6 +2020,7 @@ ${inlines}
 	
 	
       end
+
     end
 
     class 142466 "MessageWaiterBResource"
@@ -2083,6 +2197,88 @@ ${inlines}
       idl_decl ""
       explicit_switch_type ""
       
+    end
+
+    class 149634 "ProcessContainer"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 137346 "process_id"
+	public explicit_type "u64int"
+	init_value "0"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137474 "mode"
+	public type class_ref 135554 // FILE_MODE
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+    end
+
+    class 149762 "OpenedFile"
+      visibility package 
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      attribute 137602 "opened"
+	public explicit_type "bool"
+	init_value "false"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137730 "file_id"
+	public explicit_type "u64int"
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      attribute 137858 "mode"
+	public type class_ref 135554 // FILE_MODE
+	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	java_decl ""
+	php_decl ""
+	python_decl ""
+	idl_decl ""
+      end
+
+      classrelation 146306 // <composition>
+	relation_ref 144258 // <composition>
+      end
     end
   end
 end

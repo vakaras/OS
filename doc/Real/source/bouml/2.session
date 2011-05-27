@@ -1,30 +1,42 @@
-window_sizes 1366 744 407 953 550 120
+window_sizes 1600 1176 369 1225 988 114
 diagrams
   sequencediagram_ref 128002 // manage_interrupt
     1185 982 100 0 1477 0
   sequencediagram_ref 128130 // MessageResourceManager<T>::plan()
     975 785 100 0 0 90
-  active  classdiagram_ref 128258 // classes
-    953 550 80 0 771 382
+  classdiagram_ref 128258 // classes
+    991 550 80 0 546 131
   sequencediagram_ref 134914 // ProcessManager::load_process()
     969 785 100 4 0 0
   sequencediagram_ref 135042 // files
-    969 785 100 0 2512 0
+    969 785 100 0 2186 0
   sequencediagram_ref 135170 // FileManager::plan()
-    910 785 100 4 233 0
+    910 785 100 4 6 0
   sequencediagram_ref 135298 // Process::read_byte()
     910 785 100 4 0 0
-  sequencediagram_ref 135426 // Process::write_byte()
-    1138 982 100 4 0 0
+  active  sequencediagram_ref 135426 // Process::write_byte()
+    1225 988 100 4 0 0
   sequencediagram_ref 134786 // MessageResourceManager<T>::add_process_to_waiting_queue
     910 785 100 4 0 0
 end
 show_stereotypes
-selected classdiagram_ref 128258 // classes
+selected operation_ref 140290 // write_file_byte
 open
   class_ref 135170 // Process
-  class_ref 135298 // FileManager
+  operation_ref 137602 // queue_process_for_byte
+  operation_ref 137218 // exists
+  operation_ref 138498 // get_file_read
+  operation_ref 139010 // free_file
+  operation_ref 139522 // get_stdin_byte
+  operation_ref 139778 // get_file_byte
+  operation_ref 140162 // write_stdout_byte
+  operation_ref 164226 // get_byte
+  operation_ref 164610 // plan
+  attribute_ref 137218 // offset
   class_ref 142210 // Resource
+  class_ref 142338 // ReusableResource
   class_ref 142850 // MessageLoadProgramResource
+  class_ref 149634 // ProcessContainer
+  class_ref 149762 // OpenedFile
 end
 end

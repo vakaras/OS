@@ -21,6 +21,8 @@ fragment 131202 "loop"
 end
 note 131330 "Per visus turinčius baitų stdin, kurių laukia."
   xyzwh 94 515 2005 291 35
+note 132738 "TODO: Ištrinti. (Naudojamas File.plan())"
+  xyzwh 430 68 2000 281 39
 durationcanvas 128770 classinstance_ref 128642 // :FileManager
   xyzwh 106 112 2010 11 289
 end
@@ -49,7 +51,7 @@ durationcanvas 131842 classinstance_ref 130306 // :Process
   xyzwh 627 595 2010 11 30
 end
 durationcanvas 132354 classinstance_ref 129282 // :ProcessManager
-  xyzwh 468 658 2010 11 25
+  xyzwh 468 658 2010 11 29
 end
 msg 129026 synchronous
   from durationcanvas_ref 128770
