@@ -106,17 +106,18 @@ public:
           if (process_id == 0) {
             debug_string("\tProcesas jau nebegyvas.\n");
             }
-          this->resources[i].set_free(false);
+          else {
+            this->resources[i].set_free(false);
 
-          this->resource_manager->give_resource(
-              process_id, this->resources[i]);
-          this->resource_manager->activate_process(process_id);
+            this->resource_manager->give_resource(
+                process_id, this->resources[i]);
+            this->resource_manager->activate_process(process_id);
 
-          debug_value("\tResursas: ", this->resources[i].get_id());
-          debug_value("\tAtiduotas procesui: ", process_id);
-
-          found = true;
+            debug_value("\tResursas: ", this->resources[i].get_id());
+            debug_value("\tAtiduotas procesui: ", process_id);
+            }
           
+          found = true;
           break;
           }
 
