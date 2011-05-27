@@ -17,8 +17,31 @@ class ProcessManager;
 extern "C" void switch_process(u64int stack_address);
 
 
-class Process {
+struct OpenedFile {
 
+  // Atributai.
+
+  bool opened;
+  u64int file_id;
+  FILE_MODE mode;
+  
+  // Metodai.
+
+  OpenedFile() {
+    this->opened = false;
+    this->file_id = 0;
+    }
+  
+  OpenedFile(u64int file_id, FILE_MODE mode) {
+    this->opened = true;
+    this->file_id = file_id;
+    this->mode = mode;
+    }
+  
+  };
+
+
+class Process {
 
 private:
 
@@ -34,6 +57,8 @@ private:
 
   CPUContext cpu;
   u64int stack;                         // Dėklo viršūnės adresas.
+
+  OpenedFile files[MAX_FILES];
 
 public:
 
@@ -146,14 +171,24 @@ public:
 
   bool opened(u64int file_descriptor, FILE_MODE mode) {
 
-    if (file_descriptor == 0 && mode == FILE_MODE_READ) {
+    if (file_descriptor >= MAX_FILES) {
+      return false;
+      }
+    else if (file_descriptor == 0 && mode == FILE_MODE_READ) {
       return true;
       }
     else if ((file_descriptor == 1 && mode == FILE_MODE_WRITE)) {
       return true;
       }
     else {
-      return false;
+
+      if (this->files[file_descriptor].mode == mode) {
+        return true;
+        }
+      else {
+        return false;
+        }
+        
       }
 
     // TODO: Realizuoti.
@@ -176,10 +211,49 @@ public:
       this->file_manager->write_stdout_byte(this->screen_id, symbol);
       }
     else {
-      // TODO: Realizuoti.
+      this->file_manager->write_file_byte(
+          this->files[file_descriptor].file_id, symbol);
       }
     
     }
+
+  u64int add_file(u64int file_id, FILE_MODE mode) {
+
+    for (u64int i = 2; i < MAX_FILES; i++) {
+      if (!this->files[i].opened) {
+        this->files[i] = OpenedFile(file_id, mode);
+        return i;
+        }
+      }
+
+    PANIC("Nepavyko atidaryti failo: nebėra vietos.");
+    return 0;
+    }
+
+  void dump_files() {
+
+    debug_string("Failų sąrašas:\n");
+    for (u64int i = 0; i < MAX_FILES; i++) {
+      debug_string("deskriptorius: ");
+      debug_hex(i);
+      if (this->files[i].opened) {
+        if (this->files[i].mode == FILE_MODE_READ) {
+          debug_string("\tskaitymui id:\t");
+          debug_hex(this->files[i].file_id);
+          }
+        else {
+          debug_string("\trašymui   id:\t");
+          debug_hex(this->files[i].file_id);
+          }
+        }
+      else {
+        debug_string("neatidarytas");
+        }
+      debug_string("\n");
+      }
+    
+    }
+  
 
   };
 

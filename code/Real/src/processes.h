@@ -24,6 +24,8 @@
 #define GET_BYTE 5
 #define PUT_BYTE 6
 
+#define OPEN_FILE_WRITE 2
+
 
 void print_service_message(int screen_id, char text);
 void print_service_message(int screen_id, const char * text);
@@ -141,10 +143,17 @@ public:
               file_descriptor, (char) cpu->DI);
           }
         else {
+          this->processes[this->running_process_id].dump_files();
+          debug_value("file_descriptor: ", file_descriptor);
           debug_value("Žudomas procesas: ", this->running_process_id);
           this->kill_process(this->running_process_id);
+          pause();
           }
         }
+        break;
+      case OPEN_FILE_WRITE: 
+        this->open_file_write(this->running_process_id, cpu->BX);
+        pause();
         break;
       default:
         debug_value("Žudomas procesas: ", this->running_process_id);
@@ -388,6 +397,18 @@ public:
 
     }
 
+  void give_file(u64int process_id, u64int file_id, FILE_MODE mode) {
+
+    if (!this->processes[process_id].is_existing()) {
+      PANIC("Procesas jau negyvas!");
+      }
+
+    u64int file_descriptor = this->processes[process_id].add_file(
+        file_id, mode);
+    this->processes[process_id].set_value(file_descriptor);
+    
+    }
+
   void give_byte(u64int process_id, char symbol) {
 
     if (this->processes[process_id].is_existing()) {
@@ -413,6 +434,20 @@ public:
   void char_entered(u64int screen_id, char symbol) {
 
     this->file_manager->give_stdin_byte(screen_id, symbol);
+
+    }
+
+  void open_file_write(u64int process_id, u64int file_name) {
+
+    if (this->file_manager->exists(file_name)) {
+      this->file_manager->get_file_write(file_name, process_id);
+      }
+    else {
+      u64int file_id = this->file_manager->create_file_write(file_name);
+      u64int file_descriptor = this->processes[process_id].add_file(
+          file_id, FILE_MODE_WRITE);
+      this->processes[process_id].set_value(file_descriptor);
+      }
 
     }
 

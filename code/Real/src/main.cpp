@@ -213,19 +213,17 @@ extern "C" int main() {
   process_manager.load_process(2, 5, 2);
   debug_string("\nProcesas waiterb pakrautas.\n");
 
-  pause();
 
   // Pakraunami bandyminiai procesai.
-  process_manager.load_process(4, 1, 3);
+  process_manager.load_process(6, 1, 3);
   debug_string("\nPrograma hello pakrauta.\n");
-  pause();
 
   // Testai.
   //test_debug();
   //test_monitor(&monitor);
   //test_idt();
 
-  MessageLoadProgramResource resource(4, 2);
+  MessageLoadProgramResource resource(6, 2);
   resource_manager.add_resource(resource);
 
   monitor.write_string("Penktas ekranas -- derinimo.\n");
