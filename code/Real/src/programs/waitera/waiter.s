@@ -8,7 +8,6 @@ dd 0xdeadaaa0, 0xdeadaaa1, 0xdeadaaa2, 0xdeadaaa3
 _start:
 
   mov rbx, 0xdeadaaaa
-  xchg bx, bx
 
 .loop:
   
