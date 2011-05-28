@@ -84,7 +84,6 @@ protected:
     debug_value("Rašoma į failą: ", this->file_name);
     debug_value("  Adresas: ", this->address + offset);
     debug_value("  Reikšmė: ", byte);
-    pause();
 
     }
 
@@ -210,6 +209,14 @@ public:
         }
       }
 
+
+    }
+
+  void free_file(u64int file_id) {
+
+    debug_value("Atlaisvinamas failas: ", file_id);
+    this->files[file_id].set_free(true);
+    this->files[file_id].plan();
 
     }
   

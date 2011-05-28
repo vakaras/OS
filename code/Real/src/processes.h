@@ -25,6 +25,7 @@
 #define PUT_BYTE 6
 
 #define OPEN_FILE_WRITE 2
+#define CLOSE_FILE 3
 
 
 void print_service_message(int screen_id, char text);
@@ -153,6 +154,10 @@ public:
         break;
       case OPEN_FILE_WRITE: 
         this->open_file_write(this->running_process_id, cpu->BX);
+        pause();
+        break;
+      case CLOSE_FILE:
+        this->close_file(this->running_process_id, cpu->BX);
         pause();
         break;
       default:
@@ -313,6 +318,12 @@ public:
       this->processes[process_id].get_memory_resource();
     u64int screen_id = this->processes[process_id].get_screen_id();
 
+    for (u64int i = 2; i < MAX_FILES; i++) {
+      if (this->processes[process_id].opened(i)) {
+        this->close_file(process_id, i);
+        }
+      }
+    
     this->processes[process_id] = Process();
 
     this->resource_manager->free_memory_resource(memory_resource);
@@ -447,6 +458,21 @@ public:
       u64int file_descriptor = this->processes[process_id].add_file(
           file_id, FILE_MODE_WRITE);
       this->processes[process_id].set_value(file_descriptor);
+      }
+
+    }
+
+  void close_file(u64int process_id, u64int file_descriptor) {
+
+    if (file_descriptor < 2 ||
+        !this->processes[process_id].opened(file_descriptor)) {
+      this->kill_process(process_id);
+      }
+    else {
+      u64int file_id = this->processes[process_id].get_file_id(
+          file_descriptor);
+      this->processes[process_id].remove_file(file_descriptor);
+      this->file_manager->free_file(file_id);
       }
 
     }

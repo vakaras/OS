@@ -31,7 +31,6 @@ _start:
   mov rbx, rax
   mov rcx, ask_content
   call print
-  xchg bx, bx
 
   ; Uždaro atidarytąjį failą.
   mov rax, 3
@@ -43,6 +42,7 @@ _start:
   int 0x3f
 
   ; Įrašo naudotojo žinutę.
+  mov rbx, rax
   mov rcx, buffer
   call print
 

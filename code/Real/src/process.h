@@ -169,6 +169,37 @@ public:
 
     }
 
+  void remove_file(u64int file_descriptor) {
+
+    if (file_descriptor >= MAX_FILES ||
+        !this->files[file_descriptor].opened) {
+      PANIC("Uždaromas neatidarytas failas!");
+      }
+    
+    this->files[file_descriptor] = OpenedFile();
+    }
+
+  u64int get_file_id(u64int file_descriptor) {
+    return this->files[file_descriptor].file_id;
+    }
+
+  bool opened(u64int file_descriptor) {
+
+    if (file_descriptor >= MAX_FILES) {
+      return false;
+      }
+    if (file_descriptor == 0 || file_descriptor == 1) {
+      return true;
+      }
+    else if (this->files[file_descriptor].opened) {
+      return true;
+      }
+    else {
+      return false;
+      }
+    
+    }
+
   bool opened(u64int file_descriptor, FILE_MODE mode) {
 
     if (file_descriptor >= MAX_FILES) {
@@ -180,7 +211,7 @@ public:
     else if ((file_descriptor == 1 && mode == FILE_MODE_WRITE)) {
       return true;
       }
-    else {
+    else if (this->files[file_descriptor].opened) {
 
       if (this->files[file_descriptor].mode == mode) {
         return true;
@@ -190,8 +221,10 @@ public:
         }
         
       }
-
-    // TODO: Realizuoti.
+    else {
+      return false;
+      }
+    
     }
 
   void read_byte(u64int file_descriptor) {
