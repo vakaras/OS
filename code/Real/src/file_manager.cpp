@@ -13,7 +13,7 @@ void File::plan() {
 
   debug_value("Vykdomas failo planuotojas: ", this->id);
 
-  if (this->is_free()) {
+  if (!this->is_free()) {
     debug_string("\tFailas užimtas.\n");
     return;
     }
