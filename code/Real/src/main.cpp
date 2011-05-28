@@ -223,7 +223,7 @@ extern "C" int main() {
   //test_monitor(&monitor);
   //test_idt();
 
-  MessageLoadProgramResource resource(6, 2);
+  MessageLoadProgramResource resource(7, 2);
   resource_manager.add_resource(resource);
 
   monitor.write_string("Penktas ekranas -- derinimo.\n");

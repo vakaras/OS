@@ -233,7 +233,9 @@ public:
       this->file_manager->get_stdin_byte(this->screen_id, this->id);
       }
     else {
-      // TODO: Realizuoti.
+      char symbol = this->file_manager->get_file_byte(
+          this->files[file_descriptor].file_id);
+      this->set_value(symbol);
       }
     
     }

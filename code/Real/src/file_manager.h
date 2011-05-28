@@ -139,10 +139,19 @@ public:
 
     }
 
+  void reset() {
+    this->offset = 0;
+    }
+
   void write_byte(u8int byte) {
 
     this->set_byte(this->offset++, byte);
 
+    }
+
+  u8int read_byte() {
+
+    return this->get_byte(this->offset++);
     }
 
   };
@@ -206,10 +215,27 @@ public:
             process_id, FILE_MODE_WRITE);
         this->files[i].plan();
 
+        return;
         }
       }
 
+    PANIC("Failų sistemos klaida?");
+    }
 
+  void get_file_read(u64int file_name, u64int process_id) {
+
+    for (u64int i = 0; i < MAX_FILES; i++) {
+      if (!this->files[i].is_empty_slot() &&
+          this->files[i].get_file_name() == file_name) {
+
+        this->files[i].add_process_to_waiting_queue(
+            process_id, FILE_MODE_READ);
+        this->files[i].plan();
+
+        return;
+        }
+      }
+    
     }
 
   void free_file(u64int file_id) {
@@ -253,6 +279,15 @@ public:
     
     this->files[file_id].write_byte(symbol);
 
+    }
+
+  char get_file_byte(u64int file_id) {
+
+    if (file_id >= MAX_FILES) {
+      PANIC("skaitoma iš neegzistuojančio failo.");
+      }
+    
+    return this->files[file_id].read_byte();
     }
 
   void plan();

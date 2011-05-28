@@ -24,6 +24,7 @@
 #define GET_BYTE 5
 #define PUT_BYTE 6
 
+#define OPEN_FILE_READ 1
 #define OPEN_FILE_WRITE 2
 #define CLOSE_FILE 3
 
@@ -154,15 +155,17 @@ public:
         break;
       case OPEN_FILE_WRITE: 
         this->open_file_write(this->running_process_id, cpu->BX);
-        pause();
+        break;
+      case OPEN_FILE_READ:
+        this->open_file_read(this->running_process_id, cpu->BX);
         break;
       case CLOSE_FILE:
         this->close_file(this->running_process_id, cpu->BX);
-        pause();
         break;
       default:
         debug_value("Žudomas procesas: ", this->running_process_id);
         this->kill_process(this->running_process_id);
+        pause();
         break;
       }
 
@@ -460,6 +463,16 @@ public:
       this->processes[process_id].set_value(file_descriptor);
       }
 
+    }
+
+  void open_file_read(u64int process_id, u64int file_name) {
+
+    if (this->file_manager->exists(file_name)) {
+      this->file_manager->get_file_read(file_name, process_id);
+      }
+    else {
+      this->kill_process(process_id);
+      }
     }
 
   void close_file(u64int process_id, u64int file_descriptor) {

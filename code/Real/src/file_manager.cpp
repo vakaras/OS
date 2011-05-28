@@ -27,6 +27,7 @@ void File::plan() {
       }
     else {
       this->set_free(false);
+      this->reset();
       this->file_manager->give_file(
           container.process_id, this->id, container.mode);
       this->file_manager->activate_process(container.process_id);
