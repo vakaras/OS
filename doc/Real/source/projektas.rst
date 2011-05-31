@@ -2,24 +2,48 @@
 Projektas
 =========
 
+x86-64 bitų architektūrai skirtos operacinės sistemos projektas.
+
 Procesai
 ========
 
-Sisteminiai procesai (veikia ``ring 0``):
+Visi procesai vykdo programas, kurios yra pakraunamos į operatyviąją
+atmintį kartu su operacine sistema, prieš jai startuojant.
+Gavus nurodymą yra padaroma programos kopija
+naujai išskirtoje atmintyje (kiekvienai programai yra skiriama 16 MB
+operatyviosios atminties), nustatomos reikiamos registrų reikšmės ir 
+yra „šokama“ į programos vykdomojo kodo pradžią. Programos
+vykdymo metu atsiradusius pertraukimus apdoroja procesas ``init``.
+Galimi pertraukimai:
 
-+ ``init`` – menamas procesas, kuriame veikia operacinės sistemos 
-  branduolys;
-+ ``waitera`` ir ``waiterb`` – procesai, kurie užima procesorių 
-  *laisvalaikiu*.
++ ``int 0x3f`` – kreipimasis į operacinės sistemos funkcijas, procesas
+  pereina iš būsenos vykdomas į būseną pasiruošęs arba blokuotas;
++ ``int 0x20`` – laikrodžio pertraukimas, jam įvykus procesas pereina iš
+  būsenos vykdomas į būseną pasiruošęs.
 
-Taip pat sistemoje veikia naudotojo procesai, kurie veikia ``ring 3``.
+Sisteminiai procesai:
+
++   ``init`` – menamas procesas (jo nėra procesų lentelėje), kuriame veikia 
+    operacinės sistemos branduolys;
++   ``loader`` – procesas, kuris rūpinasi resursų reikalingų naudotojo 
+    proceso paleidimui, gavimu;
++   ``waitera`` ir ``waiterb`` – procesai, kurie užima procesorių 
+    *laisvalaikiu*, keisdamiesi resursais;
++   ``sleep`` – procesas, kuris užima procesorių *laisvalaikiu* jį 
+    sustabdydamas.
+
+Tam, kad sistema nenulūžtų būtina, kad nuolat jos procesų lentelėje būtų
+bent vienas aktyvus procesas. Tuo tikslu startuojant yra sukuriami procesai
+``waitera`` ir ``waiterb``.
+
+Be sisteminių procesų sistemoje taip pat gali būti vykdomos naudotojo 
+programos.
 
 Procesai ``waitera`` ir ``waiterb``
 -----------------------------------
 
-Šiuos abu procesus sukuria ``init`` operacinės sistemos startavimo metu.
-Šie du procesai yra žemiausio prioriteto ir yra vykdomi tada, kai nėra
-jokio kito pasiruošusio proceso.
+Šiuos abu procesus sukuria ``init`` operacinės sistemos startavimo metu. 
+Taip pat juos sukurti gali nurodyti naudotojas.
 
 ``waitera`` veikimo algoritmas:
 
@@ -37,47 +61,68 @@ jokio kito pasiruošusio proceso.
     get_resource(MessageWaiterA)
     create_resource(MessageWaiterB)
 
+Procesas ``loader``
+-------------------
+
+Šį procesą sukuria ``init`` operacinės sistemos startavimo metu. Taip pat 
+jį sukurti gali nurodyti naudotojas.
+
+``loader`` veikimo algoritmas:
+
+.. code-block:: python
+  
+  while True:
+    get_resource(MessageLoadProgram)
+    get_resource(Memory)
+    create_process();
+
+Procesas ``sleep``
+------------------
+
+Sukurti šį procesą gali nurodyti naudotojas.
+
+``sleep`` veikimo algoritmas:
+
+.. code-block:: python
+  
+  while True:
+    hlt();                              # Sustabdo procesorių.
+
 Naudotojo procesai
-==================
+------------------
 
-Naudotojo procesai sistemoje atsiranda vienu iš dviejų būdų:
-
-+ sukuria procesas ``init``, gavęs naudotojo nurodymą (per klaviatūrą);
-+ naudotojo procesas sukuria dar vieną naudotojo procesą.
-
-Naudotojo procesai vykdo programas, kurios yra įkompiliuotos į pačią
-operacinę sistemą. Gavus nurodymą yra padaroma programos kopija, 
-naujai išskirtoje atmintyje (kiekvienai programai yra skiriama 2 MB
-operatyviosios atminties), procesorius yra perjungiamas į naudotojo
-rėžimą ir yra „šokama“ į programos vykdomojo kodo pradžią. Programos
-vykdymo metu atsiradusius pertraukimus apdoroja procesas ``init``.
-Galimi pertraukimai:
-
-+ ``int 0x3f`` – kreipimasis į operacinės sistemos funkcijas, procesas
-  pereina iš būsenos vykdomas į būseną pasiruošęs arba blokuotas;
-+ ``int 0x20`` – laikrodžio pertraukimas, jam įvykus procesas pereina iš
-  būsenos vykdomas į būseną pasiruošęs;
-+ įvykus bet kuriam kitam pertraukimui, proceso vykdymas yra nutraukiamas.
+Naudotojo procesus sukuria ``init``, gavęs naudotojo nurodymą
+(per klaviatūrą). Naudotojas taip pat gali nurodyti paleisti ir sisteminius
+procesus. (Sistemoje gali veikti keli ``loader`` procesai ir t.t.)
+Sistemos startavimo metu ``init`` sukurti procesai nuo naudotojo nurodymu
+sukurtų procesų skiriasi tuo, kad ``init`` sukurtieji neturi prieigos prie
+įvesties ir išvesties.
 
 Resursų sąrašas
 ===============
 
-+ ``File`` kuria proceso ``init`` objektas ``FileManager``.
-+ ``Screen`` (yra 4 tokio tipo resursai) kuria proceso ``init`` objektas
-  ``Monitor``.
-+ ``Page`` kuria proceso ``init`` objektas ``MemoryManager``.
+Žinutės:
 
-.. figure:: resources.png
-  :scale: 100%
-  :alt: Resursų diagrama.
++   ``MessageWaiterAResource`` – proceso ``waitera`` kuriama žinutė, kurios
+    laukia procesas ``waiterb``;
++   ``MessageWaiterBResource`` – proceso ``waiterb`` kuriama žinutė, kurios
+    laukia procesas ``waitera``;
++   ``MessageLoadProgramResource`` – naudotojo nurodymas sukurti programą,
+    kurio laukia procesas ``loader``;
++   ``Byte`` – naudotojo įvestas simbolis. Šio resurso gali prašyti bet
+    kuris iš naudotojo procesų.
 
-  Resursų diagrama.
+Perpanaudojami resursai:
 
++   ``MemoryResource`` – atminties resursas, kurio fiksuotą kiekį sukuria
+    ``init`` sistemos startavimo metu ir kurio laukia procesas ``loader``;
++   ``File`` – failų sistemos failas. Šio resurso gali prašyti bet kuris
+    iš naudotojo procesų.
 
 Operacinės sistemos branduolys
 ==============================
 
-Operacinė sistemos kodas yra vykdomas proceso ``init`` aplinkoje.
+Operacinės sistemos branduolio klasių diagrama:
 
 .. figure:: core.png
   :scale: 100%
@@ -107,7 +152,7 @@ funkciją reikia iškviesti nurodo registro ``rax`` reikšmė:
     id yra nurodytas registre ``rbx``;
 
 Iškvietus OS funkciją su neteisingais parametrais arba sukėlus bet kurį kitą
-pertraukimą, naudotojo programa turėtų būti nužudyta.
+pertraukimą, naudotojo programa yra išjungiama.
 
 Servisas ``loader``
 -------------------
@@ -317,17 +362,42 @@ Sistemos vaizdas realioje atmintyje.
 Branduolio virtuali atmintis
 ----------------------------
 
-TODO
+Branduolio virtualios atminties pirmas gigabaitas nukreiptas į realios
+atminties pirmą gigabaitą.
 
-Serviso ``loader`` virtuali atmintis
-------------------------------------
++--------------------+-------+------------------------------------------+
+| Adresas            | Dydis | Prasmė                                   |
++====================+=======+==========================================+
+| 0xffff800000000000 |  1 MB | Čia guli branduolio vykdomasis           |
++--------------------+       | kodas.                                   |
+| 0xffff8000000fffff |       |                                          |
+|                    |       |                                          |
++--------------------+-------+------------------------------------------+
+| 0xffff800000100000 |  1 MB | Branduolio dėklas. Pradinis              |
++--------------------+       | ``rsp =  0xffff800000200000``.           |
+| 0xffff8000001fffff |       |                                          |
+|                    |       |                                          |
++--------------------+-------+------------------------------------------+
+| 0xffff800000200000 | 14 MB | Rezervuota branduolio reikmėms.          |
++--------------------+       |                                          |
+| 0xffff800000ffffff |       |                                          |
+|                    |       |                                          |
++--------------------+-------+------------------------------------------+
 
-Lygiai tokia pat, kaip ir branduolio.
+Procesų virtuali atmintis
+-------------------------
 
-Serviso ``waiter`` virtuali atmintis
-------------------------------------
++--------------------+-------+------------------------------------------+
+| Adresas            | Dydis | Prasmė                                   |
++====================+=======+==========================================+
+| 0x0000000000200000 | 16 MB | Programos kodas.                         |
++--------------------+       |                                          |
+| 0x0000000001200000 |       |                                          |
+|                    |       |                                          |
++--------------------+-------+------------------------------------------+
 
-Lygiai tokia pat, kaip ir branduolio.
+Failų sistema
+=============
 
-Naudotojo programos virtuali atmintis
--------------------------------------
+Programos vienu metu gali dirbti daugiausiai su 16 failų. Failo vardas
+– bet koks 64 bitų skaičius.

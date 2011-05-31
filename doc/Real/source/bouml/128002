@@ -1,6 +1,6 @@
 format 74
 "core" // core
-  revision 7
+  revision 8
   modified_by 2 "vakaras"
   // class settings
   //class diagram settings
@@ -1428,11 +1428,12 @@ ${inlines}
 
       operation 138498 "get_file_read"
 	public explicit_return_type "void"
-	nparams 1
+	nparams 2
 	  param in name "file_name" explicit_type "u64int"
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
+	  param in name "process_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -1442,11 +1443,12 @@ ${inlines}
       end
 
       operation 139010 "free_file"
-	public explicit_return_type ""
-	nparams 0
-	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+	public explicit_return_type "void"
+	nparams 1
+	  param in name "file_id" explicit_type "u64int"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${abstract};
 "
-	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}${)}${const}${volatile}${throw}${staticnl}{
   ${body}}
 "
 	
@@ -2020,7 +2022,6 @@ ${inlines}
 	
 	
       end
-
     end
 
     class 142466 "MessageWaiterBResource"

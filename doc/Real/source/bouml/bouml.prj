@@ -1,6 +1,6 @@
 format 74
 "bouml"
-  revision 1
+  revision 2
   modified_by 2 "vakaras"
 
 
@@ -32,9 +32,11 @@ format 74
   
   class_color yellow duration_color transparent continuation_color gray note_color blue fragment_color transparent subject_color transparent usecase_color yellow package_color transparent component_color green artifact_color green deploymentnode_color gray state_color yellow stateaction_color transparent activity_color transparent activityregion_color transparent activitypartition_color transparent activityaction_color transparent parameterpin_color white 
   font_size 9
-  diagram_format A4
+  diagram_format A0
 
   mark_for_import
   
+  ncouples 1
+  key "html dir" value "/home/vakaras/tmp/64bit/doc/Real/source/New Folder 1/"
   package_ref 128002 // core
 end

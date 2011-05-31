@@ -175,7 +175,7 @@ durationcanvas 146178 classinstance_ref 145282 // :File
   xyzwh 655 479 2010 11 30
 end
 durationcanvas 146562 classinstance_ref 145282 // :File
-  xyzwh 655 531 2010 11 25
+  xyzwh 655 531 2010 11 31
 end
 msg 129154 synchronous
   from durationcanvas_ref 128898
@@ -257,10 +257,10 @@ selfreflexivemsg 134530
 msg 135042 synchronous
   from durationcanvas_ref 132866
   to durationcanvas_ref 134914
-  yz 466 2020 msg operation_ref 138498 // "get_file_read(in file_name : u64int) : void"
+  yz 466 2020 msg operation_ref 138498 // "get_file_read(in file_name : u64int, in process_id : u64int) : void"
   show_full_operations_definition default drawing_language default show_context_mode default
-  args "file_name"
-  label_xy 144 451
+  args "file_name, process_id"
+  label_xy 108 451
 msg 135938 return
   from durationcanvas_ref 134914
   to durationcanvas_ref 132866
@@ -333,7 +333,7 @@ msg 139010 return
 msg 139266 synchronous
   from durationcanvas_ref 136450
   to durationcanvas_ref 139138
-  yz 1875 2020 msg operation_ref 139010 // "free_file()"
+  yz 1875 2020 msg operation_ref 139010 // "free_file(in file_id : u64int) : void"
   show_full_operations_definition default drawing_language default show_context_mode default
   args "file_id"
   label_xy 170 1860
