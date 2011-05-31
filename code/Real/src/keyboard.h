@@ -117,7 +117,11 @@ public:
     if((this->komanda[0]=='r') && (this->komanda[1]=='u') 
       && (this->komanda[2]=='n') && (this->komanda[3]==' ')){
         u32int command = this->komanda[4]-'0';
-        if(this->monitor->active_screen_id < 5 && 0 < command ){
+        if (!(1 <= command && command <= this->prog_m->get_count())) {
+          this->monitor->write_string("\nUnknown program id #");
+          this->monitor->write_dec(command);
+          }
+        else if (this->monitor->active_screen_id < 5 && 0 < command ){
           MessageLoadProgramResource resource(command,
                                         this->monitor->active_screen_id);
           this->monitor->write_string("\nStarting process #");
