@@ -215,8 +215,9 @@ extern "C" int main() {
   //test_monitor(&monitor);
   //test_idt();
 
-  //MessageLoadProgramResource resource(7, 2);
-  //resource_manager.add_resource(resource);
+  MessageLoadProgramResource resource(5, 1);
+  resource_manager.add_resource(resource);
+  monitor.activate_screen(1);
 
   multiprogramming_enabled = true;
   
