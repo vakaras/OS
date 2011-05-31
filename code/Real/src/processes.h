@@ -156,15 +156,22 @@ public:
         break;
       case OPEN_FILE_WRITE: 
         this->open_file_write(this->running_process_id, cpu->BX);
+        debug_value("Atidaro failą rašymui: ", cpu->BX);
+        pause();
         break;
       case OPEN_FILE_READ:
         this->open_file_read(this->running_process_id, cpu->BX);
+        debug_value("Atidaro failą skaitymui: ", cpu->BX);
+        pause();
         break;
       case CLOSE_FILE:
         this->close_file(this->running_process_id, cpu->BX);
+        debug_value("Uždaro failą: ", cpu->BX);
+        pause();
         break;
       default:
         debug_value("Žudomas procesas: ", this->running_process_id);
+        debug_value("Nežinoma komanda: ", cpu->AX);
         this->kill_process(this->running_process_id);
         pause();
         break;

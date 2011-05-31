@@ -185,7 +185,8 @@ public:
             char new_char = \
               (shift_state ? uppercase:lowercase)[new_scan_code];
             if((this->monitor->active_screen_id < 5) 
-                && (this->monitor->get_active_screen_type())) {
+                && (this->monitor->get_active_screen_type())
+                && new_char != 0) {
               this->proc_m->char_entered(this->monitor->active_screen_id, 
                   new_char);
               }

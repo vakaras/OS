@@ -12,7 +12,8 @@ void File::add_process_to_waiting_queue(u64int process_id, FILE_MODE mode) {
 void File::plan() {
 
   debug_value("Vykdomas failo planuotojas: ", this->id);
-
+  debug_value("Failo vardas: ", this->file_name);
+  
   if (!this->is_free()) {
     debug_string("\tFailas užimtas.\n");
     return;

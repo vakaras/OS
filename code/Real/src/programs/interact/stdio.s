@@ -1,3 +1,10 @@
+[GLOBAL pause2]
+
+pause2:
+  xchg bx, bx
+  ret
+
+
 [GLOBAL open_file_read]
 
 open_file_read:

@@ -13,6 +13,7 @@ namespace std {
   typedef unsigned long long u64int;
   typedef   signed long long s64int;
 
+  extern "C" void pause2(u64int val);
   extern "C" u64int open_file_read(u64int file_name);
   extern "C" u64int open_file_write(u64int file_name);
   extern "C" void close_file(u64int file_descriptor);
