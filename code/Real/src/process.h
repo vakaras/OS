@@ -58,6 +58,8 @@ private:
   CPUContext cpu;
   u64int stack;                         // Dėklo viršūnės adresas.
 
+  u64int priority;                      // Proceso prioritetas.
+
   OpenedFile files[MAX_FILES];
 
 public:
@@ -72,6 +74,7 @@ public:
     this->process_manager = 0;
     this->exists = false;
     this->file_manager = 0;
+    this->priority = 0;
 
     }
 
@@ -81,7 +84,8 @@ public:
       u64int screen_id, 
       MemoryResource memory_resource,
       u64int entry,
-      FileManager *file_manager) {
+      FileManager *file_manager,
+      u64int priority) {
 
     this->id = process_id;
     this->state = PROCESS_ACTIVE;
@@ -100,10 +104,16 @@ public:
     this->cpu.SP = this->stack;
     this->cpu.SS = 0x10;
 
+    this->priority = priority;
+
     }
 
   u64int get_id() {
     return this->id;
+    }
+
+  u64int get_priority() {
+    return this->priority;
     }
 
   bool is_existing() {

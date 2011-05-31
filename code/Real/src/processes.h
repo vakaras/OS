@@ -4,6 +4,7 @@
 #include "types.h"
 #include "debug.h"
 #include "structures/rotating_queue.h"
+#include "structures/priority_queue.h"
 #include "resources.h"
 #include "process.h"
 #include "file_manager.h"
@@ -55,7 +56,7 @@ private:
 
 public:
   Process processes[MAX_PROCESSES];
-  RotatingQueue<u64int> active_process_queue;
+  PriorityQueue<u64int> active_process_queue;
   
 
   // Metodai.
@@ -213,7 +214,9 @@ public:
     // aktyvių procesų sąrašą.
     if (this->processes[this->running_process_id].is_existing() && 
         !this->processes[this->running_process_id].is_blocked()) {
-      this->active_process_queue.push_back(this->running_process_id);
+      this->active_process_queue.add(
+          this->processes[this->running_process_id].get_priority(), 
+          this->running_process_id);
       }
 
     debug_string("Procesų sąrašas:\n");
@@ -300,7 +303,9 @@ public:
       }
 
     this->processes[process_id].unblock();
-    this->active_process_queue.push_back(process_id);
+    this->active_process_queue.add(
+        this->processes[process_id].get_priority(),
+        process_id);
 
     }
 
@@ -341,7 +346,8 @@ public:
     }
 
   void load_process(
-      u64int program_id, u64int screen_id, u64int memory_resource_id) {
+      u64int program_id, u64int screen_id, u64int memory_resource_id, 
+      u64int priority=10) {
 
     debug_string("\nPakraudinėjamas procesas.\n");
 
@@ -371,9 +377,11 @@ public:
 
     this->processes[process_id] = Process(
         this, process_id, screen_id, memory_resource, entry, 
-        this->file_manager);
+        this->file_manager, priority);
 
-    this->active_process_queue.push_back(process_id);
+    this->active_process_queue.add(
+        this->processes[process_id].get_priority(),
+        process_id);
 
     if (screen_id < 5) {
       set_screen_type(screen_id, true);

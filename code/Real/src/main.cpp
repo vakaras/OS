@@ -6,6 +6,7 @@
 #include "structures/point.h"
 #include "structures/array2dpointer.h"
 #include "structures/rotating_queue.h"
+#include "structures/priority_queue.h"
 #include "monitor_defines.h"
 #include "monitor_screen_character.h"
 #include "monitor.h"
@@ -208,25 +209,25 @@ extern "C" int main() {
   debug_string("\nFileManager inicializuotas.\n");
 
   // Pakraunami servisai.
-  process_manager.load_process(3, 5, 0);
+  process_manager.load_process(3, 5, 0, 8);
   debug_string("\nProcesas loader pakrautas.\n");
-  process_manager.load_process(1, 5, 1);
+  process_manager.load_process(1, 5, 1, 10);
   debug_string("\nProcesas waitera pakrautas.\n");
-  process_manager.load_process(2, 5, 2);
+  process_manager.load_process(2, 5, 2, 10);
   debug_string("\nProcesas waiterb pakrautas.\n");
 
 
   // Pakraunami bandyminiai procesai.
-  process_manager.load_process(6, 1, 3);
-  debug_string("\nPrograma hello pakrauta.\n");
+  //process_manager.load_process(6, 1, 3);
+  //debug_string("\nPrograma hello pakrauta.\n");
 
   // Testai.
   //test_debug();
   //test_monitor(&monitor);
   //test_idt();
 
-  MessageLoadProgramResource resource(7, 2);
-  resource_manager.add_resource(resource);
+  //MessageLoadProgramResource resource(7, 2);
+  //resource_manager.add_resource(resource);
 
   monitor.write_string("Penktas ekranas -- derinimo.\n");
 
