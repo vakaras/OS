@@ -6,7 +6,7 @@
 #include "debug.h"
 #include "paging.h"
 
-#define MAX_PROGRAM 10                  // Kiek daugiausiai skirtingų
+#define MAX_PROGRAM 100                 // Kiek daugiausiai skirtingų
                                         // programų gali būti.
 
 struct Module {
