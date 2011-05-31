@@ -56,7 +56,7 @@ private:
 
 public:
   Process processes[MAX_PROCESSES];
-  PriorityQueue<u64int> active_process_queue;
+  PriorityQueue<u64int, u64int> active_process_queue;
   
 
   // Metodai.

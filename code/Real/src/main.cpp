@@ -207,11 +207,11 @@ extern "C" int main() {
   debug_string("\nFileManager inicializuotas.\n");
 
   // Pakraunami servisai.
-  process_manager.load_process(3, 5, 0, 8);
+  process_manager.load_process(3, 5, 0, 15);
   debug_string("\nProcesas loader pakrautas.\n");
-  process_manager.load_process(1, 5, 1, 10);
+  process_manager.load_process(1, 5, 1, 5);
   debug_string("\nProcesas waitera pakrautas.\n");
-  process_manager.load_process(2, 5, 2, 10);
+  process_manager.load_process(2, 5, 2, 5);
   debug_string("\nProcesas waiterb pakrautas.\n");
 
 

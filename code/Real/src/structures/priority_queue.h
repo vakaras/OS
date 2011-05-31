@@ -7,30 +7,52 @@
 
 #define PRIORITY_QUEUE_MAX_NODES 1024
 
+template <class P, class T> struct Node {
 
-template <class T> class PriorityQueue {
+// Atributai.
+
+  T value;
+  P priority;
+
+// Metodai.
+
+  Node() {}
+  
+  Node(P priority, T value) {
+    this->value = value;
+    this->priority = priority;
+    }
+
+  };
+
+template <class P, class T> class PriorityQueue {
 
 private:
 
 // Atributai.
 
-  struct Node {
+  Node<P, T> nodes[PRIORITY_QUEUE_MAX_NODES];
+  u64int end;                           // Elementas po paskutiniojo.
 
-    T elem;
-    u64int prio;
+  /**
+   * Pastumia nodes[pos:] į nodes[pos+1:]
+   */
+  void shift_right(u64int pos) {
 
-    Node() {
-      prio = 0;
-      }
-    
-    Node(u64int key, T val) {
-      this->elem = val;
-      this->prio = key;
+    for(u64int i = this->end; i > pos; i--) {
+      this->nodes[i] = this->nodes[i-1];
       }
 
-  } nodes[PRIORITY_QUEUE_MAX_NODES];
+    }
 
-  u64int end;
+  /**
+   * Pastumia nodes[pos:] į nodes[pos-1:]
+   */
+  void shift_left(u64int pos) {
+    for(u64int i = pos; i < this->end; i++){
+      this->nodes[i-1] = this->nodes[i];
+      }
+    }
 
 public: 
 
@@ -45,67 +67,48 @@ public:
     }
 
   bool is_empty() const {
-    return this->end == 0;
+    return !this->end;
     }
     
   bool is_full() const {
-    return this->end + 1 >= PRIORITY_QUEUE_MAX_NODES;
+    return this->end >= PRIORITY_QUEUE_MAX_NODES;
     }
 
-  void shift_right(u64int i) {
-    u64int j = 0;
-    for(j = get_size(); j>i; j--){
-      nodes[j+1] = nodes[j];
-      }
-    }
+  void add(P priority, T value) {
 
-  void add(u64int prio, T element) {
-    debug_string("Pridedamas elementas: \n");
-    debug_value("\tprioritetas: ", prio);
-    debug_value("\telementas: ", element);
-    u64int i = 0;
-    if(this->is_full()) {
+    if (this->is_full()) {
       PANIC("QUEUE IS FULL!");
-      };
-    while((i < this->end) && (prio >= nodes[i].prio)){
-      i++;
       }
-    shift_right(i);
-    nodes[i] = Node(prio, element);
-    debug_value("\tvieta: ", i);
+
+    u64int pos = 0;
+    for (; 
+        (pos < this->end) && (priority <= this->nodes[pos].priority); 
+        pos++);
+
+    shift_right(pos);
+    this->nodes[pos] = Node<P, T>(priority, value);
     this->end++;
-    }
-  
-  void shift_left(u64int i) {
-    u64int j = 0;
-    for(j = i; j < get_size(); j++){
-      nodes[j] = nodes[j+1];
-      }
-    }
-  
-  void remove(T element) {
-    u64int i;
-    for (; (i < this->end) && (element != nodes[i].elem); i++);
-    shift_left(i);
-    this->end--;
+
     }
   
   T pop_front(){
-    T elem = nodes[0].elem;
+
+    if (this->is_empty()) {
+      PANIC("Queue is empty!");
+      }
+
+    T value = nodes[0].value;
     shift_left(0);
     this->end--;
-    return elem;
+
+    return value;
     }
 
-  T get_front(){
-    return nodes[0].elem;
-    }
-  
   /**
    * Išvalo eilę.
    */
   void clear() {
-    this->begin = 0;
+    this->end = 0;
     }
 
   };
