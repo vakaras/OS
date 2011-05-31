@@ -57,8 +57,6 @@ bool multiprogramming_enabled;          // Ar jau OS pilnai startavo ir
 CPUContext cpu;
 u64int kernel_stack;
 
-extern "C" void sleep();
-
 extern "C" void default_interrupt_handler(CPUContext *cpu_pointer){
 
   cpu = *cpu_pointer;
