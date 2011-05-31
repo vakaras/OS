@@ -181,12 +181,8 @@ extern "C" int main() {
         kernel_pager.get_entry(256),
         &active_pager,
         i);
-    //pager[i].clear_lower();
-    //pager[i].create_lower();
     }
     
-  monitor.write_string(__FILE__);
-
   resource_manager.set_process_manager(&process_manager);
   resource_manager.add_resource(MemoryResource(0, &pager[0], false));
                                         // loader
@@ -214,11 +210,6 @@ extern "C" int main() {
   process_manager.load_process(2, 5, 2, 5);
   debug_string("\nProcesas waiterb pakrautas.\n");
 
-
-  // Pakraunami bandyminiai procesai.
-  //process_manager.load_process(6, 1, 3);
-  //debug_string("\nPrograma hello pakrauta.\n");
-
   // Testai.
   //test_debug();
   //test_monitor(&monitor);
@@ -227,69 +218,53 @@ extern "C" int main() {
   //MessageLoadProgramResource resource(7, 2);
   //resource_manager.add_resource(resource);
 
-  monitor.write_string("Penktas ekranas -- derinimo.\n");
-
   multiprogramming_enabled = true;
-  print_service_message(2, "labas pasauli nr2.\n");
-  print_program_message(2, "as irgi cia\n\n");
-  print_service_message(5, "labas pasauli nr5.\n");
-  print_program_message(5, "as irgi cia5\n\n");
+  
   // Persijungiam į kitą procesą.
   process_manager.plan();
-
-  //pager[3].activate();
-  //debug_string("\nSveikas pasauli iš kito puslapiavimo!\n");
-  //kernel_pager.activate();
-
-  //program_manager.debug(&monitor);
-
-  //u64int rez = program_manager.load(1, pager[1]);
-  //kernel_pager.activate();
-  //monitor.write_string("\nLoaded 1 into pager[1]: ");
-  //monitor.write_hex(rez);
 
   return 0xBABADEAD;
   }
   
-  void update_processes_info(){
-    monitor.clear();
-    monitor.write_string("Procesu sarasas:\n");
-    for (int i = 0; i < 8; i++) {
-      if (process_manager.processes[i].is_existing()) {
-        if (process_manager.processes[i].is_blocked()) {
-          monitor.write_string("\n-\tblokuotas:     ----");
-          monitor.write_hex(i);
-        }
-        else {
-          monitor.write_string("\n+\taktyvus:       ++++");
-          monitor.write_hex(i);
-        }
+void update_processes_info(){
+  monitor.clear();
+  monitor.write_string("Procesu sarasas:\n");
+  for (int i = 0; i < 8; i++) {
+    if (process_manager.processes[i].is_existing()) {
+      if (process_manager.processes[i].is_blocked()) {
+        monitor.write_string("\n-\tblokuotas:     ----");
+        monitor.write_hex(i);
       }
       else {
-        monitor.write_string("\n \tneegzistuojantis:  ");
+        monitor.write_string("\n+\taktyvus:       ++++");
         monitor.write_hex(i);
       }
     }
-    monitor.write_string("\n  Is viso eileje yra: ");
-    monitor.write_hex(process_manager.active_process_queue.get_size());
-    
-    monitor.write_string("\n\nProcesoriaus busena:\n");
-    monitor.write_value("rax: ",cpu.AX);
-    monitor.write_value(" rbx: ",cpu.BX);
-    monitor.write_value(" rcx: ",cpu.CX);
-    monitor.write_value("\nrdx: ",cpu.DX);
-    monitor.write_value(" rsp: ",cpu.SP);
-    monitor.write_value(" rbp: ",cpu.BP);
-    monitor.write_value("\nrsi: ",cpu.SI);
-    monitor.write_value(" rdi: ",cpu.DI);
-    monitor.write_value(" rip: ",cpu.IP);
-    monitor.write_value("\nr8 : ",cpu.R8);
-    monitor.write_value(" r9 : ",cpu.R9);
-    monitor.write_value(" r10: ",cpu.R10);
-    monitor.write_value("\nr11: ",cpu.R11);
-    monitor.write_value(" r12: ",cpu.R12);
-    monitor.write_value(" r13: ",cpu.R13);
-    monitor.write_value("\nr14: ",cpu.R14);
-    monitor.write_value(" r15: ",cpu.R15);
+    else {
+      monitor.write_string("\n \tneegzistuojantis:  ");
+      monitor.write_hex(i);
+    }
+  }
+  monitor.write_string("\n  Is viso eileje yra: ");
+  monitor.write_hex(process_manager.active_process_queue.get_size());
+  
+  monitor.write_string("\n\nProcesoriaus busena:\n");
+  monitor.write_value("rax: ",cpu.AX);
+  monitor.write_value(" rbx: ",cpu.BX);
+  monitor.write_value(" rcx: ",cpu.CX);
+  monitor.write_value("\nrdx: ",cpu.DX);
+  monitor.write_value(" rsp: ",cpu.SP);
+  monitor.write_value(" rbp: ",cpu.BP);
+  monitor.write_value("\nrsi: ",cpu.SI);
+  monitor.write_value(" rdi: ",cpu.DI);
+  monitor.write_value(" rip: ",cpu.IP);
+  monitor.write_value("\nr8 : ",cpu.R8);
+  monitor.write_value(" r9 : ",cpu.R9);
+  monitor.write_value(" r10: ",cpu.R10);
+  monitor.write_value("\nr11: ",cpu.R11);
+  monitor.write_value(" r12: ",cpu.R12);
+  monitor.write_value(" r13: ",cpu.R13);
+  monitor.write_value("\nr14: ",cpu.R14);
+  monitor.write_value(" r15: ",cpu.R15);
 //     monitor.write_string(" r10: ",cpu.R10);
   }
