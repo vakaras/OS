@@ -1,6 +1,6 @@
 format 74
 "core" // core
-  revision 8
+  revision 9
   modified_by 2 "vakaras"
   // class settings
   //class diagram settings
@@ -288,19 +288,6 @@ ${inlines}
 	idl_decl ""
       end
 
-      classrelation 131842 // active_process_queue (<composition>)
-	relation 130562 *---
-	  a role_name "active_process_queue" multiplicity "1" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 131842 // active_process_queue (<composition>)
-	  b role_name "" multiplicity "1" private
-	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
-"
-	    classrelation_ref 131970 // <composition>
-	  association_explicit_type "u64int"
-      end
-
       attribute 130050 "program_manager"
 	private type class_ref 143106 // ProgramManager
 	cpp_decl "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
@@ -329,6 +316,17 @@ ${inlines}
 
       classrelation 138882 // <association>
 	relation_ref 137218 // <association>
+      end
+
+      classrelation 152834 // active_process_queue (<composition>)
+	relation 150786 *---
+	  a role_name "active_process_queue" multiplicity "1" private
+	    cpp default "    ${comment}${static}${mutable}${volatile}${const}${type} ${name}${value};
+"
+	    classrelation_ref 152834 // active_process_queue (<composition>)
+	  b role_name "" multiplicity "1" private
+	    classrelation_ref 152962 // <composition>
+	  association_explicit_type "u64int, u64int"
       end
     end
 
@@ -1891,10 +1889,6 @@ ${inlines}
 	relation_ref 128258 // <composition>
       end
 
-      classrelation 131970 // <composition>
-	relation_ref 130562 // <composition>
-      end
-
       classrelation 145794 // <composition>
 	relation_ref 143874 // <composition>
       end
@@ -2279,6 +2273,114 @@ ${inlines}
 
       classrelation 146306 // <composition>
 	relation_ref 144258 // <composition>
+      end
+    end
+
+    class 156290 "PriorityQueue"
+      visibility package 
+      nformals 2
+      formal name "P" type "class" explicit_default_value ""
+        explicit_extends ""
+      formal name "T" type "class" explicit_default_value ""
+        explicit_extends ""
+      cpp_decl "${comment}${template}class ${name}${inherit} {
+${members}};
+${inlines}
+"
+      java_decl ""
+      php_decl ""
+      python_2_2 python_decl ""
+      idl_decl ""
+      explicit_switch_type ""
+      
+      operation 171138 "get_size"
+	public explicit_return_type "u64int"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 171266 "is_empty"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 171394 "is_full"
+	public explicit_return_type "bool"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 171522 "add"
+	public explicit_return_type "void"
+	nparams 2
+	  param in name "priority" explicit_type "P"
+	  param in name "value" explicit_type "T"
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}const ${t0} & ${p0}, const ${t1} & ${p1}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 171650 "pop_front"
+	public explicit_return_type "T"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      operation 171778 "clear"
+	public explicit_return_type "void"
+	nparams 0
+	cpp_decl "    ${comment}${friend}${static}${inline}${virtual}${type} ${name}${(}${)}${const}${volatile}${throw}${abstract};
+"
+	cpp_def "${comment}${inline}${type} ${class}::${name}${(}${)}${const}${volatile}${throw}${staticnl}{
+  ${body}}
+"
+	
+	
+	
+	
+      end
+
+      classrelation 152962 // <composition>
+	relation_ref 150786 // <composition>
       end
     end
   end

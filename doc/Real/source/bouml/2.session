@@ -1,4 +1,4 @@
-window_sizes 1366 744 369 991 556 114
+window_sizes 1280 1000 369 905 812 114
 windows_style
 diagrams
   sequencediagram_ref 128002 // manage_interrupt
@@ -6,7 +6,7 @@ diagrams
   sequencediagram_ref 128130 // MessageResourceManager<T>::plan()
     975 785 100 0 0 90
   active  classdiagram_ref 128258 // classes
-    991 556 80 0 0 0
+    905 812 80 0 548 230
   sequencediagram_ref 134914 // ProcessManager::load_process()
     969 785 100 4 0 0
   sequencediagram_ref 135042 // files
@@ -21,21 +21,8 @@ diagrams
     910 785 100 4 0 0
 end
 show_stereotypes
-selected classdiagram_ref 128258 // classes
 open
-  class_ref 135170 // Process
-  operation_ref 137602 // queue_process_for_byte
-  operation_ref 137218 // exists
-  operation_ref 139522 // get_stdin_byte
-  operation_ref 139778 // get_file_byte
-  operation_ref 140162 // write_stdout_byte
-  operation_ref 164226 // get_byte
-  operation_ref 164610 // plan
-  attribute_ref 137218 // offset
+  class_ref 128002 // ProcessManager
   class_ref 142210 // Resource
-  class_ref 142338 // ReusableResource
-  class_ref 142850 // MessageLoadProgramResource
-  class_ref 149634 // ProcessContainer
-  class_ref 149762 // OpenedFile
 end
 end
