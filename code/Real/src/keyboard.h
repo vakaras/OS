@@ -116,7 +116,18 @@ public:
     // run X - run process id X
     if((this->komanda[0]=='r') && (this->komanda[1]=='u') 
       && (this->komanda[2]=='n') && (this->komanda[3]==' ')){
-        u32int command = this->komanda[4]-'0';
+        u32int len;
+        for (len = 0; len < 4; len++) {
+          if (!('0' <= this->komanda[len + 4] 
+                && this->komanda[len + 4] <= '9')) {
+            break;
+            }
+          }
+        u32int command = 0;
+        for (u64int i = 0; i < len; i++) {
+          command *= 10;
+          command += this->komanda[i + 4] - '0';
+          }
         if (!(1 <= command && command <= this->prog_m->get_count())) {
           this->monitor->write_string("\nUnknown program id #");
           this->monitor->write_dec(command);
@@ -173,21 +184,25 @@ public:
           } else {
             char new_char = \
               (shift_state ? uppercase:lowercase)[new_scan_code];
-            if(new_char==13){
-              this->einamas = 0;
-              test_komanda();
-              reset_komanda();
-            } else if(new_char==10){
-              this->einamas = 0;
-              reset_komanda();
-            } else if(this->einamas<8){
-              this->komanda[this->einamas++] = new_char;
-            };
             if((this->monitor->active_screen_id < 5) 
                 && (this->monitor->get_active_screen_type())) {
               this->proc_m->char_entered(this->monitor->active_screen_id, 
                   new_char);
-            };
+              }
+            else {
+              if (new_char == 13) {
+                this->einamas = 0;
+                reset_komanda();
+                } 
+              else if (new_char == 10) {
+                this->einamas = 0;
+                test_komanda();
+                reset_komanda();
+                } 
+              else if (this->einamas < 8) {
+                this->komanda[this->einamas++] = new_char;
+                };
+              }
             this->monitor->put_character(new_char);
           }
           break;
