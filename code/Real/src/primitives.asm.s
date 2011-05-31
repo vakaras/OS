@@ -28,3 +28,12 @@ switch_process:
   add rsp, 8                            ; Išmetam klaidos kodą.
 
   iretq
+
+global sleep
+
+sleep:
+
+.loop:
+  sti                                   ; Įjungiam pertraukimus.
+  hlt                                   ; Užmigdom procesorių.
+  jmp .loop
