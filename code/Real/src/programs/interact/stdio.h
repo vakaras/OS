@@ -5,10 +5,13 @@
 #include "cxx.h"
 #include "icxxabi.h"
 
+#define MAX_DECIMAL_LENGTH 20
+
 
 namespace std {
 
   typedef unsigned long long u64int;
+  typedef   signed long long s64int;
 
   extern "C" u64int open_file_read(u64int file_name);
   extern "C" u64int open_file_write(u64int file_name);
@@ -62,6 +65,31 @@ namespace std {
 
       for (const char *i = str; *i; i++) {
         write_byte(*i, this->file_descriptor);
+        }
+      
+      return 0;
+      }
+
+    u64int write(u64int value) {
+
+      if (!value) {
+        write_byte('0', this->file_descriptor);
+        }
+      else {
+
+        u64int mul = 1;
+        u64int tmp = value;
+        while (tmp > 0) {
+          tmp /= 10;
+          mul *= 10;
+          }
+
+        mul /= 10;
+        while (mul > 0) {
+          write_byte('0' + (value / mul) % 10, this->file_descriptor);
+          mul /= 10;
+          }
+        
         }
       
       return 0;
@@ -145,6 +173,35 @@ namespace std {
     
     u64int read_line(char *str, int len) {
       return read(str, len-1, '\n');
+      }
+
+    u64int read(u64int *number) {
+
+      char buffer[MAX_DECIMAL_LENGTH + 2];
+
+      for (u64int i = 0; i < MAX_DECIMAL_LENGTH + 2; i++) {
+        buffer[i] = 0;
+        }
+
+      u64int i;
+      for (i = 0; i < MAX_DECIMAL_LENGTH; i++) {
+        buffer[i] = read_byte(this->file_descriptor);
+        if ('0' <= buffer[i] && buffer[i] <= '9') {
+          buffer[i] -= '0';
+          }
+        else {
+          buffer[i] = 0;
+          break;
+          }
+        }
+
+      *number = 0;
+      for (u64int j = 0; j < i; j++) {
+        *number *= 10;
+        *number += buffer[j];
+        }
+
+      return 0;
       }
 
     };
